@@ -5,6 +5,8 @@
 % andere student?
 % Zo ja, haal dan de tekst hieronder uit commentaar en pas aan.
 
+\newpage
+
 \paragraph{Opmerking}
 
 Dit voorstel is gebaseerd op het onderzoeksvoorstel dat werd geschreven in het
@@ -15,53 +17,59 @@ uitgewerkt.
 \label{sec:inleiding}
 
 \subsection{Overzicht}
-Grote bedrijven hebben meestal een complexe bedrijfsstructuur, wat wil zeggen dat er verschillende 
-domeinen en subdomeinen met specifieke doeleinden binnen de organisatie de steunpilaren vormen om de bedrijvigheid mogelijk te maken. 
-Voorbeeld hiervan is e-commerce dat de klant de mogelijkheid geeft een bestelling te plaatsen, 
-magazijnbeheer (WMS) om de voorraad te beheren, aankoop om onderdelen te bestellen bij de leverancier en transport (TMS) 
-om die onderdelen tot bij de klant te krijgen. 
-\newline 
 
-Om deze taken te kunnen uitvoeren wordt er gebruik gemaakt van één of meerdere \emph{services} die de vooropgestelde 
-functionaliteiten van een subdomein supporteert. 
+TVH is een retail bedrijf dat zich focust op de verkoop van onderdelen binnen de logistieke sector. 
+De hoofdzetel is gevestigd in Waregem, België en heeft een eigen IT-afdeling.
+Bedrijven zoals TVH hebben verschillende domeinen en subdomeinen met specifieke doeleinden binnen de organisatie. 
+Deze bachelorproef speelt zich af binnen het domein "warehousing" dat instaat voor de opslag en beheer van goederen. 
+Warehousing in TVH bevat verschillende magazijnen waaronder automatische magazijnen die aangestuurd worden door PLC's en een WMS.
+Een van die magazijnen dat hier in deze paper in aanmerking komt is de oudste binnen TVH. 
+Dat automatisch magazijn wordt aangedreven door een PLC (Programmable Logic Controller) 
+van Vanderlanden en bestaat uit een conveyor systeem met een ASRS (Automatic Storage and Retrieval System).
+De PLC stuurt informatie over het systeem en data van bakken die op het systeem routeren naar het WMS (Warehouse Management System). 
+Dit WMS is geschreven in Progress 4GL-code en maakt deel uit van het monolithische ERP-pakket dat door TVH is geïmplementeerd. 
+De PLC ontvangt bijvoorbeeld een taak om een bak naar een bepaalde bestemming te sturen. 
+De volledige opzet van dit systeem wordt later besproken.
+
 % hook
-In de IT terminologie heet deze opstelling \emph{“Service oriented architecture” (SOA)} 
-en wordt deze steeds populairder omdat dit voordelig is voor de \emph{flexibiliteit} en \emph{schaalbaarheid} \autocite{Bellemare2020}.
+Om deze taken te kunnen uitvoeren, wordt gebruikgemaakt van één of meerdere \emph{services}. 
+In de IT-terminologie staat deze opstelling bekend als \emph{“Service Oriented Architecture” (SOA)}, 
+die steeds populairder wordt vanwege de voordelen voor \emph{flexibiliteit} en \emph{schaalbaarheid} \autocite{Bellemare2020}.
+
+Door deze onderlinge afhankelijkheid moeten services met elkaar kunnen communiceren. 
+Om dit mogelijk te maken, zijn verschillende \emph{messaging-systemen} beschikbaar op de markt, 
+elk met hun eigen eigenschappen en toepassingen.
 \newline 
 
-Door deze onderlinge afhankelijkheid moeten services met elkaar kunnen communiceren.
-Om dit mogelijk te maken, zijn verschillende \emph{messaging systemen} beschikbaar op de markt, 
-die elk hun eigenschappen en toepassingen hebben. 
+TVH heeft een snelle groei doorgemaakt zonder algemene afspraken te maken rond het gebruik van messaging systemen. 
+Dit heeft geresulteerd in de implementatie van verschillende messaging systemen, waardoor er een diversiteit aan oude en moderne technologieën in gebruik is. 
 \newline 
 
 \subsection{Probleemstelling}
-Het bedrijf dat onderwerp is in dit onderzoek, bevindt zich in een fase van digitale transformatie 
-waarbij het monolithisch legacy systeem wordt opgesplitst in componenten, genaamd \emph{services}, 
-die zowel in de cloud als op lokale (on-premise) systemen draaien. Daarnaast heeft het bedrijf een snelle groei 
-doorgemaakt zonder algemene afspraken te maken rond het gebruik van messaging systemen. Dit heeft geresulteerd in de 
-implementatie van verschillende messaging systemen, waardoor er een diversiteit aan oude en moderne technologieën in gebruik is. 
-Door de vele nieuwe \emph{services} die naast de bestaande zijn ontstaan en de snelle veranderingen in technologie, 
-is er een dringende behoefte om de gebruikte communicatiemiddelen te herzien. 
+De server dat instaat voor de communicatie tussen WMS en PLC voor het oudste automatisch magazijn wordt niet ondersteund.
+Dit kan gevolgen hebben op vlak van veiligheidsrisico's en daarom moet deze server vervangen worden.
+De server draait momenteel op CentOS als besturingssysteem en zal worden vervangen door Red Hat.
+Het vervangen van de server is niet in scope van dit onderzoek. 
+Omdat de software op de oude server niet op modernere besturingssystemen kan geïnstalleerd worden, 
+moeten we zoeken naar een alternatief.
 \newline
 
-De nadelen van te veel verschillende messaging systemen zijn onder andere de onderhoudskosten, wat betekent 
-dat mensen in de firma opgeleid moeten worden om die te onderhouden. 
-Hierdoor komt de efficiëntie in het gedrang op vlak van het uitrollen en onderhouden van de verschillende systemen.
+Volgende nadelen van verouderde messaging systemen doen zich voor: 
+De onderhoudskosten, wat betekent dat mensen in de firma specifiek opgeleid moeten worden om deze te onderhouden. 
+Beveilgingsrisico's, cybercriminelen richten zich vaak op verouderde software, omdat de kwetsbaarheden publiekelijk bekend zijn en niet meer worden aangepakt.
+Verouderde software kan vaker uitvallen of crashen, wat leidt tot hogere kosten door verlies van productiviteit en herstelwerkzaamheden.
 \newline 
 
 \subsection{Onderzoeksdoelstelling}
-Het doel van dit onderzoek is om na te gaan welk messaging systeem het meest optimaal is binnen de organisatie. 
-Hierbij moet er rekening gehouden worden met de verschillende subdomeinen, die elk hun eigenschappen en \newline non-functional requirements 
-hebben, zoals flexibiliteit, performantie, beveiliging en schaalbaarheid.
+Het doel van dit onderzoek is om na te gaan welk messaging systeem het meest optimaal is voor de communicatie tussen WMS en PLC. 
+Hierbij moet er rekening gehouden worden met de non-functional requirements,
+zoals flexibiliteit, performantie, beveiliging en integratiemogelijkheden.
 Naast de vergelijkende studie moet er ook gekeken worden wat de kosten en de inspanningen zijn 
 voor het integreren van een gekozen messaging systeem. \newline 
 
-Het belang van een consistent gebruik van de meest optimale technologie is op lange termijn
-een goede aanwinst voor het bedrijf. 
-
 \subsection{Onderzoeksvraag en deelvragen}
 
-Welke \emph{messaging technologieën} zijn optimaal voor het bedrijf en zijn subdomeinen?
+Welke \emph{messaging technologieën} zijn optimaal voor de communicatie tussen WMS en PLC?
 Enkele cruciale deelvragen met betrekking tot de hoofdvraag:
 
 \begin{enumerate}
@@ -69,23 +77,25 @@ Enkele cruciale deelvragen met betrekking tot de hoofdvraag:
   \item Welke messaging systemen zijn er beschikbaar?
   \item Wat zijn hun kenmerken en voordelen?
   \item Wat is de inspanning om een gekozen technologie te implementeren?
-  \item Wat zijn de non-functional requirements zijn er vanuit de bestaande services?
-  \item Welke systeem is een weloverwogen keuze?
+  \item Wat zijn de non-functional requirements van de bestaande service?
+  \item Welk messaging systeem is een weloverwogen keuze?
 \end{enumerate}
 
 \subsection{Opbouw van het onderzoek}
-Eerst zal de literatuurstudie in hoofdstuk \ref{sec:literatuurstudie} het concept 
-van een domein in de bedrijfscontext toe lichten;
-de relatie met \emph{Microservices} in kaart gebracht; 
-de relevantie en verschillen tussen synchrone en asynchrone communicatie vergeleken; 
-de rol van een messaging systeem binnen de IT-infrastructuur besprokenen tot slot 
-uitgelegd waarom een weloverwogen keuze van essentieel belang is.
+Eerst zal de literatuurstudie in hoofdstuk \ref{sec:literatuurstudie} een breder inzicht geven in volgende topics.
+\begin{enumerate}
+  \item Overzicht messaging systemen
+  \item Synchrone en asynchrone communicatie. 
+  \item Wat is een PLC en wat doet het.
+  \item Wat is een WMS en waarvoor staat het.
+  \item De rol van een messaging systeem tussen WMS en PLC.
+\end{enumerate}
 
 Hoofdstuk \ref{sec:methodologie} beschrijft de methodologie en de stappen die nodig zijn om dit onderzoek te ondersteunen
 en te leiden tot een rapport met aanbevelingen. 
 
-In hoofdstuk \ref{sec:verwachte-resultaten} worden de verwachte resultaten beschreven, gevolgd door 
-hoofdstuk \ref{sec:discussie-conclusie} met de verwachte conclusie van het onderzoek.
+In hoofdstuk \ref{sec:verwachte-resultaten} worden de verwachte resultaten besproken, gevolgd door 
+hoofdstuk \ref{sec:discussie-conclusie} met de verwachte conclusie van dit onderzoek.
 
 \bigskip
 
@@ -116,52 +126,28 @@ hoofdstuk \ref{sec:discussie-conclusie} met de verwachte conclusie van het onder
 
 \bigskip
  
-\subsection{Definitie van Domein}
-Zoals de titel van deze paper aangeeft is het bedrijf een complex bedrijf dat verschillende domeinen en subdomeinen bevat.
-Het woord domein in de bedrijfscontext is een probleemgebied waar een bedrijf zich op richt en oplossingen voor biedt. 
-De firma heeft als hoofddomein e-commerce en omvat alle aspecten van hun online retailactiviteiten, 
-zoals het beheren van producten, het verwerken van bestellingen, klantenservice, marketing en logistiek.
-\newline 
+% \subsection{Definitie van Domein}
+% TVH is een bedrijf dat verschillende domeinen met subdomeinen bevat.
+% Het woord domein in de bedrijfscontext is een probleemgebied waar een bedrijf zich op richt en oplossingen voor biedt. 
+% De firma heeft als hoofddomein e-commerce en omvat alle aspecten van hun online retailactiviteiten, 
+% zoals het beheren van producten, het verwerken van bestellingen, klantenservice, marketing en logistiek.
+% \newline 
 
-Een domein bevat subdomeinen die elk gericht zijn op een specifieke subset zoals bijvoorbeeld ``Productcatalogus''.
-Dit subdomein richt zich specifiek op het beheren van productinformatie, met ondersteuning van het toevoegen, bewerken en verwijderen van producten, 
-evenals het bijhouden van voorraadniveaus en prijzen.
-\newline 
+% Een domein bevat subdomeinen die elk gericht zijn op een specifieke subset zoals bijvoorbeeld ``Warehousing''.
+% Dit subdomein richt zich specifiek op het beheren van goederen, met ondersteuning van het toevoegen, bewerken en verwijderen van producten, 
+% evenals het bijhouden van voorraadniveaus.
+% \newline 
 
-Een subdomein kan dus worden beschouwd als een stukje van het domein, 
-dat net als het domein zelf behoort tot het probleemgebied.   
-Terwijl een domein een breed probleemgebied beschrijft, bevat een subdomein een specifieke afbakening, genaamd \emph{bounded context}.
-Dit maakt het mogelijk om \emph{microservices} binnen deze afbakening te ontwikkelen en te beheren \autocite{Bellemare2020}.
-
-\subsection{Definitie van Microservices}
-\emph{Microservices} zijn onafhankelijk inzetbaar en richten zich op specifieke aspecten van een 
-subdomein binnen een \emph{bounded context}. 
-Dit concept valt onder ``Domain-driven design'' en vertegenwoordigt een stijl van \emph{``Loose coupling''}, 
-wat wil zeggen dat het in theorie autonoom kan functioneren.
-Binnen de \emph{bounded context} zijn de interne onderdelen, zoals code en dataschema's, aan elkaar gekoppeld maar ze zijn nooit verbonden 
-aan iets buiten die context, zoals een database of klassedefinitie van een ander context. 
-Dit stelt elke service in staat om alleen te definiëren wat het nodig heeft in plaats van andere elementen te gebruiken uit andere services.
-Om gegevens en informatie uit te wisselen tussen deze verschillende domeinen communiceren ze met elkaar over het netwerk, 
-zoals via RESTful API's of messaging queues. 
-Het primaire doel van de \emph{microservice-architectuur} is flexibiliteit, maar daarnaast brengt het ook voordelen voor developers, 
-zoals een betere samenwerking zonder elkaar in de weg te zitten. 
-Ontwikkelaars gaan ook hun deel van het systeem beter begrijpen, omdat ze zich kunnen 
-concentreren op de specifieke kennis van hun service.
-\emph{Microservices} zijn dus een type van \emph{Service-oriented architecture (SOA)} en weerspiegelt een duidelijke mening over hoe een 
-service zijn grenzen moet afbakenen ~\autocite{Newman2020}.
-\newline
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=.5\textwidth]{topology-microservices.png}
-  \caption{\label{fig:img}Toplology of the Microservices Architecture style \autocite[figure 17 - 1]{MarkRichards2021}.}
-\end{figure}
+% Een subdomein kan dus worden beschouwd als een stukje van het domein, 
+% dat net als het domein zelf behoort tot het probleemgebied.   
+% Terwijl een domein een breed probleemgebied beschrijft, bevat een subdomein een specifieke afbakening, genaamd \emph{bounded context}.
+% Dit maakt het mogelijk om \emph{services} binnen deze afbakening te ontwikkelen en te beheren \autocite{Bellemare2020}.
 
 %\subsection{Soorten communicatie}
 % file:///C:/Data/Downloads/IJMECS-V12-N2-5.pdf
  
 \subsection{Synchroon vs. asynchroon}
-In de wereld van microservices communiceren services zowel \emph{synchroon} als \emph{asynchroon} en spelen deze benaderingen een cruciale rol, 
+Services communiceren zowel \emph{synchroon} als \emph{asynchroon} en spelen deze benaderingen een cruciale rol, 
 elk met hun eigen voor- en nadelen. \emph{Synchrone microservices} werken volgens een direct 
 afhankelijkheidsmodel, omdat services met elkaar communiceren in een vraag-antwoordpatroon. 
 Deze synchrone communicatie kan leiden tot ingewikkelde onderlinge afhankelijkheden, vertragingen en complexiteiten bij het debuggen 
@@ -205,7 +191,6 @@ waarmee twee autonome processen verbonden zijn, hetzij op dezelfde, hetzij op ve
 te communiceren zonder te moeten wachten op een antwoord van de ontvanger. 
 Er zijn twee methodieken in deze systemen. 
 \newline
-\newline
 
 De eerste methodiek is \emph{publish-subscribe}, waarbij de zender, genaamd \emph{publisher} niet verantwoordelijk is voor het beheer 
 en het rechtstreeks verzenden van de berichten naar specifieke ontvangers, die \emph{subscribers} of abonnees worden genoemd. 
@@ -237,16 +222,15 @@ De tweede methodiek genaamd point-to-point gebruikt \emph{queuing} waarbij de \e
 waarna een \emph{consumer} de berichten uitleest in een sequentiele volgorde. 
 Met andere woorden, een bericht wordt slechts aan één \emph{consumer} bezorgt.
 
-\newpage
+\subsection{Wat is een PLC}
+Een PLC (Programmable Logic Controller) is een industriële computer die wordt gebruikt voor het automatiseren van machines en processen \autocite{Bolton2015}. 
+Het is ontworpen om robuust te zijn en betrouwbaar te functioneren in industriële omgevingen zoals fabrieken, 
+waar het vaak wordt gebruikt om mechanische apparatuur, zoals transport systemen of liften van een automatisch magazijn te besturen.
 
-\subsection{Het belang van een optimale \newline messaging technologie}
-
-In het artikel ``Too Much Middleware'' betoogt \textcite{Stonebraker2002} dat de overvloed aan middleware systemen, 
-waaronder applicatieservers, workflowproducten, integratie systemen en \newline ETL-systemen heeft geleid tot een gefragmenteerd landschap 
-met overlappende functionaliteit. 
-Deze diversiteit creëert complexiteit en inefficiëntie voor bedrijven. 
-\textcite{Stonebraker2002} stelt dat aanzienlijke consolidatie nodig is en presenteert verschillende manieren waarop dit kan worden bereikt.
-\newline
+\subsection{Wat is een WMS}
+Warehouse managementsystemen (WMS) zijn softwaretoepassingen die bedrijven in staat stellen om magazijnactiviteiten te beheren en te controleren, 
+waaronder voorraadbeheer, orderverwerking en transportbeheer. 
+Warehouse managementsystemen (WMS) vormen een essentieel onderdeel van moderne magazijnactiviteiten \autocite{Rana2023}. \newline
 
 Een aantal onderzoeksvragen uit de probleemstelling dat deels kan worden beantwoord:
 
@@ -254,15 +238,15 @@ Een aantal onderzoeksvragen uit de probleemstelling dat deels kan worden beantwo
 
 \item \textbf{Waarom is een weloverwogen keuze van essentieel belang?}
   \begin{itemize}
-      \item Een weloverwogen keuze is essentieel omdat de huidige overvloed aan middleware systemen complexiteit introduceert en 
-      inefficiëntie veroorzaakt. Door zorgvuldig te kiezen en te consolideren kunnen bedrijven deze problemen verminderen en een 
+      \item Een weloverwogen keuze is essentieel omdat het huidige communicatie systeem inefficiëntie kan veroorzaaken en niet op modernere systemen 
+      kan worden geïnstalleerd worden. Door zorgvuldig te kiezen kan dit probleem opgelost worden en een 
       efficiënter IT-landschap creëren.
   \end{itemize}
 
 \item \textbf{Wat is de inspanning om een gekozen technologie te implementeren?}
   \begin{itemize}
       \item De inspanning om een gekozen technologie te implementeren kan variëren afhankelijk van de specifieke systeemvereisten, 
-      de complexiteit van de bedrijfsprocessen en de beschikbare middelen binnen de organisatie. Dit kan onder meer het configureren, 
+      de non-functional requirements en de beschikbare middelen binnen de organisatie. Dit kan onder meer het configureren, 
       aanpassen en integreren van de gekozen technologie omvatten, evenals het trainen van personeel en het uitvoeren van migraties van 
       bestaande systemen.
   \end{itemize}
@@ -285,9 +269,6 @@ Een aantal onderzoeksvragen uit de probleemstelling dat deels kan worden beantwo
 % Je beschrijft ook al welke tools (hardware, software, diensten, \ldots) je denkt hiervoor te gebruiken of te ontwikkelen.
 
 % Probeer ook een tijdschatting te maken. Hoe lang zal je met elke fase van je onderzoek bezig zijn en wat zijn de concrete \emph{deliverables} in elke fase?
-
-\section{Methodologie}%
-\label{sec:methodologie}
 
 Het volgende stappenplan zal helpen om de vergelijkende studie op een verfijnde manier uit te voeren.
 Eerst worden de requirements rond messaging systemen per subdomein opgelijst aan de hand van diepte interviews 
@@ -341,25 +322,21 @@ Er zijn vier dagen per maand beschikbaar waarop acht uur kan worden gewerkt aan 
 \begin{figure}[htbp]
   \centering  
   \rule{\linewidth}{1pt}
-  \ytl{Okt, 4 dagen}{Requirements verzamelen -- Criteria vaststellen}
-  \ytl{Nov, 4 dagen}{Long list}
-  \ytl{Dec, 4 dagen}{Long list}
-  \ytl{Jan, 4 dagen}{Opstellen testscenario's}
-  \ytl{Feb, 4 dagen}{Opstellen testscenario's}
-  \ytl{Mar, 4 dagen}{Testen}
-  \ytl{Apr, 4 dagen}{Testen}
-  \ytl{Mei, 4 dagen}{Analyseren resultaten}
-  \ytl{Jun, 4 dagen}{Rapportage}
+  \ytl{Okt, 2 dagen}{Requirements verzamelen -- Criteria vaststellen}
+  \ytl{Okt, 1 dag}{Long list}
+  \ytl{Nov, 2 dagen}{Opstellen testscenario's}
+  \ytl{Nov, 2 dagen}{Testen}
+  \ytl{Dec, 2 dagen}{Analyseren resultaten}
+  \ytl{Dec, 2 dagen}{Rapportage}
   \rule{\linewidth}{1pt}
   \caption{Tijdlijn onderzoek}
   \label{fig:timeline}
 \end{figure}
 
  
-\subsection{Requirements verzamelen per \newline subdomein}
+\subsection{Requirements verzamelen}
 In deze stap worden de criteria opgenomen om de longlist in een latere fase te kunnen filteren.
-Door de domein architecten en product owners te interviewen en intern documentatie op te zoeken kan een 
-lijst met criteria gecategoriseerd worden volgens de non-functional requirements.
+Door documentatie op te zoeken kan een lijst met criteria gecategoriseerd worden volgens de non-functional requirements.
 
 \subsection{Evaluatiecriteria vaststellen}
 We stellen criteria vast om de verschillende messaging systemen te kunnen evalueren. 
@@ -374,7 +351,7 @@ Deze criteria moeten relevant zijn voor de behoeften en vereisten van het bedrij
 \end{itemize}
 
 \subsection{Long list}
-Identificeren van een reeks messaging systemen beschikbaar op de markt die relevant zijn voor het bedrijf, 
+Identificeren van een reeks messaging systemen beschikbaar op de markt die relevant zijn voor de communicatie tussen WMS en PLC, 
 om in latere fase te onderwerpen aan de criteria voor het bekomen van een shortlist.
 
 \subsection{Opstellen van Testscenario's}
@@ -383,8 +360,8 @@ objectief te beoordelen.
 
 \begin{itemize}
   \item Versturen en ontvangen van berichten met verschillende grootten en frequenties.
-  \item Testen van de beveiligingsmechanismen van de systemen.
-  \item Evalueren van de integratiemogelijkheden met andere systemen binnen het bedrijf.
+  \item Testen van de beveiligingsmechanismen van het systeem.
+  \item Evalueren van de integratiemogelijkheden.
  \end{itemize}
 
 \subsection{Uitvoeren van de testen}
@@ -403,7 +380,8 @@ matrix met elkaar worden vergeleken.
 
 %---------- Verwachte resultaten ----------------------------------------------
 \section{Verwacht resultaat, conclusie}%
-\label{sec:verwachte_resultaten}
+
+\label{sec:verwachte-resultaten}
 
 % Hier beschrijf je welke resultaten je verwacht. Als je metingen en simulaties uitvoert, kan je hier al mock-ups maken van de grafieken samen met de verwachte conclusies. Benoem zeker al je assen en de onderdelen van de grafiek die je gaat gebruiken. Dit zorgt ervoor dat je concreet weet welk soort data je moet verzamelen en hoe je die moet meten.
 
@@ -411,14 +389,14 @@ matrix met elkaar worden vergeleken.
 
 % Hier beschrijf je wat je verwacht uit je onderzoek, met de motivatie waarom. Het is \textbf{niet} erg indien uit je onderzoek andere resultaten en conclusies vloeien dan dat je hier beschrijft: het is dan juist interessant om te onderzoeken waarom jouw hypothesen niet overeenkomen met de resultaten.
 
-Het onderzoek zal het meest optimale messaging systemen identificeren per subdomein binnen de organisatie.
+Het onderzoek zal het meest optimale messaging systemen identificeren.
 Testen gaan meer inzichten bieden bij het beoordelen van de prestaties, betrouwbaarheid, 
 schaalbaarheid, beveiliging, onderhoudbaarheid, compatibiliteit, kosten en gebruikerservaring van elke technologie.
 \newline
 
 Tot slot zal het onderzoek dus resulteren in aanbevelingen van verschillende technologieën die het meest geschikt zijn
-over verschillende services in de vorm van een beslissingsmatrix. 
-Deze aanbevelingen gaan dus gebaseerd zijn op een grondige analyse van de non-functional requirements van verschillende subdomeinen 
+in de vorm van een beslissingsmatrix. 
+Deze aanbevelingen gaan dus gebaseerd zijn op een grondige analyse van de non-functional requirements 
 door onderzoek en testen.
 
 

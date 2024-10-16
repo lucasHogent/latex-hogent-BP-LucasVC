@@ -8,6 +8,17 @@
 % Let op: kan enkel na toestemming van de bachelorproefcoördinator!
 \documentclass{hogent-article}
 
+\usepackage{lipsum} % Voor vultekst
+\usepackage{tikz} % Voor diagrammen
+\usepackage{graphicx} % Voor afbeeldingen
+\usepackage{float} % Voor afbeeldingen
+\usepackage[dutch]{babel} % Voor hyphen
+\usepackage{color}
+\usepackage{calc}
+
+\graphicspath{ {img/} }
+\usetikzlibrary{shapes,arrows,positioning}
+
 % Invoegen bibliografiebestand
 \addbibresource{voorstel.bib}
 
@@ -23,14 +34,14 @@
 \academicyear{2024-2025} % TODO: pas het academiejaar aan
 
 % TODO: Werktitel
-\title{Onderzoek naar een snel en kostenefficient messaging systeem voor de communicatie tussen PLC en WMS}
+\title{Modernisering van Messaging Systeem tussen PLC en WMS: Een Onderzoek naar efficiëntie, betrouwbaarheid en performantie}
 
 % TODO: Studentnaam en emailadres invullen
 \author{Lucas Van Compernolle}
 \email{lucas.vancompernolle@student.hogent.be}
 
 % TODO: Geef de co-promotor op
-\supervisor[Co-promotor]{K. Vermeulen (TVH, \href{mailto:kristof.vermeulen@tvh.com}{kristof.vermeulen@tvh.com})}
+\supervisor[Co-promotor]{W. Lahousse (TVH, \href{mailto:wim.lahousse@tvh.com}{wim.lahousse@tvh.com})}
 
 % Binnen welke specialisatierichting uit 3TI situeert dit onderzoek zich?
 % Kies uit deze lijst:
@@ -44,40 +55,48 @@
 %   zelf
 %
 \specialisation{Mobile \& Enterprise development}
-\keywords{Scheme, World Wide Web, $\lambda$-calculus}
+\keywords{Messaging, JMS, AMQ, RabbitMQ, Kafka, Communication, Microservice, Architecture, WMS, PLC}
 
 \begin{document}
 
 \begin{abstract}
 
 % Intro (use case doelpubliek en doelstelling) 
-
 % Kaderen thema
-In een tijd waarin technologische vooruitgang snel evolueert en de populariteit van service gerichte architectuur groeit,
-staan organisaties met een IT-afdeling voor de uitdaging om verschillende asynchrone communicatietechnologieën tussen subdomeinen te integreren. 
-Deze verscheidenheid aan systemen kan leiden tot toenemende complexiteit en onderhoudskosten.
-Dit onderzoeksvoorstel richt zich op een specifiek bedrijf in de logistieke sector, dat een eigen IT-afdeling heeft.
+Dit onderzoek situeert zich binnen de IT afdeling van TVH (Thermote \& Vanhalst). 
+TVH is een bedrijf met als hoofdactiviteit het verkopen van onderdelen in de logistieke sector.
+Het bedrijf bestaat uit meerdere automatische magazijnen die instaan voor bijvoorbeeld het verwerken van verkooporders, 
+het tellen van voorraad en de opslag van goederen. 
+Een automatisch magazijn bestaat uit meerdere IT componenten genaamd services zoals
+een Warehouse Management System (WMS), een Warehouse Control System (WCS), en Programmable Logic Controllers (PLC's), die elk hun specifieke verantwoordelijkheden hebben. 
+Om de gehele werking te kunnen garanderen moeten deze componenten met elkaar kunnen communiceren. 
+\newline
+
 % Probleemstelling
-Door de snelle groei en transformatie van de firma, staat het voor de uitdaging verschillende services met elkaar te laten communiceren. 
-Deze diversiteit aan systemen kan leiden tot toenemende complexiteit en onderhoudskosten.
-Het specifieke probleem is het gebrek aan doordacht gekozen communicatietechnologieën die voldoen aan de behoeften van het bedrijf.
-Hierdoor kan het bedrijf inefficiënties ervaren en kosten zien stijgen omdat het onderhoud en complexiteit van 
-verschillende technologieën toeneemt.
-Daarom is er een onderzoek nodig om de meest geschikte technologieën te identificeren en implementeren, 
-met als doel de efficiëntie te verbeteren en de kosten te verlagen.\linebreak
+De huidige Unix-server dat instaat voor die communicatie, maakt gebruik van CentOS als besturingssysteem, is niet ondersteund en verouderd.
+Hierdoor is de server onderhevig aan veiligheidsrisico's en moet die vervangen worden door een Redhat OS dat wel officiële ondersteuning aanbiedt.
+De gebruikte messaging software, SonicMQ, is eveneens verouderd. 
+Deze kan niet geïnstalleerd worden onder het nieuwe OS, waardoor vervanging noodzakelijk is. 
+\newline
+
 % Doelstelling
-Het onderzoek naar de meest optimale technologieën voor dit bedrijf met een complexe 
-bedrijfsstructuur zal helpen bij het verlagen van de kosten en het verbeteren van de efficiëntie. 
+Het doel is om de SonicMQ messaging software te vervangen door een moderner, future-proof messaging systeem.
+Naast de integratie van de nieuwe software moet deze ook performant, betrouwbaar, kostenefficiënt en veilig zijn 
+om de continuïteit van het automatisch magazijn te waarborgen. 
+Hiervoor is dit onderzoek nodig om de meest geschikte technologieën te identificeren en de meest optimale te implementeren.
 \newline
 
 % Opbouw paper
-Deze paper zal onderzoek verrichten naar verschillende soorten communicatietechnologieën die 
-het beste passen binnen de noden van het bedrijf.
+Om een duidelijk overzicht te bieden zal deze paper eerst dieper ingaan op de kernbegrippen 
+om de context te verduidelijken waarin de bachelorproef zal worden uitgevoerd.
+
 % Methode
-Door eerst de behoeften van elk subdomein vast te stellen, kan er vervolgens een vergelijkende studie worden
-uitgevoerd naar de verschillende technologieën. Geselecteerde technologieën zullen worden onderworpen aan performantie testen 
-om te garanderen dat ze voldoen aan de non-functional requirements.
-\newline
+Om een doordachte keuze te kunnen maken worden verschillende messaging systemen onderzocht en vergeleken. 
+Hiervoor zal een shortlist gemaakt worden waarin de voor en nadelen beschreven worden.
+De geselecteerde technologieën worden onderworpen aan verschillende testen.
+Elk van deze testen worden uitgevoerd in een virtuele omgeving dat de communicatie van het automatisch magazijn simuleert. 
+Hierdoor zal een juiste keuze kunnen gemaakt worden die zal voldoen aan de non-functional requirements.
+
 \end{abstract}
 
 \tableofcontents
@@ -85,6 +104,7 @@ om te garanderen dat ze voldoen aan de non-functional requirements.
 % De hoofdtekst van het voorstel zit in een apart bestand, zodat het makkelijk
 % kan opgenomen worden in de bijlagen van de bachelorproef zelf.
 \input{voorstel-inhoud}
+
 
 \printbibliography[heading=bibintoc]
 
