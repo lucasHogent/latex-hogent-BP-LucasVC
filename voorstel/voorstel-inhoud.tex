@@ -5,8 +5,6 @@
 % andere student?
 % Zo ja, haal dan de tekst hieronder uit commentaar en pas aan.
 
-\newpage
-
 % \paragraph{Opmerking}
 
 % Dit voorstel is gebaseerd op het onderzoeksvoorstel dat werd geschreven in het
@@ -61,25 +59,29 @@ Verouderde software kan vaker uitvallen of crashen, wat leidt tot hogere kosten 
 \newline 
 
 \subsection{Onderzoeksdoelstelling}
-Het doel van dit onderzoek is om na te gaan welk messaging systeem het meest optimaal is voor de communicatie tussen WMS en PLC. 
+Het doel van dit onderzoek is om na te gaan welk messaging systeem het meest optimaal is voor de vervanging van de huidige SonicMQ,
+dat gebruikt wordt voor de communicatie tussen WMS en PLC. 
 Hierbij moet er rekening gehouden worden met de non-functional requirements,
 zoals flexibiliteit, performantie, beveiliging en integratiemogelijkheden.
 Naast de vergelijkende studie moet er ook gekeken worden wat de kosten en de inspanningen zijn 
 voor het integreren van een gekozen messaging systeem. \newline 
 
 \subsection{Onderzoeksvraag en deelvragen}
+Welke \emph{messaging technologieën} zijn het meest geschikt om het verouderde SonicMQ-systeem te vervangen 
+en de communicatie tussen het Warehouse Management System (WMS) en de Programmable Logic Controllers (PLC’s) 
+in het automatische magazijn te garanderen?
 
-Welke \emph{messaging technologieën} zijn optimaal voor de communicatie tussen WMS en PLC?
 Enkele cruciale deelvragen met betrekking tot de hoofdvraag:
-
 \begin{enumerate}
-  \item Waarom is een weloverwogen keuze van essentieel belang?
+  \item Waarom is SonicMQ niet ondersteund op een Red Hat OS
   \item Welke messaging systemen zijn er beschikbaar?
-  \item Wat zijn hun kenmerken en voordelen?
+  \item Waarom is een weloverwogen keuze van essentieel belang?
   \item Wat is de inspanning om een gekozen technologie te implementeren?
   \item Wat zijn de non-functional requirements van de bestaande service?
   \item Welk messaging systeem is een weloverwogen keuze?
 \end{enumerate}
+
+\newpage
 
 \subsection{Opbouw van het onderzoek}
 Eerst zal de literatuurstudie in hoofdstuk \ref{sec:literatuurstudie} een breder inzicht geven in volgende topics.
@@ -88,7 +90,7 @@ Eerst zal de literatuurstudie in hoofdstuk \ref{sec:literatuurstudie} een breder
   \item Wat is een WMS en waarvoor staat het.
   \item Wat zijn messaging systemen.
   \item Wat is synchrone en asynchrone communicatie. 
-  \item De rol van een messaging systeem tussen WMS en PLC.
+  \item Wat is de huidige setup tussen WMS en PLC.
 \end{enumerate}
 
 Hoofdstuk \ref{sec:methodologie} beschrijft de methodologie en de stappen die nodig zijn om dit onderzoek te ondersteunen
@@ -350,9 +352,10 @@ Deze criteria moeten relevant zijn voor de behoeften en vereisten van het bedrij
   \item Kosten: Licentiekosten, onderhoudskosten
 \end{itemize}
 
-\subsection{Long list naar Sort list}
-Identificeren van een reeks messaging systemen beschikbaar op de markt die relevant zijn voor de communicatie tussen WMS en PLC, 
-om in latere fase te onderwerpen aan de criteria voor het bekomen van een shortlist.
+\subsection{Long list naar Short list}
+Identificeren van een selectie messaging systemen die op de markt beschikbaar zijn en relevant zijn voor de communicatie tussen 
+het WMS en de PLC's (Long list), zodat deze in een latere fase kunnen worden beoordeeld aan de hand van specifieke criteria, 
+met als doel een shortlist op te stellen van twee technologieën die verder zullen worden opgenomen in de proof of concept (PoC).
 
 \subsection{Opstellen van Testscenario's}
 De volgende testscenario's helpen bij dit onderzoek om de prestaties en functionaliteit van de messaging systemen 
