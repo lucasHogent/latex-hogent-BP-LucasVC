@@ -7,11 +7,11 @@
 
 \newpage
 
-\paragraph{Opmerking}
+% \paragraph{Opmerking}
 
-Dit voorstel is gebaseerd op het onderzoeksvoorstel dat werd geschreven in het
-kader van het vak Research Methods dat ik vorig academiejaar heb
-uitgewerkt.
+% Dit voorstel is gebaseerd op het onderzoeksvoorstel dat werd geschreven in het
+% kader van het vak Research Methods dat ik vorig academiejaar heb
+% uitgewerkt.
 
 \section{Inleiding}%
 \label{sec:inleiding}
@@ -23,7 +23,7 @@ De hoofdzetel is gevestigd in Waregem, België en heeft een eigen IT-afdeling.
 Bedrijven zoals TVH hebben verschillende domeinen en subdomeinen met specifieke doeleinden binnen de organisatie. 
 Deze bachelorproef speelt zich af binnen het domein "warehousing" dat instaat voor de opslag en beheer van goederen. 
 Warehousing in TVH bevat verschillende magazijnen waaronder automatische magazijnen die aangestuurd worden door PLC's en een WMS.
-Een van die magazijnen dat hier in deze paper in aanmerking komt is de oudste binnen TVH. 
+Een van de magazijnen die hier in deze paper in aanmerking komt is de oudste binnen TVH. 
 Dat automatisch magazijn wordt aangedreven door een PLC (Programmable Logic Controller) 
 van Vanderlanden en bestaat uit een conveyor systeem met een ASRS (Automatic Storage and Retrieval System).
 De PLC stuurt informatie over het systeem en data van bakken die op het systeem routeren naar het WMS (Warehouse Management System). 
@@ -46,7 +46,7 @@ Dit heeft geresulteerd in de implementatie van verschillende messaging systemen,
 \newline 
 
 \subsection{Probleemstelling}
-De server dat instaat voor de communicatie tussen WMS en PLC voor het oudste automatisch magazijn wordt niet ondersteund.
+De server die instaat voor de communicatie tussen WMS en PLC voor het oudste automatisch magazijn wordt niet ondersteund.
 Dit kan gevolgen hebben op vlak van veiligheidsrisico's en daarom moet deze server vervangen worden.
 De server draait momenteel op CentOS als besturingssysteem en zal worden vervangen door Red Hat.
 Het vervangen van de server is niet in scope van dit onderzoek. 
@@ -84,10 +84,10 @@ Enkele cruciale deelvragen met betrekking tot de hoofdvraag:
 \subsection{Opbouw van het onderzoek}
 Eerst zal de literatuurstudie in hoofdstuk \ref{sec:literatuurstudie} een breder inzicht geven in volgende topics.
 \begin{enumerate}
-  \item Overzicht messaging systemen
-  \item Synchrone en asynchrone communicatie. 
   \item Wat is een PLC en wat doet het.
   \item Wat is een WMS en waarvoor staat het.
+  \item Wat zijn messaging systemen.
+  \item Wat is synchrone en asynchrone communicatie. 
   \item De rol van een messaging systeem tussen WMS en PLC.
 \end{enumerate}
 
@@ -323,8 +323,8 @@ Er zijn vier dagen per maand beschikbaar waarop acht uur kan worden gewerkt aan 
   \centering  
   \rule{\linewidth}{1pt}
   \ytl{Okt, 2 dagen}{Requirements verzamelen -- Criteria vaststellen}
-  \ytl{Okt, 1 dag}{Long list}
-  \ytl{Nov, 2 dagen}{Opstellen testscenario's}
+  \ytl{Okt, 2 dagen}{Long list naar Short list}
+  \ytl{Nov, 1 dag}{Opstellen testscenario's}
   \ytl{Nov, 2 dagen}{Testen}
   \ytl{Dec, 2 dagen}{Analyseren resultaten}
   \ytl{Dec, 2 dagen}{Rapportage}
@@ -350,7 +350,7 @@ Deze criteria moeten relevant zijn voor de behoeften en vereisten van het bedrij
   \item Kosten: Licentiekosten, onderhoudskosten
 \end{itemize}
 
-\subsection{Long list}
+\subsection{Long list naar Sort list}
 Identificeren van een reeks messaging systemen beschikbaar op de markt die relevant zijn voor de communicatie tussen WMS en PLC, 
 om in latere fase te onderwerpen aan de criteria voor het bekomen van een shortlist.
 

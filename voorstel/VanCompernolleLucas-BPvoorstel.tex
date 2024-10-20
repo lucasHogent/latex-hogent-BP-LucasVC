@@ -73,10 +73,16 @@ Om de gehele werking te kunnen garanderen moeten deze componenten met elkaar kun
 \newline
 
 % Probleemstelling
-De huidige Unix-server dat instaat voor die communicatie, maakt gebruik van CentOS als besturingssysteem, is niet ondersteund en verouderd.
-Hierdoor is de server onderhevig aan veiligheidsrisico's en moet die vervangen worden door een Redhat OS dat wel officiële ondersteuning aanbiedt.
-De gebruikte messaging software, SonicMQ, is eveneens verouderd. 
-Deze kan niet geïnstalleerd worden onder het nieuwe OS, waardoor vervanging noodzakelijk is. 
+De huidige Unix-server die instaat voor de communicatie, maakt gebruik van CentOS als besturingssysteem,
+wordt ondersteund en is verouderd.
+Hierdoor is de server onderhevig aan veiligheidsrisico's en moet die vervangen worden door een server met een Redhat OS, die wel officiële ondersteuning aanbiedt.
+De gebruikte messaging software, SonicMQ, is eveneens verouderd en kan niet geïnstalleerd worden op de nieuwe server. 
+
+Omdat vervanging noodzakelijk is de vraag in dit onderzoek: 
+Welke moderne messaging systeem kan het huidige SonicMQ-systeem tussen de PLC en het WMS vervangen, 
+met aandacht voor compatibiliteit, efficiëntie, betrouwbaarheid, veiligheid en kost?
+Deze vraag vormt de leidraad voor het onderzoek naar een nieuw systeem die toekomstbestendig is 
+en de continuïteit van het automatische magazijn blijft waarborgen.
 \newline
 
 % Doelstelling
@@ -94,7 +100,7 @@ om de context te verduidelijken waarin de bachelorproef zal worden uitgevoerd.
 Om een doordachte keuze te kunnen maken worden verschillende messaging systemen onderzocht en vergeleken. 
 Hiervoor zal een shortlist gemaakt worden waarin de voor en nadelen beschreven worden.
 De geselecteerde technologieën worden onderworpen aan verschillende testen.
-Elk van deze testen worden uitgevoerd in een virtuele omgeving dat de communicatie van het automatisch magazijn simuleert. 
+Elk van deze testen worden uitgevoerd in een virtuele omgeving die de communicatie van het automatisch magazijn simuleert. 
 Hierdoor zal een juiste keuze kunnen gemaakt worden die zal voldoen aan de non-functional requirements.
 
 \end{abstract}
