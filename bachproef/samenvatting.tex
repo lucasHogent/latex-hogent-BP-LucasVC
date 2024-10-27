@@ -36,7 +36,10 @@
 \IfLanguageName{english}{%
 \selectlanguage{dutch}
 \chapter*{Samenvatting}
-\lipsum[1-4]
+% \lipsum[1-4]
+
+
+
 \selectlanguage{english}
 }{}
 
@@ -45,4 +48,43 @@
 
 \chapter*{\IfLanguageName{dutch}{Samenvatting}{Abstract}}
 
-\lipsum[1-4]
+% \lipsum[1-4]
+
+% Intro (use case doelpubliek en doelstelling) 
+% Kaderen thema
+Dit onderzoek situeert zich binnen de IT afdeling van TVH (Thermote \& Vanhalst). 
+TVH is een bedrijf met als hoofdactiviteit het verkopen van onderdelen in de logistieke sector.
+Het bedrijf bestaat uit meerdere automatische magazijnen die instaan voor de opslag van goederen. 
+Een automatisch magazijn bestaat uit meerdere IT componenten genaamd services, die elk hun specifieke verantwoordelijkheden hebben. 
+Om de gehele werking te kunnen garanderen moeten deze componenten met elkaar kunnen communiceren. 
+\newline
+
+% Probleemstelling
+De huidige Unix-server die instaat voor de communicatie, maakt gebruik van \mbox{CentOS} als besturingssysteem,
+wordt niet ondersteund en is verouderd.
+Hierdoor is de server onderhevig aan veiligheidsrisico's en moet die vervangen worden door een server met een Redhat OS, 
+die wel officiële ondersteuning aanbiedt.
+De gebruikte messaging software, SonicMQ, is eveneens verouderd en kan niet geïnstalleerd worden op de nieuwe server. 
+\newline
+
+Omdat vervanging noodzakelijk is, is de vraag in dit onderzoek: 
+Welke modern messaging systeem kan het huidige SonicMQ-systeem tussen de PLC en het WMS vervangen, 
+met aandacht voor compatibiliteit, efficiëntie, betrouwbaarheid, veiligheid en kost?
+Deze vraag vormt de leidraad voor het onderzoek met als doel 
+% doel
+de SonicMQ messaging-systeem te vervangen door een moderner, future-proof systeem.
+Naast de integratie van de nieuwe software, moet deze ook voldoen aan de vereisten
+om de continuïteit van het automatisch magazijn te waarborgen. 
+Daarom is dit onderzoek nodig om de meest geschikte technologieën te identificeren met als doel en de optimale te adviseren.
+\newline
+
+% Opbouw paper
+Om een duidelijk overzicht te bieden zal deze paper eerst dieper ingaan op de kernbegrippen 
+om de context te verduidelijken waarin de bachelorproef zal worden uitgevoerd.
+
+% Methode
+Om een doordachte keuze te kunnen maken, worden verschillende messaging-systemen onderzocht en vergeleken.
+Hiervoor zal een shortlist worden opgesteld waarin de voor- en nadelen van elke technologie worden beschreven.
+De geselecteerde technologieën zullen aan verschillende testen worden onderworpen. 
+Elke test wordt uitgevoerd in een virtuele omgeving die de communicatie van het automatische magazijn simuleert. 
+Op deze manier kan een weloverwogen keuze worden gemaakt die voldoet aan de non-functional requirements.

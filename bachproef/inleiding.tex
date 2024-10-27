@@ -5,7 +5,33 @@
 \chapter{\IfLanguageName{dutch}{Inleiding}{Introduction}}%
 \label{ch:inleiding}
 
-De inleiding moet de lezer net genoeg informatie verschaffen om het onderwerp te begrijpen en in te zien waarom de onderzoeksvraag de moeite waard is om te onderzoeken. In de inleiding ga je literatuurverwijzingen beperken, zodat de tekst vlot leesbaar blijft. Je kan de inleiding verder onderverdelen in secties als dit de tekst verduidelijkt. Zaken die aan bod kunnen komen in de inleiding~\autocite{Pollefliet2011}:
+% De inleiding moet de lezer net genoeg informatie verschaffen om het onderwerp te begrijpen en in te zien waarom 
+% de onderzoeksvraag de moeite waard is om te onderzoeken. 
+% In de inleiding ga je literatuurverwijzingen beperken, zodat de tekst vlot leesbaar blijft. 
+% Je kan de inleiding verder onderverdelen in secties als dit de tekst verduidelijkt. 
+% Zaken die aan bod kunnen komen in de inleiding~\autocite{Pollefliet2011}:
+
+% Context
+TVH is een retail bedrijf dat zich focust op de verkoop van onderdelen binnen de logistieke sector. 
+Bedrijven zoals TVH hebben verschillende domeinen en subdomeinen met specifieke doeleinden binnen de organisatie. 
+Deze bachelorproef speelt zich af binnen het domein "warehousing", dat instaat voor het beheer van goederen.
+Warehousing in TVH bevat verschillende subcomponenten waaronder het WMS (Warehouse Management System) en WCS (Warehouse Control System).
+Goederen kunnen naar een bepaalde bestemming in het gebouw getransporteerd worden via een transportband.
+Hiervoor is er communicatie nodig in beide richtingen tussen het WCS (Warehouse Control System) en de PLC's (Programmable Logic Controllers).
+Het WCS systeem, geschreven in Progress 4GL-code en de server die instaat voor de communicatie worden beheerd door IT.
+De PLC's voor het transportsysteem, aangeleverd door ``Vanderlanden`` worden beheerd door techniekers van het automatisatie team.
+% Server
+Omdat het transportsysteem een van de eerste systemen is die werden geïmplementeerd, is het inmiddels verouderd. 
+De server die instaat voor die communicatie draait op CentOS 6.6 en bied geen ondersteuning meer sinds 30 november 2020.
+Hierdoor komt de veiligheid in het gedrang en moet de server worden vervangen door een modern systeem.
+% Software
+SonicMQ is de ``middleware'' die gebruikt wordt voor de communicatie en is een merk van Progress Software Corporation.
+Omdat deze software is verouderd, niet meer ondersteund wordt en niet kan geïnstalleerd worden op een modern OS.
+Deze paper zal onderzoek doen naar de \emph{modernisering van het messaging systeem tussen PLC en WMS}.
+Efficiëntie, betrouwbaarheid, integratie en performantie zijn hierbij belangerijke pijlers voor de evaluatie van nieuwe software.
+
+De volledige huidige opzet en toekomstige vereisten worden later besproken in de stand van zaken.
+
 
 \begin{itemize}
   \item context, achtergrond
@@ -20,17 +46,26 @@ De inleiding moet de lezer net genoeg informatie verschaffen om het onderwerp te
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}%
 \label{sec:probleemstelling}
 
-Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. Doelgroepen als ``bedrijven,'' ``KMO's'', systeembeheerders, enz.~zijn nog te vaag. Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), dan is dat een indicatie dat de doelgroep goed gedefinieerd is. Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
+Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. 
+Doelgroepen als ``bedrijven,'' ``KMO's'', systeembeheerders, enz.~zijn nog te vaag. 
+Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), 
+dan is dat een indicatie dat de doelgroep goed gedefinieerd is.
+Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
 \label{sec:onderzoeksvraag}
 
-Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
+Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. 
+Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). 
+Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. 
+Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
+
 
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
 \label{sec:onderzoeksdoelstelling}
 
-Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk. Gaat het bv.\ om een proof-of-concept, een prototype, een verslag met aanbevelingen, een vergelijkende studie, enz.
+Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk. 
+Gaat het bv.\ om een proof-of-concept, een prototype, een verslag met aanbevelingen, een vergelijkende studie, enz.
 
 \section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}%
 \label{sec:opzet-bachelorproef}

@@ -20,7 +20,7 @@ TVH is een retail bedrijf dat zich focust op de verkoop van onderdelen binnen de
 De hoofdzetel is gevestigd in Waregem, België en heeft een eigen IT-afdeling.
 Bedrijven zoals TVH hebben verschillende domeinen en subdomeinen met specifieke doeleinden binnen de organisatie. 
 Deze bachelorproef speelt zich af binnen het domein "warehousing", dat instaat voor de opslag en beheer van goederen. 
-Warehousing in TVH bevat verschillende magazijnen waaronder automatische magazijnen die aangestuurd worden door PLC's en een WMS.
+Warehousing in TVH omvat verschillende magazijnen, waaronder automatische magazijnen die worden aangestuurd door PLC's en een WMS.
 Een van de magazijnen die hier in deze paper in aanmerking komt is de oudste binnen TVH. 
 Dat automatisch magazijn wordt aangedreven door een PLC (Programmable Logic Controller) 
 van Vanderlanden en bestaat uit een conveyor systeem met een ASRS (Automatic Storage and Retrieval System).
@@ -46,27 +46,28 @@ Dit heeft geresulteerd in de implementatie van verschillende messaging systemen,
 \newline
 
 \subsection{Probleemstelling}
-De server die instaat voor de communicatie tussen WMS en PLC voor het oudste automatisch magazijn wordt niet ondersteund.
-Dit kan gevolgen hebben op vlak van veiligheidsrisico's en daarom moet deze server vervangen worden.
-De server draait momenteel op CentOS als besturingssysteem en zal worden vervangen door Red Hat.
-Het vervangen van de server is niet in scope van dit onderzoek. 
-Omdat de software op de oude server niet op modernere besturingssystemen kan geïnstalleerd worden, 
+De OS op de server die verantwoordelijk is voor de communicatie tussen WMS en PLC van het oudste automatisch magazijn wordt niet ondersteund.
+Dit kan gevolgen hebben op het gebied van veiligheidsrisico's en moet daarom vervangen worden.
+De server draait momenteel op CentOS 6.6 als besturingssysteem en zal worden vervangen door Red Hat.
+Het vervangen van de server valt buiten de scope van dit onderzoek. 
+Omdat de software op de oude server niet op modernere besturingssystemen kan worden geïnstalleerd, 
 moeten we zoeken naar een alternatief.
 \newline
 
 Volgende nadelen van verouderde messaging systemen doen zich voor: 
-De onderhoudskosten, wat betekent dat mensen in de firma specifiek opgeleid moeten worden om deze te onderhouden. 
+De onderhoudskosten, waardoor mensen in de firma specifiek opgeleid moeten worden om deze te onderhouden. 
 Beveilgingsrisico's, cybercriminelen richten zich vaak op verouderde software, omdat de kwetsbaarheden publiekelijk bekend zijn en niet meer worden aangepakt.
-Verouderde software kan vaker uitvallen of crashen, wat leidt tot hogere kosten door verlies van productiviteit en herstelwerkzaamheden.
+Verouderde software heeft een hogere kans op uitval, wat leidt tot hogere kosten door verlies van productiviteit en herstelwerkzaamheden.
 \newline 
 
 \subsection{Onderzoeksdoelstelling}
-Het doel van dit onderzoek is om na te gaan welk messaging systeem het meest optimaal is voor de vervanging van de huidige SonicMQ,
-dat gebruikt wordt voor de communicatie tussen WMS en PLC. 
-Hierbij moet er rekening gehouden worden met de non-functional requirements,
+Het doel van dit onderzoek is om te bepalen welk messaging systeem het meest geschikt is voor de vervanging van de huidige SonicMQ,
+die gebruikt wordt voor de communicatie tussen WMS en PLC. 
+Hierbij moet er rekening gehouden worden met de niet-functionele vereisten,
 zoals flexibiliteit, performantie, beveiliging en integratiemogelijkheden.
 Naast de vergelijkende studie moet er ook gekeken worden wat de kosten en de inspanningen zijn 
-voor het integreren van een gekozen messaging systeem. \newline 
+voor het integreren van een gekozen messaging systeem. 
+\newline 
 
 \newpage
 
@@ -88,11 +89,12 @@ Enkele cruciale deelvragen met betrekking tot de hoofdvraag:
 \subsection{Opbouw van het onderzoek}
 Eerst zal de literatuurstudie in hoofdstuk \ref{sec:literatuurstudie} een breder inzicht geven in volgende topics.
 \begin{enumerate}
-  \item Wat is een PLC en wat doet het.
-  \item Wat is een WMS en waarvoor staat het.
-  \item Wat zijn messaging systemen.
-  \item Wat is synchrone en asynchrone communicatie. 
-  \item Wat is de huidige setup tussen WMS en PLC.
+  \item Wat is een PLC en wat doet het
+  \item Wat is een WMS en waarvoor staat het
+  \item Wat zijn messaging systemen
+  \item Wat is synchrone en asynchrone communicatie
+  \item Wat is de huidige setup tussen WMS en PLC
+  \item Waarom is CentOS 6 niet veilig
 \end{enumerate}
 
 Hoofdstuk \ref{sec:methodologie} beschrijft de methodologie en de stappen die nodig zijn om dit onderzoek te ondersteunen
@@ -173,7 +175,7 @@ omdat dit niet opgevangen kan worden door de verzendende partij.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=.5\textwidth]{synchronous_vs_async_calls.png}
+  \includegraphics[width=.5\textwidth]{../voorstel/img/synchronous_vs_async_calls.png}
   \caption{\label{fig:img}Synchronous versus asynchronous communication \autocite[figure 14 -- 13]{MarkRichards2021}.}
 \end{figure}
 
@@ -187,7 +189,7 @@ In deze paper ligt de focus op \emph{asynchrone communicatie} voor het gebruik v
 
 \subsection{Overzicht Messaging Systeem}
 Messaging systemen hebben dus een asynchrone werking en vallen onder \newline \emph{Inter-Process Communication (IPC)}. 
-Deze systemen zijn \emph{socket-based} en maken gebruik van \emph{Message Queuing}, dat de \emph{publish-subscribe} of de \emph{point-to-point} methodiek gebruikt \autocite{Dinari2020}. 
+Deze systemen zijn \emph{socket-based} en maken gebruik van \emph{message queuing}, waarbij het de \emph{publish-subscribe} of de \emph{point-to-point} methodiek gebruikt \autocite{Dinari2020}. 
 \newline
 Een socketverbinding maakt gebruik van een endpoint gespecificeerd met een IP-adres en een \newline poortnummer, 
 waarmee twee autonome processen verbonden zijn, hetzij op dezelfde, hetzij op verschillende machines.
@@ -208,7 +210,7 @@ hij weet zelfs niet of er wel of geen ontvanger bestaat.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=.4\textwidth]{fig1-publish-subscribe.png}
+  \includegraphics[width=.4\textwidth]{../voorstel/img/fig1-publish-subscribe.png}
   \caption{\label{fig:img}Publisher-Subscriber system\autocite{Sharvari2019}.}
 \end{figure}
 
