@@ -16,56 +16,136 @@ TVH is een retail bedrijf dat zich focust op de verkoop van onderdelen binnen de
 Bedrijven zoals TVH hebben verschillende domeinen en subdomeinen met specifieke doeleinden binnen de organisatie. 
 Deze bachelorproef speelt zich af binnen het domein "warehousing", dat instaat voor het beheer van goederen.
 Warehousing in TVH bevat verschillende subcomponenten waaronder het WMS (Warehouse Management System) en WCS (Warehouse Control System).
-Goederen kunnen naar een bepaalde bestemming in het gebouw getransporteerd worden via een transportband.
+Goederen kunnen naar een bepaalde bestemming in het gebouw getransporteerd worden via een transportband, genaamd conveyor.
 Hiervoor is er communicatie nodig in beide richtingen tussen het WCS (Warehouse Control System) en de PLC's (Programmable Logic Controllers).
-Het WCS systeem, geschreven in Progress 4GL-code en de server die instaat voor de communicatie worden beheerd door IT.
 De PLC's voor het transportsysteem, aangeleverd door ``Vanderlanden`` worden beheerd door techniekers van het automatisatie team.
+Het WCS systeem, geschreven in Progress 4GL-code en de server die verantwoordelijk is voor de communicatie worden beheerd door IT.
+\newline
+ 
+% Afbakening
 % Server
 Omdat het transportsysteem een van de eerste systemen is die werden geïmplementeerd, is het inmiddels verouderd. 
 De server die instaat voor die communicatie draait op CentOS 6.6 en bied geen ondersteuning meer sinds 30 november 2020.
-Hierdoor komt de veiligheid in het gedrang en moet de server worden vervangen door een modern systeem.
+Hierdoor moet deze worden vervangen door een modern systeem omdat de veiligheid in het gedrang komt.
+Systemen die EoL (End of Life) zijn worden niet meer ondersteund en onderhouden door de verkoper. 
+Dit maakt het gemakkelijk voor hackers om deze servers aan te vallen, omdat de kwetsbaarheden gekend zijn bij dit soort systemen \autocite{Mittal2024}.
+Het vervangen van de server zelf is geen deel van dit onderzoek en zal worden uitbesteed aan het IT infrastructuur team binnen het bedrijf.
+\newline
+ 
+
 % Software
-SonicMQ is de ``middleware'' die gebruikt wordt voor de communicatie en is een merk van Progress Software Corporation.
-Omdat deze software is verouderd, niet meer ondersteund wordt en niet kan geïnstalleerd worden op een modern OS.
-Deze paper zal onderzoek doen naar de \emph{modernisering van het messaging systeem tussen PLC en WMS}.
-Efficiëntie, betrouwbaarheid, integratie en performantie zijn hierbij belangerijke pijlers voor de evaluatie van nieuwe software.
+SonicMQ, een merk van Progress Software Corporation, is de ``middleware'' die gebruikt wordt voor de communicatie.
+Omdat deze software is verouderd, niet meer ondersteund wordt en niet kan geïnstalleerd worden op een modern OS, moeten we zoeken naar een alternatief.
+Dit onderzoek gaat dan ook dieper gaan in het zoeken en vergelijken van een gepast alternatief dat voldoet aan de niet-functionele vereisten.
+\newline
+ 
+% Probleemstelling
+Verouderde software is gevoelig voor uitval, is kostelijk om te onderhouden en bevat extra complexiteit om te integreren met andere systemen.
+Hierdoor wordt de continuïteit beinvloed en verhogen de onderhoudskosten~\autocite{Khadka2016}.
+\newline
+ 
 
-De volledige huidige opzet en toekomstige vereisten worden later besproken in de stand van zaken.
+Vervanging is noodzakelijk waardoor volgende vraag kan gesteld worden: 
+Welke moderne messaging systeem kan het huidige SonicMQ-systeem tussen de PLC en het WMS vervangen, 
+met aandacht voor compatibiliteit, efficiëntie, betrouwbaarheid, veiligheid en kost?
+Deze vraag vormt de leidraad voor het onderzoek naar een nieuw systeem die toekomstbestendig is 
+en de continuïteit van het automatische magazijn blijft waarborgen.
+\newline
+
+% onderzoeksdoelstelling
+Het doel is om de SonicMQ messaging software te vervangen door een moderner, future-proof messaging systeem.
+De integratie van de nieuwe software moet ook performant, betrouwbaar, kostenefficiënt en veilig zijn 
+om de continuïteit van het automatisch magazijn te waarborgen. 
+Hiervoor is dit onderzoek nodig om de meest geschikte technologieën te identificeren en de meest optimale te implementeren.
 
 
-\begin{itemize}
-  \item context, achtergrond
-  \item afbakenen van het onderwerp
-  \item verantwoording van het onderwerp, methodologie
-  \item probleemstelling
-  \item onderzoeksdoelstelling
-  \item onderzoeksvraag
-  \item \ldots
-\end{itemize}
+% \begin{itemize}
+%   \item context, achtergrond
+%   \item afbakenen van het onderwerp
+%   \item verantwoording van het onderwerp, methodologie
+%   \item probleemstelling
+%   \item onderzoeksdoelstelling
+%   \item onderzoeksvraag
+%   \item \ldots
+% \end{itemize}
 
 \section{\IfLanguageName{dutch}{Probleemstelling}{Problem Statement}}%
 \label{sec:probleemstelling}
 
-Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. 
-Doelgroepen als ``bedrijven,'' ``KMO's'', systeembeheerders, enz.~zijn nog te vaag. 
-Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), 
-dan is dat een indicatie dat de doelgroep goed gedefinieerd is.
-Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
+% Uit je probleemstelling moet duidelijk zijn dat je onderzoek een meerwaarde heeft voor een concrete doelgroep. De doelgroep moet goed gedefinieerd en afgelijnd zijn. 
+% Doelgroepen als ``bedrijven,'' ``KMO's'', systeembeheerders, enz.~zijn nog te vaag. 
+% Als je een lijstje kan maken van de personen/organisaties die een meerwaarde zullen vinden in deze bachelorproef (dit is eigenlijk je steekproefkader), 
+% dan is dat een indicatie dat de doelgroep goed gedefinieerd is.
+% Dit kan een enkel bedrijf zijn of zelfs één persoon (je co-promotor/opdrachtgever).
+
+Het besturingssysteem op de server die verantwoordelijk is voor de communicatie tussen WMS en PLC van het oudste automatisch magazijn wordt niet meer ondersteund.
+Dit kan gevolgen hebben op het gebied van veiligheidsrisico's en moet daarom vervangen worden door een moderner OS.
+De server draait momenteel op CentOS 6.6 en zal worden vervangen door Red Hat.
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|c|c|c|}
+      \hline
+      \textbf{Version} & \textbf{Release Date} & \textbf{End-of-Life Date} \\
+      \hline
+      CentOS 6 & July 10, 2011 & November 30, 2020 \\
+      \hline
+  \end{tabular}
+  \caption{CentOS 6 Release and End-of-Life Dates}
+  \label{tab:centos6}
+\end{table}
+\newline
+
+Het vervangen van de server valt buiten de scope van dit onderzoek. 
+\newline
+Omdat de software op de oude server niet op modernere besturingssystemen kan worden geïnstalleerd, 
+moeten we zoeken naar een alternatief. 
+Vanwege de specifieke niet-functionele vereisten voor het automatische magazijn, 
+is het noodzakelijk om zorgvuldig een aantal messaging-systemen te evalueren.
+\newline
+
+Volgende nadelen van verouderde messaging systemen doen zich voor: 
+\begin{itemize}
+  \item De onderhoudskosten, waardoor mensen in de firma specifiek opgeleid moeten worden om deze te onderhouden. 
+  \item Beveilgingsrisico's, cybercriminelen richten zich vaak op verouderde software, omdat de kwetsbaarheden publiekelijk bekend zijn en niet meer worden aangepakt.
+  \item Betrouwbaarheid, omdat verouderde software een hogere kans heeft op uitval, kan dit leiden tot hogere kosten door verlies van productiviteit en herstelwerkzaamheden.
+\end{itemize}
+ 
 
 \section{\IfLanguageName{dutch}{Onderzoeksvraag}{Research question}}%
 \label{sec:onderzoeksvraag}
 
-Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. 
-Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). 
-Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. 
-Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
+% Wees zo concreet mogelijk bij het formuleren van je onderzoeksvraag. 
+% Een onderzoeksvraag is trouwens iets waar nog niemand op dit moment een antwoord heeft (voor zover je kan nagaan). 
+% Het opzoeken van bestaande informatie (bv. ``welke tools bestaan er voor deze toepassing?'') is dus geen onderzoeksvraag. 
+% Je kan de onderzoeksvraag verder specifiëren in deelvragen. Bv.~als je onderzoek gaat over performantiemetingen, dan 
+
+Welke \emph{messaging technologieën} zijn het meest geschikt om het verouderde SonicMQ-systeem te vervangen 
+en de communicatie tussen het Warehouse Management System (WMS) en de Programmable Logic Controllers (PLC’s) 
+in het automatische magazijn te garanderen?
+
+Enkele cruciale deelvragen met betrekking tot de hoofdvraag:
+\begin{enumerate}
+  \item Waarom is SonicMQ niet ondersteund op een Red Hat OS?
+  \item Welke messaging systemen zijn er beschikbaar?
+  \item Waarom is een weloverwogen keuze van essentieel belang?
+  \item Wat is de inspanning om een gekozen technologie te implementeren?
+  \item Wat zijn de non-functional requirements van de bestaande service?
+  \item Welk messaging systeem is een weloverwogen keuze?
+\end{enumerate}
 
 
 \section{\IfLanguageName{dutch}{Onderzoeksdoelstelling}{Research objective}}%
 \label{sec:onderzoeksdoelstelling}
 
-Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk. 
-Gaat het bv.\ om een proof-of-concept, een prototype, een verslag met aanbevelingen, een vergelijkende studie, enz.
+% Wat is het beoogde resultaat van je bachelorproef? Wat zijn de criteria voor succes? Beschrijf die zo concreet mogelijk. 
+% Gaat het bv.\ om een proof-of-concept, een prototype, een verslag met aanbevelingen, een vergelijkende studie, enz.
+
+Het doel van dit onderzoek is om te bepalen welk messaging systeem het meest geschikt is voor de vervanging van de huidige SonicMQ,
+die gebruikt wordt voor de communicatie tussen WMS en PLC. 
+Hierbij moet er rekening gehouden worden met de niet-functionele vereisten,
+zoals flexibiliteit, performantie, beveiliging en integratiemogelijkheden.
+Naast de vergelijkende studie moet er ook gekeken worden wat de kosten en de inspanningen zijn 
+voor het integreren van een gekozen messaging systeem. 
 
 \section{\IfLanguageName{dutch}{Opzet van deze bachelorproef}{Structure of this bachelor thesis}}%
 \label{sec:opzet-bachelorproef}
@@ -73,6 +153,7 @@ Gaat het bv.\ om een proof-of-concept, een prototype, een verslag met aanbevelin
 % Het is gebruikelijk aan het einde van de inleiding een overzicht te
 % geven van de opbouw van de rest van de tekst. Deze sectie bevat al een aanzet
 % die je kan aanvullen/aanpassen in functie van je eigen tekst.
+
 
 De rest van deze bachelorproef is als volgt opgebouwd:
 
