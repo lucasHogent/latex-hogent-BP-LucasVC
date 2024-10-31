@@ -52,17 +52,85 @@
 %   \caption[Voorbeeld tabel]{\label{tab:example}Voorbeeld van een tabel.}
 % \end{table}
  
-\section{Wat is een PLC}
-Een PLC (Programmable Logic Controller) is een industriële computer die wordt gebruikt voor het automatiseren van machines en processen \autocite{Bolton2015}. 
-Het is ontworpen om robuust te zijn en betrouwbaar te functioneren in industriële omgevingen zoals fabrieken, 
-waar het vaak wordt gebruikt om mechanische apparatuur, zoals transport systemen of liften van een automatisch magazijn te besturen.
+\section{PLC specificaties}
+Volgende subcomponenten beschrijven wat een PLC is en hoe het opgezet is binnen het bedrijf.
+Daarnaast wordt de manier van communicatie algemeen toegelicht en de dissectie van een bericht uiteengezet 
+om inzicht te krijgen wat voor data er door het netwerk gaat.
 
-TODO: detailed information about current PLC system that is subject
+\subsection{Wat is een PLC}
+Een PLC (Programmable Logic Controller) is een industriële computer die wordt gebruikt voor het automatiseren van machines en processen \autocite{Bolton2015}. 
+Het is ontworpen om robuust te zijn en betrouwbaar te functioneren in industriële omgevingen zoals in TVH, 
+waar het wordt gebruikt om mechanische apparatuur, zoals transport systemen (conveyors) of liften van een automatisch magazijn te besturen.
+
+\subsection{PLC gebruik binnen TVH}
+Er zijn verschillende PLC's in TVH Waregem die werden aangeleverd door Vanderlanden in het jaar 2013 en worden beheerd door het automatisatie team.
+De communicatie tussen de PLC en het WCS is gebaseerd op het TCP/IP protocol en is verbonden op een ethernet netwerk.
+Er is een tussenlaag tussen de PLC en het netwerk, RFC1006 van Siemens waarin de configuratie kan worden gedaan door het automatisatie team.
+Dit stelt de collega's in staat om bepaalde logica te implementeren of netwerk aanpassingen door te voeren.
+De snelheid van communicatie is essentieel en waardoor het netwerk snel genoeg moet zijn om berichten te kunnen versturen.
+
+\subsection{PLC communicatie parameters}
+De PLC's maken gebruik van een TCP/IP-socketverbinding en functioneren als client ten opzichte van het WCS, dat de rol van server vervult. 
+Dit betekent dat de PLC de verbinding initieert en persisteert met de server die verantwoordelijk is voor de communicatie.
+Een PLC is verantwoordelijk voor een specifieke zone van de conveyor en is opgebouwd uit drie kanalen die elk via een toegewezen poortnummer met de server communiceren. 
+Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat elk kanaal zijn eigen type informatie verwerkt~\autocite{Laar2013}.
+
+\begin{table}
+    \centering
+    \begin{tabular}{lcr}
+      \toprule
+      \textbf{Kanaal} & \textbf{Beschrijving} & \textbf{Type}                \\
+      \midrule
+      1                & Route informatie over transportbak          & Snel           \\
+      2                & Informatie van PLC                          & Niet kritisch  \\
+      3                & Overige informatie over transportbak        & Snel           \\
+      \bottomrule
+    \end{tabular}
+    \caption[Channel assignment]{\label{tab:channel-assignment}Beschrijving van kanalen}
+  \end{table}
+
+\subsection{PLC berichten}
+Berichten bestaat uit een frame opgedeeld in velden en hebben een vaste specifieke lengte.
+De inhoud van een bericht is gebaseerd op het hexadecimale stelsel en wordt in detail toegelicht in de onderstaande tabel.
+Bepaalde controles worden uitgevoerd om de validiteit van een bericht af te toetsen. 
+
+\begin{table}[h!]
+  \centering 
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Veld} & \textbf{Inhoud} & \textbf{Data type} & \textbf{Lengte} \\
+    % \hline
+    % Dummy & Enkel PLC naar WCS
+    \hline 
+    Header & <STX> & Binair & 1 byte \\
+    \hline 
+    Lengte in bytes & 001D(HEX) & Binair & 2 bytes \\
+    \hline 
+    Seq. nummer &  [0-9] & ASCII & 1 byte  \\
+    \hline 
+    Inhoud & <...> & Binair & 27 bytes \\
+    \hline 
+    Terminator & <ETX> & Binair & 1 byte \\
+    \hline
+  \end{tabular}
+  \caption[Message content]{\label{tab:message-content}Inhoud bericht}
+\end{table}
+
+Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd: 
+\begin{listing}[h!]
+  \begin{minted}{python}
+    02 00 1d 20 30 36 20 20 00 00 20 20 30 37 20 20 30 20 20 20 20 20 20 20 20 20 20 20 20 20 20 03
+  \end{minted}
+  \caption[Voorbeeld PLC bericht]{Voorbeeld van een PLC bericht}
+\end{listing}
+
+Een bericht kan dus maximaal 32 bytes groot zijn en houden we in rekening voor de testen in latere fase.
 
 \section{Wat is een WCS}
 Warehouse control systemen (WCS) zijn softwaretoepassingen die bedrijven in staat stellen om magazijnactiviteiten te beheren en te controleren, 
 waaronder voorraadbeheer, orderverwerking en transportbeheer. 
-Warehouse control systemen vormen een essentieel onderdeel van moderne magazijnactiviteiten \autocite{Rana2023}. \newline
+Warehouse control systemen vormen een essentieel onderdeel van moderne magazijnactiviteiten \autocite{Rana2023}. 
+
 
 TODO: detailed information about current WCS system that is subject
 

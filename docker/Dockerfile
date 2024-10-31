@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     texlive-xetex \
     python3-pip \
     latexmk \
+    plantuml \
     && pip install pygments \
     && rm -rf /var/lib/apt/lists/*
 COPY fonts/ /usr/share/fonts/opentype
