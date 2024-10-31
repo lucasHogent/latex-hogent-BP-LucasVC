@@ -1,0 +1,15 @@
+{
+    "activemq": {
+        "host": "localhost",
+        "port": 61613,
+        "login": "admin",
+        "passcode": "admin",
+        "queues": {
+            "8001": "/queue/port8001",
+            "8002": "/queue/port8002",
+            "8003": "/queue/port8003"
+        }
+    },
+    "ports": [8001, 8002, 8003],
+    "logPath": "/opt/jprogram/plc/log"
+}
