@@ -27,10 +27,12 @@
 %% en geef het een gepaste titel.
 
 Volgende hoofdstukken verlopen in sequentiële volgorde om dit onderzoek in de juiste richting te sturen.
-De 
+De literatuurstudie geeft een basis om verdere vakterminologie en werking van technologieën te kunnen begrijpen.
+De setup van het huidige systeem wordt besproken om de requirements te kunnen begrijpen.
+Het bekomen van een shortlist wordt toegelicht waarbij voor elke technologie de voor- en nadelen wordt beschreven.
 
 
-\section{Literatuurstudie}
+\section{Phase 1: Literatuurstudie}
 Voor dit onderzoek heb ik eerst de vaktermen opgelijst en een onderverdeeld in groepen met gebruik van een mindmap.
 Vervolgens zocht ik het internet af naar wetenschappelijke artikelen en filterde ik de nodige informatie.
 \\
@@ -41,25 +43,123 @@ Hierdoor krijg je een overzicht van relevante theorieën, definities, en eerdere
 Hier werd voornamelijk gebruik gemaakt van wetenschappelijke artikelen, boeken en technische documenten.
 \\
 De literatuurstudie vormt de basis van het onderzoek en is cruciaal voor het begrijpen van de huidige stand van zaken.
-Hierdoor kan je de kennis en requirements meenemen naar de vergelijkende studie.
+Hierdoor kan je de kennis en requirements meenemen doorheen de methodologie.
 
 
-\section{Analyse huidig messaging systeem}
+\section{Phase 2: Requirements analyse huidige setup}
+Dit hoofdstuk gaat dieper in op de huidige setup en werking tussen het WCS, messaging software en de PLC's.
+Documenten van het bedrijf en interviews met vakexperts vormen de basis voor dit overzicht.
+\\
+Het doel is om na het lezen van dit hoofdstuk inzicht te krijgen in de requirements van het huidige systeem, 
+zodat deze kunnen dienen als basis voor de keuze van een surrogaat van het huidige messaging systeem.
+ 
+\subsection{PLC gebruik binnen TVH}
+Er zijn 7 verschillende PLC's in TVH Waregem die instaan voor verschillende zones van de conveyor.
+Deze werden aangeleverd door Vanderlanden in het jaar 2013 en worden beheerd door het automatisatie team.
+De communicatie tussen een PLC en het WCS is gebaseerd op het TCP/IP protocol en is verbonden via het intern netwerk.
+Er is een tussenlaag tussen de PLC en het netwerk, RFC1006 van het merk Siemens waarin configuratie kan worden gedaan door het automatisatie team.
+Dit stelt de collega's in staat om bepaalde logica te implementeren of netwerk aanpassingen door te voeren.
+De snelheid van communicatie is essentieel, daarom moet het netwerk snel genoeg zijn zodat berichten aan een snel tempo verstuurd kunnen worden.
+
+De PLC's maken gebruik van een TCP/IP-socketverbinding en functioneren als client ten opzichte van het WCS, dat de rol van server vervult. 
+Dit betekent dat de PLC de verbinding initieert en persisteert met de server die verantwoordelijk is voor de communicatie.
+Een PLC is verantwoordelijk voor een specifieke zone van de conveyor en is opgebouwd uit drie kanalen die elk via een toegewezen poortnummer met de server communiceren. 
+Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat elk kanaal zijn eigen type informatie verwerkt~\autocite{Laar2013}.
+
+\begin{table}
+    \centering
+    \begin{tabular}{lcr}
+      \toprule
+      \textbf{Kanaal} & \textbf{Beschrijving} & \textbf{Type}                \\
+      \midrule
+      1                & Route informatie over transportbak          & Snel           \\
+      2                & Informatie van PLC                          & Niet kritisch  \\
+      3                & Overige informatie over transportbak        & Snel           \\
+      \bottomrule
+    \end{tabular}
+    \caption[Channel assignment]{\label{tab:channel-assignment}Beschrijving van kanalen}
+  \end{table}
+
+\subsection{PLC berichten}
+Berichten bestaan uit een frame opgedeeld in velden en hebben een specifieke lengte.
+De inhoud van een bericht is gebaseerd op het hexadecimale stelsel en wordt in detail toegelicht in de onderstaande tabel.
+Bepaalde controles worden uitgevoerd om de validiteit van een bericht af te toetsen. 
+
+\begin{table}[h!]
+  \centering 
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Veld} & \textbf{Inhoud} & \textbf{Data type} & \textbf{Lengte} \\
+    % \hline
+    % Dummy & Enkel PLC naar WCS
+    \hline 
+    Header & <STX> & Binair & 1 byte \\
+    \hline 
+    Lengte in bytes & 001D(HEX) & Binair & 2 bytes \\
+    \hline 
+    Seq. nummer &  [0-9] & ASCII & 1 byte  \\
+    \hline 
+    Inhoud & <...> & Binair & 27 bytes \\
+    \hline 
+    Terminator & <ETX> & Binair & 1 byte \\
+    \hline
+  \end{tabular}
+  \caption[Message content]{\label{tab:message-content}Inhoud bericht}
+\end{table}
+
+Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd: 
+\begin{listing}[h!]
+  \begin{minted}{python}
+    02 00 1d 20 30 36 20 20 00 00 20 20 30 37 20 20 30 20 20 20 20 20 20 20 20 20 20 20 20 20 20 03
+  \end{minted}
+  \caption[Voorbeeld PLC bericht]{Voorbeeld van een PLC bericht}
+\end{listing}
+
+Een bericht kan dus maximaal 32 bytes groot zijn en wordt in rekening gehouden voor de testen in latere fase.
+
+\subsection{WCS berichten} 
+Berichten komen binnen van de PLC via de communicatie server. Ieder bericht wordt getransformeerd naar variabelen die dan verder gebruikt worden in de code.
+Deze berichten bevatten informatie over transportbakken en zijn nodig om deze te kunnen traceren via de ERP.
+Specifieke logica is nodig om bakken tot hun bestemming te krijgen, of om fout afhandeling te voorzien.
+Volgende voorbeelden doen zich voor:
+\begin{enumerate}
+  \item Routeren naar een hospitaal punt door: 
+  \begin{enumerate}
+    \item Gewichtsfout
+    \item Hoogtefout
+    \item Onbekende bestemming
+  \end{enumerate}
+  \item Bestemming wordt gevraagd door de PLC
+  \item Bestemming wordt doorgegeven aan de PLC 
+  \item Specifieke logica moet uitgevoerd worden bij het passeren van een bepaald punt
+  \item \dots
+\end{enumerate}
 
 
+\subsection{Samenvatting requirements messaging systeem}
+De belangrijkste requirements voor de huidige setup zijn als volgt:
 
-Overzicht maken van het huidige systeem
+\subsubsection{Integratie met ERP- en WCS-systemen}
+Het messaging systeem moet kunnen integreren met zowel het ERP- als het WCS-systeem. 
+Deze integratie is noodzakelijk voor het efficiënt uitwisselen van informatie over transportbakken, inclusief routeringsinformatie, 
+foutmeldingen, en statusupdates.
 
-Sterktes en zwaktes identificeren
+\subsubsection{Laag Latentie}
+Om de real-time eisen van het WCS en de PLC’s te ondersteunen, moet het messaging systeem lage latentie bieden. 
+Dit betekent dat berichten zonder merkbare vertraging moeten worden verstuurd en ontvangen, 
+zodat de snelheid van de conveyor niet wordt beperkt door de communicatiesnelheid.
 
-Oplijsten van de niet functionele vereisten
+\subsubsection{Betrouwbare Berichtenoverdracht}
+Het systeem moet in staat zijn berichten consistent en zonder verlies over te brengen. 
+Dit is essentieel om de traceerbaarheid van transportbakken te garanderen en fouten in de logistieke processen te voorkomen.
+ 
+\section{Phase 3: ShortList}
 
-Opzoeken van messaging technologien
-
-Pro en con definieren per technologie
-
+\section{Phase 4: Testen}
 Opzoeken van test methodes 
 
 Testen en monitoring opzetten per gekozen technologie
+
+\section{Phase 5: Resultaten}
 
 Evalueren
