@@ -51,182 +51,169 @@
 %   \end{tabular}
 %   \caption[Voorbeeld tabel]{\label{tab:example}Voorbeeld van een tabel.}
 % \end{table}
- 
-\section{PLC specificaties}
-Volgende subcomponenten beschrijven wat een PLC is en hoe het opgezet is binnen het bedrijf.
-Daarnaast wordt de manier van communicatie algemeen toegelicht en de dissectie van een bericht uiteengezet 
-om inzicht te krijgen wat voor data er door het netwerk gaat.
 
-\subsection{Wat is een PLC}
-Een PLC (Programmable Logic Controller) is een industriële computer die wordt gebruikt voor het automatiseren van machines en processen \autocite{Bolton2015}. 
-Het is ontworpen om robuust te zijn en betrouwbaar te functioneren in industriële omgevingen zoals in TVH, 
-waar het wordt gebruikt om mechanische apparatuur, zoals transport systemen (conveyors) of liften van een automatisch magazijn te besturen.
+De volgende hoofdstukken geven een dieper inzicht in de volgende onderwerpen:
+\begin{enumerate}
+  \item Wat is warehousing, wat houdt automatisch warehousing in, en wat is de relatie met WCS en PLC?
+  \item Overzicht van relevante communicatiemethoden die worden gebruikt door de PLC en het WCS.
+  \item Uitleg van het verschil tussen asynchrone en synchrone communicatie, met een analyse van de voor- en nadelen.
+  \item Vergelijking van de voor- en nadelen van cloud- en on-premise-oplossingen.
+  \item Toelichting op verschillende communicatieprotocollen en messagingtechnologieën.
+  \item 
+\end{enumerate}
 
-\subsection{PLC gebruik binnen TVH}
-Er zijn 7 verschillende PLC's in TVH Waregem die instaan voor verschillende zones van de conveyor.
-Deze werden aangeleverd door Vanderlanden in het jaar 2013 en worden beheerd door het automatisatie team.
-De communicatie tussen een PLC en het WCS is gebaseerd op het TCP/IP protocol en is verbonden via het intern netwerk.
-Er is een tussenlaag tussen de PLC en het netwerk, RFC1006 van het merk Siemens waarin configuratie kan worden gedaan door het automatisatie team.
-Dit stelt de collega's in staat om bepaalde logica te implementeren of netwerk aanpassingen door te voeren.
-De snelheid van communicatie is essentieel, daarom moet het netwerk snel genoeg zijn zodat berichten aan een snel tempo verstuurd kunnen worden.
+\section{Inleiding tot Warehousing}
+Warehousing of magazijnbeheer is het proces van het ontvangen, opslaan, beheren en verzenden van goederen in een specifieke omgeving. 
+Magazijnen worden gebruikt voor een efficiënte doorstroom van materialen, waaronder grondstoffen, halffabricaten en eindproducten.
+Material handling is een belangrijk onderdeel van warehousing, waarbij gebruik wordt gemaakt van apparatuur zoals 
+transportbanden, heftrucks en automatische geleide voertuigen (AGV’s) om materialen door het magazijn te verplaatsen en te beheren.
+\\
+Binnen het magazijn vindt er een verscheidenheid aan activiteiten plaats, waaronder de ontvangst van goederen, 
+het labelen en opslaan ervan, orderpicking en de uiteindelijke verzending naar klanten of productieafdelingen. 
+Elk van deze stappen draagt bij aan een efficiënte bedrijfsvoering en zorgt ervoor dat producten veilig en op tijd beschikbaar 
+zijn voor verdere verwerking of levering~\autocite{Berg1999}.
+\\
+TVH heeft het type distributie magazijn, waarbij verschillende producten van verschillende leveranciers verzameld  
+en gebundeld worden zodat die efficiënt naar klanten kan gedistribueerd worden. 
+Dit is een type dat vaak bij retailbedrijven en logistieke dienstverleners gebruikt wordt.
 
-\subsection{PLC communicatie parameters}
-De PLC's maken gebruik van een TCP/IP-socketverbinding en functioneren als client ten opzichte van het WCS, dat de rol van server vervult. 
-Dit betekent dat de PLC de verbinding initieert en persisteert met de server die verantwoordelijk is voor de communicatie.
-Een PLC is verantwoordelijk voor een specifieke zone van de conveyor en is opgebouwd uit drie kanalen die elk via een toegewezen poortnummer met de server communiceren. 
-Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat elk kanaal zijn eigen type informatie verwerkt~\autocite{Laar2013}.
+\begin{figure}
+  \centering
+  \includegraphics[width=0.8\textwidth]{../bachproef/img/warehousing_flow.png}
+  \caption[Flow in a typical fully automated warehouse]{\label{fig:warehousing-flow}Standaard flow in een automatisch magazijn~\autocite{Koster2018}}
+\end{figure}
 
-\begin{table}
-    \centering
-    \begin{tabular}{lcr}
-      \toprule
-      \textbf{Kanaal} & \textbf{Beschrijving} & \textbf{Type}                \\
-      \midrule
-      1                & Route informatie over transportbak          & Snel           \\
-      2                & Informatie van PLC                          & Niet kritisch  \\
-      3                & Overige informatie over transportbak        & Snel           \\
-      \bottomrule
-    \end{tabular}
-    \caption[Channel assignment]{\label{tab:channel-assignment}Beschrijving van kanalen}
-  \end{table}
+\subsection{Handmatige systemen}
+In deze soort beweegt de orderpicker zich naar de goederenlocaties, vaak met behulp van voertuigen zoals pickkarren of heftrucks. 
+Deze systemen worden ook wel picker-to-product systemen genoemd, waarbij de medewerker fysiek de benodigde items verzamelt. 
+Handmatige systemen zijn eenvoudig maar tijdrovend en vereisen veel arbeidskracht~\autocite{Berg1999}.
 
-\subsection{PLC berichten}
-Berichten bestaan uit een frame opgedeeld in velden en hebben een specifieke lengte.
-De inhoud van een bericht is gebaseerd op het hexadecimale stelsel en wordt in detail toegelicht in de onderstaande tabel.
-Bepaalde controles worden uitgevoerd om de validiteit van een bericht af te toetsen. 
+\subsection{Automatische systemen}
+In deze systemen worden producten naar de orderpicker gebracht, vaak via ASRS-systemen (Automated Storage and Retrieval Systems). 
+Dit zijn product-to-picker systemen waarbij de items automatisch worden verplaatst naar een vast pickpunt. 
+Geautomatiseerde systemen kunnen de efficiëntie aanzienlijk verhogen door de reistijd van de orderpickers te verminderen 
+en het picken te versnellen~\autocite{Berg1999}.
+Het domein van dit onderzoek richt zich op het geautomatiseerde systeem. 
 
-\begin{table}[h!]
-  \centering 
-  \begin{tabular}{|c|c|c|c|}
-    \hline
-    \textbf{Veld} & \textbf{Inhoud} & \textbf{Data type} & \textbf{Lengte} \\
-    % \hline
-    % Dummy & Enkel PLC naar WCS
-    \hline 
-    Header & <STX> & Binair & 1 byte \\
-    \hline 
-    Lengte in bytes & 001D(HEX) & Binair & 2 bytes \\
-    \hline 
-    Seq. nummer &  [0-9] & ASCII & 1 byte  \\
-    \hline 
-    Inhoud & <...> & Binair & 27 bytes \\
-    \hline 
-    Terminator & <ETX> & Binair & 1 byte \\
-    \hline
-  \end{tabular}
-  \caption[Message content]{\label{tab:message-content}Inhoud bericht}
-\end{table}
+\subsection{Programmable Logic Controllers (PLC’s) in Warehousing}
+Om een automatisch magazijn effectief aan te sturen, spelen Programmable Logic Controllers (PLC's) een cruciale rol.
+PLC's zijn oorspronkelijk ontwikkeld om elektromechanische relais te digitaliseren in de industriële automatisering~\autocite{Bolton2015}. 
+Door hun betrouwbaarheid, veelzijdigheid en robuustheid worden PLC’s breed toegepast in de industriële sector, waaronder in warehousing. 
+In een magazijnomgeving monitoren en besturen PLC's tal van processen, zoals het transporteren van goederen, 
+het positioneren van kranen en liften, en het uitvoeren van laad- en losactiviteiten.
+Logistieke software wordt vaak gebruikt om bepaalde orders door te geven aan een PLC.
 
-Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd: 
-\begin{listing}[h!]
-  \begin{minted}{python}
-    02 00 1d 20 30 36 20 20 00 00 20 20 30 37 20 20 30 20 20 20 20 20 20 20 20 20 20 20 20 20 20 03
-  \end{minted}
-  \caption[Voorbeeld PLC bericht]{Voorbeeld van een PLC bericht}
-\end{listing}
-
-Een bericht kan dus maximaal 32 bytes groot zijn en wordt in rekening gehouden voor de testen in latere fase.
-
-\section{WCS specificaties}
-In dit onderdeel wordt toegelicht wat een Warehouse Control System (WCS) is en welke verantwoordelijkheden dit systeem heeft.
-Daarnaast wordt de structuur en werking van de communicatie tussen het systeem en de PLC uiteengezet.
-
-\subsection{Wat is een WCS}
+\subsection{Warehouse Control System (WCS) in Warehousing} 
 In het magazijn is de typische logistieke software het Warehouse Control System (WCS). 
-Het WCS biedt een geïntegreerde interface voor een breed scala aan apparatuur. 
+Het WCS biedt een geïntegreerde interface voor een breed scala aan apparatuur waaronder de PLC's. 
 Het systeem kan de apparatuur in het magazijn beheren en aansturen~\autocite{Son2015}. 
+Binnen het bedrijf is het WCS een onderdeel van het monolithische ERP-pakket, waarvan TVH de eigenaar is van de code, 
+geschreven in OpenEdge Progress 4GL.
  
-\subsection{WCS communicatie} 
-Binnen het bedrijf is het WCS een integraal deel uit van het monolithische ERP-pakket, waarvan TVH de eigenaar is van de code, geschreven in OpenEdge Progress 4GL. 
-Het ERP-systeem draait op een server met acht verschillende batch-instanties die verantwoordelijk zijn voor de aansturing van de diverse PLC-kanalen. 
+\section{OpenEdge Progress 4GL} 
+Progress 4GL, ofwel "Fourth-Generation Language", is een programmeertaal ontwikkeld door Progress Software Corporation, 
+die zich richt op bedrijfsapplicaties, vooral die met veel database-interacties. 
+Het biedt een vereenvoudigde syntaxis, waarmee ontwikkelaars snel toepassingen kunnen bouwen voor zakelijke omgevingen.
+Dankzij de optimalisatie voor databasebewerkingen is het geschikt voor toepassingen in sectoren als financiën en logistiek, 
+waar real-time datatoegang essentieel is.
+
+\section{Communicatie tussen PLC en WCS}
+Een essentieel aspect van een geautomatiseerd magazijn is de soepele communicatie tussen de Programmable Logic Controllers (PLC’s) en 
+het Warehouse Control System (WCS). 
+Deze communicatie stelt het WCS in staat om gedetailleerde commando’s te sturen naar de PLC’s en om statusinformatie terug te ontvangen over de huidige staat van het magazijn en de apparatuur. 
+Een stabiele en snelle datastroom tussen deze systemen is cruciaal voor een efficiënte werking en het minimaliseren van stilstand of fouten.
+
+\subsection{Industriële protocollen voor communicatie} 
+De communicatie tussen PLC’s en WCS kan worden gerealiseerd door middel van verschillende industriële protocollen, 
+afhankelijk van de specificaties en vereisten van het magazijn en de gekozen hardware. 
+Veelgebruikte protocollen zijn:
+
+\subsubsection{Modbus}
+Een relatief eenvoudig protocol dat oorspronkelijk ontwikkeld werd voor communicatie tussen PLC’s en sensoren of actuatoren. 
+Het is een van de oudste protocollen en wordt nog steeds vaak gebruikt vanwege de eenvoud en lage kosten~\autocite{Joshi2024}. 
+
+\subsubsection{Profinet}
+Dit protocol biedt hoge snelheden en real-time communicatie 
+en wordt vaak toegepast in grootschalige industriële automatiseringsprojecten, waaronder magazijnbeheer. 
+Profinet is zeer geschikt voor situaties waarin hoge eisen worden gesteld aan nauwkeurigheid en stabiliteit.
+Deze wordt gebruikt in het bedrijf om te communiceren tussen de PLC's.
+
+\subsubsection{Ethernet/IP}
+Dit protocol is gebaseerd op standaard TCP/IP en wordt veel gebruikt in de industrie vanwege de snelheid en flexibiliteit ~\autocite{Joshi2024}. 
+Ethernet/IP ondersteunt real-time communicatie, wat essentieel is voor de snelle reactietijden die nodig zijn in een geautomatiseerd magazijn.
+Dit protocol maakt gebruik van standaard Ethernet-hardware, zoals kabels, switches en routers. 
+Dit vereenvoudigt de installatie en het onderhoud in industriële omgevingen en maakt het compatibel met bestaande IT-infrastructuur.
+De PLC die deel uitmaakt van dit onderzoek, wisselt data uit van en naar het WCS via dit protocol.
+
+\subsection{Data uitwisseling} 
+Tijdens de samenwerking tussen PLC’s en het WCS worden er verschillende datastromen uitgewisseld via het Ethernet/IP netwerk.
+Commando’s van WCS naar PLC: Het WCS stuurt instructies naar de PLC’s om specifieke handelingen uit te voeren, zoals het starten van een transportband of het positioneren van een kraan.
+Statusupdates van PLC naar WCS: De PLC’s geven informatie terug aan het WCS over de huidige status van apparatuur. Bijvoorbeeld, of een transportband in werking is, 
+de locatie van een item in het magazijn, en of er storingen of onderbrekingen zijn~\autocite{Laar2013}.
+
+\subsection{Real-time monitoring en optimalisatie} 
+Het WCS maakt gebruik van real-time data om de operaties in het magazijn optimaal te coördineren. 
+Door continue monitoring kan het systeem bijvoorbeeld inspelen op piekperiodes door bijvoorbeeld geen bakken meer te laten uitsturen. 
+Dit niveau van controle helpt magazijnen om de doorlooptijden te verkorten en de efficiëntie te maximaliseren.
+
+\subsection{Voorbeeld: Integratie bij TVH} 
+In het geval van TVH, waar het WCS onderdeel uitmaakt van een monolithisch ERP-systeem geschreven in OpenEdge Progress 4GL, 
+vereist de communicatie tussen WCS en PLC’s een aangepaste interface. 
+Dit ERP-systeem bevat een grote hoeveelheid bedrijfslogica en data over de voorraad, orderverwerking en logistiek.
+Hierdoor heeft het ERP-systeem toegang tot alle informatie die nodig is om het magazijnproces aan te sturen. 
+De interface met de PLC’s van Vanderlanden, zorgt ervoor dat het ERP-systeem commando’s kan versturen en statusinformatie kan ontvangen. 
+
+\subsubsection{WCS communicatie} 
+Op het ERP-systeem van TVH draaien acht verschillende batches die verantwoordelijk zijn voor de aansturing van de PLC. 
 Elke batch-instantie communiceert met specifieke PLC-kanalen en bevat daarvoor specifieke logica.
 Deze batches zijn verbonden via een specifieke poort met een Progress SonicMQ Adapter op de communicatie server.
 Hiermee kunnen de batches de berichten consumeren en versturen van de SonicMQ server.
 
-\subsection{WCS berichten} 
-Berichten komen binnen van de PLC via de communicatie server. Ieder bericht wordt getransformeerd naar variabelen die dan verder gebruikt worden in de code.
-Deze berichten bevatten informatie over transportbakken en zijn nodig om deze te kunnen traceren via de ERP.
-Specifieke logica is nodig om bakken tot hun bestemming te krijgen, of om fout afhandeling te voorzien.
-Volgende voorbeelden doen zich voor:
-\begin{enumerate}
-  \item Routeren naar een hospitaal punt door: 
-  \begin{enumerate}
-    \item Gewichtsfout
-    \item Hoogtefout
-    \item Onbekende bestemming
-  \end{enumerate}
-  \item Bestemming wordt gevraagd door de PLC
-  \item Bestemming wordt doorgegeven aan de PLC 
-  \item Specifieke logica moet uitgevoerd worden bij het passeren van een bepaald punt
-  \item \dots
-\end{enumerate}
-
-\section{Communicatie tussen PLC en WMS}
-
+\subsubsection{Communicatie tussen PLC en WCS}
 De PLC kan alleen maar een TCP/IP socket verbinding initiëren met een server.
-Omdat SonicMQ geen socket verbinding kan maken zijn er listeners gemaakt in Java door TVH.
-Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP verbinding mogelijk te maken per PLC kanaal.
+Omdat SonicMQ als middleware hierdoor geen verbinding kan maken zijn er listeners gemaakt in Java door TVH.
+Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP socket verbinding mogelijk te maken per PLC kanaal.
 De Java listeners sturen de PLC-berichten vervolgens door naar SonicMQ of ontvangen berichten van SonicMQ, 
 die ze via een socket naar de PLC doorsturen.
 Aan de kant van het WCS zijn er meer mogelijkheden om verbinding te kunnen maken met een server.
-
-De huidige opzet van het systeem kan je zien in onderstaande dataflow diagram:
-\begin{figure}[h!]
-  \includegraphics[width=0.9\textwidth]{img/plc-wcs_dataflow.png}
-  \caption[Dataflow PLC]{\label{fig:dataflow-plc} Overzicht dataflow tussen PLC en WCS}
-\end{figure}
-
-\section{Soorten communicatie}
-\emph{Inter-Process Communication (IPC)} omvat alle manieren van communicatie tussen services. 
-Dit kan binnen hetzelfde systeem zijn of via een netwerk. 
-Hieronder worden een aantal van deze communicatie methodes toegelicht.
-
-\subsection{Shared memory}
-Deze methode is relevant voor ons onderzoek omdat het gericht is op het delen van geheugenruimte 
-tussen processen op hetzelfde systeem. 
-Ze zijn nuttig voor het efficiënt delen van grote hoeveelheden data maar minder geschikt voor messaging, 
-omdat ze geen ingebouwde mechanismen hebben voor het versturen van berichten ~\autocite{Dinari2020}.
  
-\subsection{RPC-methoden voor messaging}
-Hier worden de meest relevante \emph{Remote Procedure Call} (RPC) methoden besproken.
-
-\subsubsection{XML en SOAP}
-Deze methoden zijn relevant voor messaging omdat ze methoden en objecten via XML over HTTP kunnen aanroepen,
-wat communicatie mogelijk maakt tussen verschillende platformen en programmeertalen.
-
-\subsubsection{REST}
-RESTful webservices gebruiken HTTP-verzoeken (zoals GET, POST) voor eenvoudige en efficiënte berichtuitwisseling, 
-meestal in JSON formaat, wat ze zeer geschikt maakt voor messaging tussen webapplicaties.
-Deze manier van communicatie is synchroon, waarbij de versturende partij moet wachten op antwoord.
-
-\subsection{IPC-methoden voor Messaging}
-Hier worden de meest relevante \emph{Inter Process Communication} (IPC) methoden besproken.
-
-\subsubsection{Pipes}
-\emph{Named pipes} hebben een synchrone werking en kunnen nuttig zijn, omdat ze bidirectionele 
-communicatie tussen onafhankelijke processen mogelijk maken en kunnen functioneren tussen processen op hetzelfde systeem. \\
-\emph{Ordinary pipes} bieden beperkte eenzijdige communicatie en vereisen een parent-child relatie, 
-wat ze minder geschikt maakt voor messaging tussen onafhankelijke processen~\autocite{Dinari2020}.
- 
-\subsubsection{Socket}
-Een socket-verbinding maakt gebruik van een endpoint gespecificeerd met een IP-adres en een poortnummer, 
-waarmee twee autonome processen verbonden zijn, hetzij op dezelfde, hetzij op verschillende machines.
-Streaming sockets (op basis van TCP) zijn nuttig voor betrouwbare, sequentiële berichtoverdracht, 
-terwijl datagram sockets (op basis van UDP) geschikt zijn voor snelle, maar minder betrouwbare communicatie.
-Beiden zijn synchroon en ondersteunen communicatie tussen verschillende netwerken en zijn veelgebruikt in messaging-applicaties~\autocite{Dinari2020}.
- 
-\subsubsection{Message queues} 
-Messaging queues hebben een asynchrone werking, zijn \emph{socket-based} en maken gebruik van \emph{message queuing}, 
-waarbij het de \emph{point-to-point} methodiek gebruikt.
-Hierbij plaatst de \emph{producer} berichten in een specifieke queue, waarna een \emph{consumer} de berichten uitleest in een sequentiële volgorde.
-Met andere woorden, een bericht wordt slechts aan één \emph{consumer} bezorgt.
+\subsection{Uitdagingen en Toekomstige Ontwikkelingen} 
+TODO:
 \\
-Dit maakt het voor applicaties mogelijk om asynchroon te communiceren zonder te moeten wachten op een antwoord van de ontvanger.
-Ze zijn geschikt voor gedistribueerde systemen waar processen onafhankelijk werken~\autocite{Dinari2020}.
+Er zijn enkele uitdagingen bij de integratie van PLC’s en WCS. 
+Ten eerste zijn er eisen op het gebied van snelheid en betrouwbaarheid, aangezien zelfs kleine vertragingen in communicatie de doorstroming in het magazijn kunnen beïnvloeden. 
+Daarnaast kunnen compatibiliteitsproblemen optreden, vooral wanneer er verouderde of verschillende generaties hardware en software binnen één systeem gebruikt worden.
 
-\subsubsection{Publish-Subscribe}
+In de toekomst kan de integratie tussen PLC’s en WCS verder verbeterd worden door de toepassing van nieuwe technologieën zoals Industrial Internet of Things (IIoT) en edge computing. 
+Deze technologieën kunnen helpen om data nog sneller te verwerken en meer gedetailleerde inzichten te bieden in real-time, wat de flexibiliteit en efficiëntie van magazijnen kan verhogen.
+
+Al met al vormt de communicatie tussen PLC’s en WCS een kritieke succesfactor voor een goed functionerend, geautomatiseerd magazijn, waar real-time aansturing en monitoring de sleutel zijn tot een snelle en betrouwbare logistieke operatie.
+In dit onderzoek behouden we de scope op messaging systemen die communiceren via het Ethernet/IP netwerk.
+
+\section{Communicatie methodes}
+Dit hoofdstuk bevat informatie over de relevante communicatiemethoden en geeft inzicht in hun werking.
+\\
+\emph{Inter-Process Communication (IPC)} omvat alle vormen van communicatie tussen services, 
+zowel binnen hetzelfde systeem als via een netwerk. 
+Hieronder worden enkele methoden van \emph{Message Passing} toegelicht.
+
+\subsection{Socket gebaseerd (TCP/UDP)}
+Een socket-verbinding (TCP/IP) maakt gebruik van een endpoint gespecificeerd met een IP-adres en een poortnummer, 
+waarmee twee autonome processen verbonden zijn, hetzij op dezelfde, hetzij op verschillende machines.
+\\
+\\
+Streaming sockets (op basis van TCP) zijn nuttig voor betrouwbare, sequentiële berichtoverdracht.
+Deze methode wordt gebruikt voor de connectie tussen de PLC en het WCS.
+\\ 
+\\
+Datagram sockets (op basis van UDP) zijn geschikt zijn voor snelle, maar minder betrouwbare communicatie en wordt gebruikt voor bijvoorbeeld audio en video.
+Beiden ondersteunen communicatie tussen verschillende netwerken en zijn veelgebruikt in messaging-applicaties~\autocite{Dinari2020}.
+
+\subsection{Message queue gebaseerd}
+
+\subsubsection{Publish-subscribe-model}
 Het publish-subscribe-model is gebaseerd op topics waarop berichten worden gepubliceerd door de \emph{producer} 
-en waar meerdere \emph{subscribers} (abonnees) zich kunnen op inschrijven. 
+en waar meerdere \emph{subscribers} (abonnees) zich kunnen op inschrijven~\autocite{Dinari2020}. 
 \\
 In dit model ontvangen \emph{subscribers} slechts een subset van de totale gepubliceerde berichten. 
 Het proces van het selecteren en verwerken van de berichten wordt filtering genoemd. 
@@ -235,7 +222,7 @@ Er zijn twee vormen van filtering: op basis van onderwerp (topic) en op basis va
 In een op \emph{topic} gebaseerd systeem worden berichten geplaatst in \emph{topics} wat logische kanalen zijn.
 \emph{Subscribers} ontvangen berichten van de \emph{topics} waarop ze zich hebben geabonneerd.
 Alle \emph{subscribers} ontvangen dezelfde berichten uit dezelfde \emph{topics}. 
-Deze methode zorgt voor een \emph{one-to-many} vorm van communicatie.
+Deze methode zorgt voor een \emph{one-to-many} vorm van communicatie~\autocite{Dinari2020}.
 \\
 Hierdoor ontvangen subscribers alleen de berichten uit de klassen die voor hen relevant zijn, zonder enige kennis van de publishers. 
 Met het publish-subscribe-model specificeert de afzender nooit expliciet wie de ontvanger is en weet het zelfs niet of er al dan niet ontvangers zijn.
@@ -243,11 +230,58 @@ Met het publish-subscribe-model specificeert de afzender nooit expliciet wie de 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.4\textwidth]{../voorstel/img/fig1-publish-subscribe.png}
-  \caption{\label{fig:img}Publisher-Subscriber system\autocite{Sharvari2019}.}
+  \caption{\label{fig:pub-sub}Publisher-Subscriber system~\autocite{Sharvari2019}.}
 \end{figure}
 
+\subsubsection{Point-to-Point-model}
+Dit model wordt gebruikt door het huidige messaging systeem in het bedrijf.
+Hier worden berichten door \emph{publishers} in specifieke wachtrijen geplaatst, genaamd queues waarna andere nodes, genaamd \emph{consumers} ze eruit halen. 
+\\
+Messaging queues hebben een asynchrone werking, zijn \emph{socket-based} en maken gebruik van \emph{message queuing}, 
+waarbij het de \emph{point-to-point} methodiek gebruikt.
+Hierbij plaatst de \emph{producer} berichten in een specifieke queue, waarna een \emph{consumer} de berichten uitleest in een sequentiële volgorde.
+Met andere woorden, een bericht wordt slechts aan één \emph{consumer} bezorgt.
+\\
+Dit maakt het voor applicaties mogelijk om asynchroon te communiceren zonder te moeten wachten op een antwoord van de ontvanger.
+Ze zijn geschikt voor gedistribueerde systemen waar processen onafhankelijk werken~\autocite{Dinari2020}.
 
-\subsection{Synchroon vs. asynchroon}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.4\textwidth]{../bachproef/img/point-to-point-messaging.png}
+  \caption{\label{fig:point-to-point}Point-to-point system~\autocite{Dinari2020}}
+\end{figure}
+
+\subsection{Niet relevante protocollen}
+\subsubsection{RPC-methoden voor messaging}
+In dit hoofdstuk worden de meest relevante \emph{Remote Procedure Call} (RPC) methoden besproken. 
+Deze communicatiemethode is synchroon, wat betekent dat de verzendende partij moet wachten op een antwoord.
+Hierdoor is deze manier van communiceren niet optimaal voor het domein van dit onderzoek, 
+aangezien het niet de vereiste prestaties levert. 
+Desondanks worden deze methoden besproken om inzicht te geven in hoe ze werken en om aan te tonen waarom ze niet geschikt zijn.
+
+\subsubsection{XML en SOAP}
+Deze methoden zijn relevant voor communicatie omdat ze methoden en objecten via XML over HTTP kunnen aanroepen,
+wat communicatie mogelijk maakt tussen verschillende platformen en programmeertalen.
+Zoals eerder besproken zijn deze synchroon waardoor de snelheid nadelig beïnvloed wordt.
+
+\subsubsection{REST}
+RESTful webservices gebruiken HTTP-verzoeken (zoals GET, POST) voor eenvoudige en efficiënte berichtuitwisseling en is heeft ook een synchrone werking. 
+De berichten, meestal in JSON formaat, maakt dit geschikt voor communicatie tussen webapplicaties.
+
+\subsection{Pipes}
+\emph{Named pipes} hebben een synchrone werking en voorzien een bidirectionele 
+communicatie tussen onafhankelijke processen.
+Deze maakt het mogelijk om te kunnen functioneren tussen processen op hetzelfde systeem.
+\\
+\emph{Ordinary pipes} bieden beperkte eenzijdige communicatie en vereisen een parent-child relatie, 
+wat ze minder geschikt maakt voor communicatie tussen onafhankelijke processen~\autocite{Dinari2020}.
+
+\subsection{Shared memory}
+Deze methode is niet relevant voor dit onderzoek omdat het gericht is op het delen van geheugenruimte 
+tussen processen op hetzelfde systeem. 
+Ze zijn nuttig voor het efficiënt delen van grote hoeveelheden data binnen hetzelfde systeem~\autocite{Dinari2020}.
+
+\section{Synchroon vs. asynchroon}
 Services communiceren zowel \emph{synchroon} als \emph{asynchroon} en spelen deze benaderingen een cruciale rol, 
 elk met hun eigen voor- en nadelen. \emph{Synchrone microservices} werken volgens een direct 
 afhankelijkheidsmodel, omdat services met elkaar communiceren in een vraag-antwoordpatroon. 
@@ -270,7 +304,7 @@ omdat dit niet opgevangen kan worden door de verzendende partij.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.5\textwidth]{../voorstel/img/synchronous_vs_async_calls.png}
-  \caption{\label{fig:img}Synchronous versus asynchronous communication \autocite[figure 14 -- 13]{MarkRichards2021}.}
+  \caption{\label{fig:sync-vs-async}Synchronous versus asynchronous communication \autocite[figure 14 -- 13]{MarkRichards2021}.}
 \end{figure}
 
 In praktische termen is het vinden van de juiste balans tussen synchrone en \emph{asynchrone microservices} cruciaal, 
@@ -280,12 +314,138 @@ Deze aanpak stelt organisaties in staat om de sterke punten van zowel synchrone 
 waardoor flexibiliteit, schaalbaarheid en onderhoudsgemak worden gegarandeerd in complexe \newline IT-landschappen.
 In deze paper ligt de focus op \emph{asynchrone communicatie} voor het gebruik van \emph{messaging systemen}.
 \newline
- 
+
+\section{Cloud vs. On-premise}
+Dit hoofdstuk vergelijkt cloud- en on-premise-oplossingen, waarbij de verschillen, voordelen en uitdagingen van beide opties worden belicht. 
+Cloud-oplossingen draaien op externe servers die via het internet toegankelijk zijn, 
+terwijl on-premise-oplossingen lokaal binnen de eigen infrastructuur worden beheerd en onderhouden.
+De snelheid over het netwerk kan onderzocht en getest worden voor beide toepassingen en is relevant voor het aanbevelingsrapport.
+
+\subsubsection{Cloud}
+In het cloud model worden hardware, software en applicaties extern beheerd door een serviceprovider, wat zorgt voor meer flexibiliteit. 
+Organisaties kunnen functies toevoegen of verwijderen op basis van veranderende behoeften.
+\\
+De cloud is doorgaans kostenefficiënter, aangezien organisaties alleen betalen voor de gebruikte resources, 
+in plaats van grote initiële investeringen in hardware en software~\autocite{Golec2021}.
+Beveiliging blijft een zorg, maar de cloud biedt uitgebreide beveiligingsmaatregelen en beleidsregels, inclusief speciale cloud omgevingen voor gevoelige data. 
+De Europese Commissie heeft Codes of Conduct ontwikkeld om de data te beschermen.
+Onderhoud wordt volledig door de cloud provider verzorgd, inclusief automatische updates en upgrades, zonder extra kosten behalve voor de gebruikte hardware.
+Cloud oplossingen bieden meer schaalbaarheid en flexibiliteit. 
+Infrastructuur kan snel worden aangepast aan veranderende behoeften, wat sneller en eenvoudiger is dan bij on-premises modellen.
+
+\subsubsection{On-Premise}
+Bij on-premises oplossingen beheert de organisatie zelf de hardware, software en applicaties op locatie in het eigen datacenter, wat meer controle en verantwoordelijkheid vereist.
+De huidige setup voor de communicatie tussen PLC en WMS is on-premise opgesteld.
+On-premises systemen brengen hogere initiële kosten met zich mee voor hardware en software, 
+en organisaties zijn verantwoordelijk voor het onderhoud van servers, data-back-ups en disaster recovery~\autocite{Golec2021}.
+De beveiliging is volledig in eigen handen, wat voor sommige organisaties een voordeel kan zijn, maar ook extra zorg en middelen vereist.
+Organisaties moeten zelf zorgen voor onderhoud en updates van de infrastructuur, wat tijdrovend kan zijn en extra kosten met zich meebrengt.
+Schaalbaarheid is beperkter; het aanpassen van de infrastructuur of het uitbreiden van servers is een tijdrovend proces in vergelijking met de cloud.
+Een groot voordeel hier is de volledige controle en dat er geen afhankelijkheden zijn van derden.
+
+\section{Messaging protocollen}
+
+\subsection{AMQP (Advanced Message Queuing Protocol)} 
+
+\subsection{STOMP (Streaming Text Orientated Messaging Protocol)}
+
+\subsection{MQTT (Message Queue Telemetry Transport)}
+
+\section{Messaging-Technologieën}
+
 
 \section{Wat is een EoL systeem}
 
-\section{Wat zijn de gevaren van EoL systemen}
+\subsection{Wat zijn de gevaren van EoL systemen}
 
-\section{Welke manieren zijn er om EoL weg te werken}
+\subsection{Welke manieren zijn er om EoL weg te werken}
+
+
+
+
+% \section{PLC gebruik binnen TVH}
+% Er zijn 7 verschillende PLC's in TVH Waregem die instaan voor verschillende zones van de conveyor.
+% Deze werden aangeleverd door Vanderlanden in het jaar 2013 en worden beheerd door het automatisatie team.
+% De communicatie tussen een PLC en het WCS is gebaseerd op het TCP/IP protocol en is verbonden via het intern netwerk.
+% Er is een tussenlaag tussen de PLC en het netwerk, RFC1006 van het merk Siemens waarin configuratie kan worden gedaan door het automatisatie team.
+% Dit stelt de collega's in staat om bepaalde logica te implementeren of netwerk aanpassingen door te voeren.
+% De snelheid van communicatie is essentieel, daarom moet het netwerk snel genoeg zijn zodat berichten aan een snel tempo verstuurd kunnen worden.
+
+% De PLC's maken gebruik van een TCP/IP-socketverbinding en functioneren als client ten opzichte van het WCS, dat de rol van server vervult. 
+% Dit betekent dat de PLC de verbinding initieert en persisteert met de server die verantwoordelijk is voor de communicatie.
+% Een PLC is verantwoordelijk voor een specifieke zone van de conveyor en is opgebouwd uit drie kanalen die elk via een toegewezen poortnummer met de server communiceren. 
+% Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat elk kanaal zijn eigen type informatie verwerkt~\autocite{Laar2013}.
+
+% \begin{table}
+%     \centering
+%     \begin{tabular}{lcr}
+%       \toprule
+%       \textbf{Kanaal} & \textbf{Beschrijving} & \textbf{Type}                \\
+%       \midrule
+%       1                & Route informatie over transportbak          & Snel           \\
+%       2                & Informatie van PLC                          & Niet kritisch  \\
+%       3                & Overige informatie over transportbak        & Snel           \\
+%       \bottomrule
+%     \end{tabular}
+%     \caption[Channel assignment]{\label{tab:channel-assignment}Beschrijving van kanalen}
+%   \end{table}
+
+% \subsection{PLC berichten}
+% Berichten bestaan uit een frame opgedeeld in velden en hebben een specifieke lengte.
+% De inhoud van een bericht is gebaseerd op het hexadecimale stelsel en wordt in detail toegelicht in de onderstaande tabel.
+% Bepaalde controles worden uitgevoerd om de validiteit van een bericht af te toetsen. 
+
+% \begin{table}[h!]
+%   \centering 
+%   \begin{tabular}{|c|c|c|c|}
+%     \hline
+%     \textbf{Veld} & \textbf{Inhoud} & \textbf{Data type} & \textbf{Lengte} \\
+%     % \hline
+%     % Dummy & Enkel PLC naar WCS
+%     \hline 
+%     Header & <STX> & Binair & 1 byte \\
+%     \hline 
+%     Lengte in bytes & 001D(HEX) & Binair & 2 bytes \\
+%     \hline 
+%     Seq. nummer &  [0-9] & ASCII & 1 byte  \\
+%     \hline 
+%     Inhoud & <...> & Binair & 27 bytes \\
+%     \hline 
+%     Terminator & <ETX> & Binair & 1 byte \\
+%     \hline
+%   \end{tabular}
+%   \caption[Message content]{\label{tab:message-content}Inhoud bericht}
+% \end{table}
+
+% Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd: 
+% \begin{listing}[h!]
+%   \begin{minted}{python}
+%     02 00 1d 20 30 36 20 20 00 00 20 20 30 37 20 20 30 20 20 20 20 20 20 20 20 20 20 20 20 20 20 03
+%   \end{minted}
+%   \caption[Voorbeeld PLC bericht]{Voorbeeld van een PLC bericht}
+% \end{listing}
+
+% Een bericht kan dus maximaal 32 bytes groot zijn en wordt in rekening gehouden voor de testen in latere fase.
+
+
+% \subsection{WCS berichten} 
+% Berichten komen binnen van de PLC via de communicatie server. Ieder bericht wordt getransformeerd naar variabelen die dan verder gebruikt worden in de code.
+% Deze berichten bevatten informatie over transportbakken en zijn nodig om deze te kunnen traceren via de ERP.
+% Specifieke logica is nodig om bakken tot hun bestemming te krijgen, of om fout afhandeling te voorzien.
+% Volgende voorbeelden doen zich voor:
+% \begin{enumerate}
+%   \item Routeren naar een hospitaal punt door: 
+%   \begin{enumerate}
+%     \item Gewichtsfout
+%     \item Hoogtefout
+%     \item Onbekende bestemming
+%   \end{enumerate}
+%   \item Bestemming wordt gevraagd door de PLC
+%   \item Bestemming wordt doorgegeven aan de PLC 
+%   \item Specifieke logica moet uitgevoerd worden bij het passeren van een bepaald punt
+%   \item \dots
+% \end{enumerate}
+
+
 
 
