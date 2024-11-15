@@ -33,8 +33,8 @@ Het bekomen van een shortlist wordt toegelicht waarbij voor elke technologie de 
 
 
 \section{Phase 1: Literatuurstudie}
-Voor dit onderzoek heb ik eerst de vaktermen opgelijst en een onderverdeeld in groepen met gebruik van een mindmap.
-Vervolgens zocht ik het internet af naar wetenschappelijke artikelen en filterde ik de nodige informatie.
+Voor dit onderzoek heb ik eerst de vaktermen opgelijst en onderverdeeld in groepen met behulp van een mindmap.
+Vervolgens werd er gebruik gemaakt van het internet om wetenschappelijke artikelen op te zoeken en filterde ik de nodige informatie.
 \\
 Het doel van de literatuurstudie is om een basis van bestaande kennis te verkrijgen door de belangrijkste concepten toe te lichten die van toepassing zijn op dit onderzoek. 
 Dit houd in, het begrijpen van warehousing, WCS (Warehouse Control Systems), PLC (Programmable Logic Controllers), en de communicatieprotocollen die tussen deze systemen gebruikt worden.
@@ -43,7 +43,7 @@ Hierdoor krijg je een overzicht van relevante theorieën, definities, en eerdere
 Hier werd voornamelijk gebruik gemaakt van wetenschappelijke artikelen, boeken en technische documenten.
 \\
 De literatuurstudie vormt de basis van het onderzoek en is cruciaal voor het begrijpen van de huidige stand van zaken.
-Hierdoor kan je de kennis en requirements meenemen doorheen de methodologie.
+Hierdoor kan de kennis en requirements meegenomen worden doorheen de methodologie.
 
 
 \section{Phase 2: Requirements analyse huidige setup}
@@ -64,9 +64,9 @@ De snelheid van communicatie is essentieel, daarom moet het netwerk snel genoeg 
 De PLC's maken gebruik van een TCP/IP-socketverbinding en functioneren als client ten opzichte van het WCS, dat de rol van server vervult. 
 Dit betekent dat de PLC de verbinding initieert en persisteert met de server die verantwoordelijk is voor de communicatie.
 Een PLC is verantwoordelijk voor een specifieke zone van de conveyor en is opgebouwd uit drie kanalen die elk via een toegewezen poortnummer met de server communiceren. 
-Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat elk kanaal zijn eigen type informatie verwerkt~\autocite{Laar2013}.
+Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat elk kanaal zijn eigen type informatie verwerkt.
 
-\begin{table}
+\begin{table}[!h]
     \centering
     \begin{tabular}{lcr}
       \toprule
@@ -80,7 +80,7 @@ Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat el
     \caption[Channel assignment]{\label{tab:channel-assignment}Beschrijving van kanalen}
   \end{table}
 
-\subsection{PLC berichten}
+\subsubsection{PLC berichten}
 Berichten bestaan uit een frame opgedeeld in velden en hebben een specifieke lengte.
 De inhoud van een bericht is gebaseerd op het hexadecimale stelsel en wordt in detail toegelicht in de onderstaande tabel.
 Bepaalde controles worden uitgevoerd om de validiteit van een bericht af te toetsen. 
@@ -117,6 +117,40 @@ Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd:
 
 Een bericht kan dus maximaal 32 bytes groot zijn en wordt in rekening gehouden voor de testen in latere fase.
 
+\subsection{WCS communicatie} 
+Op het ERP-systeem van TVH draaien acht verschillende batches die verantwoordelijk zijn voor de aansturing van de PLC. 
+Elke batch-instantie communiceert met specifieke PLC-kanalen en bevat daarvoor specifieke logica.
+Deze batches zijn verbonden via een specifieke poort met een \textbf{Progress JMS Adapter} op de communicatie server.
+Hiermee kunnen de batches de berichten consumeren en versturen van de SonicMQ server.
+
+\subsection{Progress OpenEdge JMS Adapter}
+De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te ontvangen van JMS (Java Messaging System)
+message brokers zoals Apache ActiveMQ, IBM MQ, en TIBCO EMS. 
+Dit betekent dat OpenEdge-applicaties kunnen integreren met andere systemen die JMS ondersteunen, 
+zonder dat er directe afhankelijkheden nodig zijn.
+Hierdoor zijn we gelimiteerd in de keuze van message brokers.
+\\
+\\
+Omdat JMS asynchrone communicatie ondersteunt, kunnen OpenEdge-applicaties berichten verzenden zonder te wachten op een onmiddellijke respons.
+Dit is nuttig voor werkprocessen die niet direct afhangen van real-time gegevens, zoals orderverwerking, 
+melding van gebeurtenissen, en batchverwerkingen.
+\\\\
+Er is ondersteuning van Publish/Subscribe en Point-to-Point Modellen.
+Bij een point-to-point communiceert één afzender met één ontvanger, bijvoorbeeld een opdracht naar een specifieke applicatie.
+\\\\
+Bij het publish/subscribe model kunnen meerdere ontvangers zich abonneren op bepaalde berichten (topics) die door een applicatie gepubliceerd worden.
+
+Door JMS te gebruiken met message brokers die schaling en betrouwbaarheid ondersteunen, kan de OpenEdge-omgeving hoge verwerkingsvolumes en failover-functionaliteit realiseren. Dit is belangrijk voor bedrijfsomgevingen waar de continuïteit en betrouwbaarheid van berichtenstromen essentieel zijn.
+
+\subsubsection{Integratie met Verschillende Enterprise Systemen}
+Met de JMS Adapter kunnen OpenEdge-applicaties communiceren met andere zakelijke systemen zoals ERP's, CRM’s en databronnen, wat nuttig is in bedrijfsprocessen waarbij gegevens moeten worden gedeeld tussen verschillende systemen.
+
+\subsubsection{Configuratie en Beheer}
+De Progress OpenEdge JMS Adapter biedt configuratiemogelijkheden waarmee beheerders de communicatie kunnen aanpassen aan de vereisten van hun omgeving, zoals het instellen van queue-namen, topics, verbindingsparameters, en het beheren van uitzonderingen.
+
+
+
+
 \subsection{WCS berichten} 
 Berichten komen binnen van de PLC via de communicatie server. Ieder bericht wordt getransformeerd naar variabelen die dan verder gebruikt worden in de code.
 Deze berichten bevatten informatie over transportbakken en zijn nodig om deze te kunnen traceren via de ERP.
@@ -135,16 +169,25 @@ Volgende voorbeelden doen zich voor:
   \item \dots
 \end{enumerate}
 
+\subsection{Middleware tussen PLC en WCS}
+De PLC kan alleen maar een TCP/IP socket verbinding initiëren met een server.
+Omdat SonicMQ als middleware hierdoor geen verbinding kan maken zijn er listeners gemaakt in Java door TVH.
+Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP socket verbinding mogelijk te maken per PLC kanaal.
+De Java listeners sturen de PLC-berichten vervolgens door naar SonicMQ of ontvangen berichten van SonicMQ, 
+die ze via een socket naar de PLC doorsturen.
+Aan de kant van het WCS zijn er meer mogelijkheden om verbinding te kunnen maken met een server.
+
 
 \subsection{Samenvatting requirements messaging systeem}
 De belangrijkste requirements voor de huidige setup zijn als volgt:
 
-\subsubsection{Integratie met ERP- en WCS-systemen}
-Het messaging systeem moet kunnen integreren met zowel het ERP- als het WCS-systeem. 
+\subsubsection{Integratie met het WCS systeem}
+Het messaging systeem moet kunnen integreren met het huidige WCS-systeem dat Progress 4GL gebruikt. 
+Deze technologie maakt gebruik van een Progress OpenEdge JMS Adapter om de connectie te maken met een messaging broker.
 Deze integratie is noodzakelijk voor het efficiënt uitwisselen van informatie over transportbakken, inclusief routeringsinformatie, 
 foutmeldingen, en statusupdates.
 
-\subsubsection{Laag Latentie}
+\subsubsection{Performantie}
 Om de real-time eisen van het WCS en de PLC’s te ondersteunen, moet het messaging systeem lage latentie bieden. 
 Dit betekent dat berichten zonder merkbare vertraging moeten worden verstuurd en ontvangen, 
 zodat de snelheid van de conveyor niet wordt beperkt door de communicatiesnelheid.
@@ -152,11 +195,16 @@ zodat de snelheid van de conveyor niet wordt beperkt door de communicatiesnelhei
 \subsubsection{Betrouwbare Berichtenoverdracht}
 Het systeem moet in staat zijn berichten consistent en zonder verlies over te brengen. 
 Dit is essentieel om de traceerbaarheid van transportbakken te garanderen en fouten in de logistieke processen te voorkomen.
- 
+
+\subsubsection{Support en Community}
+Het is belangrijk dat de gekozen message broker support biedt en dat er een grote community aanwezig is, 
+waarbij je terecht kunt voor advies, probleemoplossing en best practices.
+
 \section{Phase 3: ShortList}
 
 \section{Phase 4: Testen}
 Opzoeken van test methodes 
+% https://www.researchgate.net/publication/342312542_Classification_and_evaluation_of_IoT_brokers_A_methodology
 
 Testen en monitoring opzetten per gekozen technologie
 

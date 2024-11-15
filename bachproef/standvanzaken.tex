@@ -59,10 +59,10 @@ De volgende hoofdstukken geven een dieper inzicht in de volgende onderwerpen:
   \item Uitleg van het verschil tussen asynchrone en synchrone communicatie, met een analyse van de voor- en nadelen.
   \item Vergelijking van de voor- en nadelen van cloud- en on-premise-oplossingen.
   \item Toelichting op verschillende communicatieprotocollen en messagingtechnologieën.
-  \item 
 \end{enumerate}
 
 \section{Inleiding tot Warehousing}
+Omdat het onderzoek zich afspeelt in het domein van warehousing, wordt in dit hoofdstuk een algemeen overzicht besproken.
 Warehousing of magazijnbeheer is het proces van het ontvangen, opslaan, beheren en verzenden van goederen in een specifieke omgeving. 
 Magazijnen worden gebruikt voor een efficiënte doorstroom van materialen, waaronder grondstoffen, halffabricaten en eindproducten.
 Material handling is een belangrijk onderdeel van warehousing, waarbij gebruik wordt gemaakt van apparatuur zoals 
@@ -76,6 +76,7 @@ zijn voor verdere verwerking of levering~\autocite{Berg1999}.
 TVH heeft het type distributie magazijn, waarbij verschillende producten van verschillende leveranciers verzameld  
 en gebundeld worden zodat die efficiënt naar klanten kan gedistribueerd worden. 
 Dit is een type dat vaak bij retailbedrijven en logistieke dienstverleners gebruikt wordt.
+Verder kan je een distributie magazijn verdelen in twee soorten.
 
 \begin{figure}
   \centering
@@ -95,7 +96,7 @@ Geautomatiseerde systemen kunnen de efficiëntie aanzienlijk verhogen door de re
 en het picken te versnellen~\autocite{Berg1999}.
 Het domein van dit onderzoek richt zich op het geautomatiseerde systeem. 
 
-\subsection{Programmable Logic Controllers (PLC’s) in Warehousing}
+\section{Programmable Logic Controllers (PLC’s)}
 Om een automatisch magazijn effectief aan te sturen, spelen Programmable Logic Controllers (PLC's) een cruciale rol.
 PLC's zijn oorspronkelijk ontwikkeld om elektromechanische relais te digitaliseren in de industriële automatisering~\autocite{Bolton2015}. 
 Door hun betrouwbaarheid, veelzijdigheid en robuustheid worden PLC’s breed toegepast in de industriële sector, waaronder in warehousing. 
@@ -103,28 +104,8 @@ In een magazijnomgeving monitoren en besturen PLC's tal van processen, zoals het
 het positioneren van kranen en liften, en het uitvoeren van laad- en losactiviteiten.
 Logistieke software wordt vaak gebruikt om bepaalde orders door te geven aan een PLC.
 
-\subsection{Warehouse Control System (WCS) in Warehousing} 
-In het magazijn is de typische logistieke software het Warehouse Control System (WCS). 
-Het WCS biedt een geïntegreerde interface voor een breed scala aan apparatuur waaronder de PLC's. 
-Het systeem kan de apparatuur in het magazijn beheren en aansturen~\autocite{Son2015}. 
-Binnen het bedrijf is het WCS een onderdeel van het monolithische ERP-pakket, waarvan TVH de eigenaar is van de code, 
-geschreven in OpenEdge Progress 4GL.
- 
-\section{OpenEdge Progress 4GL} 
-Progress 4GL, ofwel "Fourth-Generation Language", is een programmeertaal ontwikkeld door Progress Software Corporation, 
-die zich richt op bedrijfsapplicaties, vooral die met veel database-interacties. 
-Het biedt een vereenvoudigde syntaxis, waarmee ontwikkelaars snel toepassingen kunnen bouwen voor zakelijke omgevingen.
-Dankzij de optimalisatie voor databasebewerkingen is het geschikt voor toepassingen in sectoren als financiën en logistiek, 
-waar real-time datatoegang essentieel is.
-
-\section{Communicatie tussen PLC en WCS}
-Een essentieel aspect van een geautomatiseerd magazijn is de soepele communicatie tussen de Programmable Logic Controllers (PLC’s) en 
-het Warehouse Control System (WCS). 
-Deze communicatie stelt het WCS in staat om gedetailleerde commando’s te sturen naar de PLC’s en om statusinformatie terug te ontvangen over de huidige staat van het magazijn en de apparatuur. 
-Een stabiele en snelle datastroom tussen deze systemen is cruciaal voor een efficiënte werking en het minimaliseren van stilstand of fouten.
-
-\subsection{Industriële protocollen voor communicatie} 
-De communicatie tussen PLC’s en WCS kan worden gerealiseerd door middel van verschillende industriële protocollen, 
+\subsection{Protocollen voor de communicatie van PLC's} 
+De communicatie voor PLC’s kan worden gerealiseerd door middel van verschillende industriële protocollen, 
 afhankelijk van de specificaties en vereisten van het magazijn en de gekozen hardware. 
 Veelgebruikte protocollen zijn:
 
@@ -145,53 +126,41 @@ Dit protocol maakt gebruik van standaard Ethernet-hardware, zoals kabels, switch
 Dit vereenvoudigt de installatie en het onderhoud in industriële omgevingen en maakt het compatibel met bestaande IT-infrastructuur.
 De PLC die deel uitmaakt van dit onderzoek, wisselt data uit van en naar het WCS via dit protocol.
 
-\subsection{Data uitwisseling} 
+\section{Warehouse Control System (WCS)} 
+In het magazijn is de typische logistieke software het Warehouse Control System (WCS). 
+Het WCS biedt een geïntegreerde interface voor een breed scala aan apparatuur waaronder de PLC's. 
+Het systeem kan de apparatuur in het magazijn beheren en aansturen~\autocite{Son2015}. 
+Binnen het bedrijf is het WCS een onderdeel van het monolithische ERP-pakket.
+
+\section{OpenEdge Progress 4GL} 
+De software die gebruikt wordt voor de implementatie van het ERP-pakket en dus ook het WCS, is geschreven met OpenEdge Progress 4GL software.
+Dit staat gekend onder OpenEdge ABL wat staat voor Advanced Business Language en is een high-level procedurele programmeer taal ontwikkeld door Progress Software Corporation.
+Progress 4GL (Fourth-Generation Language) richt zich op bedrijfsapplicaties, vooral die met veel database-interacties~\autocite{OpenEdge2017}. 
+Het biedt een vereenvoudigde syntaxis, waarmee ontwikkelaars snel toepassingen kunnen bouwen voor zakelijke omgevingen.
+Dankzij de optimalisatie voor databasebewerkingen is het geschikt voor toepassingen in sectoren als financiën en logistiek, 
+waar real-time datatoegang essentieel is.
+ 
+\subsection{Progress OpenEdge JMS Adapter}
+ABL applicaties hebben een JMS (Java Messaging System) adapter nodig voor de communicatie met andere systemen, wat voorzien wordt door OpenEdge.
+De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te ontvangen van JMS message brokers zoals Apache ActiveMQ, IBM MQ, en TIBCO EMS. 
+Dit betekent dat OpenEdge-applicaties alleen kunnen integreren met andere systemen die JMS ondersteunen. 
+Een recente ontwikkeling (versie 12.8) maakt het mogelijk om Apache Kafka te integreren via een API die door OpenEdge wordt geleverd.
+
+\section{Communicatie tussen WCS en PLC}
+Een essentieel aspect van een geautomatiseerd magazijn is de soepele communicatie tussen de Programmable Logic Controllers (PLC’s) en 
+het Warehouse Control System (WCS). 
+Deze communicatie stelt het WCS in staat om gedetailleerde commando’s te sturen naar de PLC’s en om statusinformatie terug te ontvangen over de huidige staat van het magazijn en de apparatuur. 
+Een stabiele en snelle datastroom tussen deze systemen is cruciaal voor een efficiënte werking en het minimaliseren van stilstand of fouten.
+\\\\
 Tijdens de samenwerking tussen PLC’s en het WCS worden er verschillende datastromen uitgewisseld via het Ethernet/IP netwerk.
 Commando’s van WCS naar PLC: Het WCS stuurt instructies naar de PLC’s om specifieke handelingen uit te voeren, zoals het starten van een transportband of het positioneren van een kraan.
 Statusupdates van PLC naar WCS: De PLC’s geven informatie terug aan het WCS over de huidige status van apparatuur. Bijvoorbeeld, of een transportband in werking is, 
 de locatie van een item in het magazijn, en of er storingen of onderbrekingen zijn~\autocite{Laar2013}.
 
-\subsection{Real-time monitoring en optimalisatie} 
-Het WCS maakt gebruik van real-time data om de operaties in het magazijn optimaal te coördineren. 
-Door continue monitoring kan het systeem bijvoorbeeld inspelen op piekperiodes door bijvoorbeeld geen bakken meer te laten uitsturen. 
-Dit niveau van controle helpt magazijnen om de doorlooptijden te verkorten en de efficiëntie te maximaliseren.
-
-\subsection{Voorbeeld: Integratie bij TVH} 
-In het geval van TVH, waar het WCS onderdeel uitmaakt van een monolithisch ERP-systeem geschreven in OpenEdge Progress 4GL, 
-vereist de communicatie tussen WCS en PLC’s een aangepaste interface. 
-Dit ERP-systeem bevat een grote hoeveelheid bedrijfslogica en data over de voorraad, orderverwerking en logistiek.
-Hierdoor heeft het ERP-systeem toegang tot alle informatie die nodig is om het magazijnproces aan te sturen. 
-De interface met de PLC’s van Vanderlanden, zorgt ervoor dat het ERP-systeem commando’s kan versturen en statusinformatie kan ontvangen. 
-
-\subsubsection{WCS communicatie} 
-Op het ERP-systeem van TVH draaien acht verschillende batches die verantwoordelijk zijn voor de aansturing van de PLC. 
-Elke batch-instantie communiceert met specifieke PLC-kanalen en bevat daarvoor specifieke logica.
-Deze batches zijn verbonden via een specifieke poort met een Progress SonicMQ Adapter op de communicatie server.
-Hiermee kunnen de batches de berichten consumeren en versturen van de SonicMQ server.
-
-\subsubsection{Communicatie tussen PLC en WCS}
-De PLC kan alleen maar een TCP/IP socket verbinding initiëren met een server.
-Omdat SonicMQ als middleware hierdoor geen verbinding kan maken zijn er listeners gemaakt in Java door TVH.
-Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP socket verbinding mogelijk te maken per PLC kanaal.
-De Java listeners sturen de PLC-berichten vervolgens door naar SonicMQ of ontvangen berichten van SonicMQ, 
-die ze via een socket naar de PLC doorsturen.
-Aan de kant van het WCS zijn er meer mogelijkheden om verbinding te kunnen maken met een server.
- 
-\subsection{Uitdagingen en Toekomstige Ontwikkelingen} 
-TODO:
-\\
-Er zijn enkele uitdagingen bij de integratie van PLC’s en WCS. 
-Ten eerste zijn er eisen op het gebied van snelheid en betrouwbaarheid, aangezien zelfs kleine vertragingen in communicatie de doorstroming in het magazijn kunnen beïnvloeden. 
-Daarnaast kunnen compatibiliteitsproblemen optreden, vooral wanneer er verouderde of verschillende generaties hardware en software binnen één systeem gebruikt worden.
-
-In de toekomst kan de integratie tussen PLC’s en WCS verder verbeterd worden door de toepassing van nieuwe technologieën zoals Industrial Internet of Things (IIoT) en edge computing. 
-Deze technologieën kunnen helpen om data nog sneller te verwerken en meer gedetailleerde inzichten te bieden in real-time, wat de flexibiliteit en efficiëntie van magazijnen kan verhogen.
-
-Al met al vormt de communicatie tussen PLC’s en WCS een kritieke succesfactor voor een goed functionerend, geautomatiseerd magazijn, waar real-time aansturing en monitoring de sleutel zijn tot een snelle en betrouwbare logistieke operatie.
-In dit onderzoek behouden we de scope op messaging systemen die communiceren via het Ethernet/IP netwerk.
 
 \section{Communicatie methodes}
 Dit hoofdstuk bevat informatie over de relevante communicatiemethoden en geeft inzicht in hun werking.
+Deze methodes kunnen zowel on-premise als on-cloud gebruikt worden door het IT infrastructuur.
 \\
 \emph{Inter-Process Communication (IPC)} omvat alle vormen van communicatie tussen services, 
 zowel binnen hetzelfde systeem als via een netwerk. 
@@ -201,28 +170,26 @@ Hieronder worden enkele methoden van \emph{Message Passing} toegelicht.
 Een socket-verbinding (TCP/IP) maakt gebruik van een endpoint gespecificeerd met een IP-adres en een poortnummer, 
 waarmee twee autonome processen verbonden zijn, hetzij op dezelfde, hetzij op verschillende machines.
 \\
-\\
-Streaming sockets (op basis van TCP) zijn nuttig voor betrouwbare, sequentiële berichtoverdracht.
+\textbf{Streaming sockets} (op basis van TCP) zijn nuttig voor betrouwbare, sequentiële berichtoverdracht.
 Deze methode wordt gebruikt voor de connectie tussen de PLC en het WCS.
 \\ 
-\\
-Datagram sockets (op basis van UDP) zijn geschikt zijn voor snelle, maar minder betrouwbare communicatie en wordt gebruikt voor bijvoorbeeld audio en video.
-Beiden ondersteunen communicatie tussen verschillende netwerken en zijn veelgebruikt in messaging-applicaties~\autocite{Dinari2020}.
+\textbf{Datagram sockets} (op basis van UDP) zijn geschikt zijn voor snelle, maar minder betrouwbare communicatie en wordt gebruikt voor bijvoorbeeld audio en video.
+Beiden ondersteunen communicatie tussen verschillende netwerken en zijn veelgebruikt~\autocite{Dinari2020}.
 
-\subsection{Message queue gebaseerd}
+
+\subsection{Message queue-gebaseerd}
+Deze vorm van communicatie kent twee fundamentele modellen die de basis vormen voor de werking van een messaging-systeem. 
+Afhankelijk van de gekozen message broker worden verschillende protocollen toegepast. 
+Deze worden later besproken.
 
 \subsubsection{Publish-subscribe-model}
-Het publish-subscribe-model is gebaseerd op topics waarop berichten worden gepubliceerd door de \emph{producer} 
+Het publish-subscribe-model is gebaseerd op \textbf{topics} waarop berichten worden gepubliceerd door de \emph{producer} 
 en waar meerdere \emph{subscribers} (abonnees) zich kunnen op inschrijven~\autocite{Dinari2020}. 
-\\
-In dit model ontvangen \emph{subscribers} slechts een subset van de totale gepubliceerde berichten. 
-Het proces van het selecteren en verwerken van de berichten wordt filtering genoemd. 
-Er zijn twee vormen van filtering: op basis van onderwerp (topic) en op basis van inhoud (content).
 \\
 In een op \emph{topic} gebaseerd systeem worden berichten geplaatst in \emph{topics} wat logische kanalen zijn.
 \emph{Subscribers} ontvangen berichten van de \emph{topics} waarop ze zich hebben geabonneerd.
 Alle \emph{subscribers} ontvangen dezelfde berichten uit dezelfde \emph{topics}. 
-Deze methode zorgt voor een \emph{one-to-many} vorm van communicatie~\autocite{Dinari2020}.
+Deze methode zorgt voor een \textbf{one-to-many} vorm van communicatie~\autocite{Dinari2020}.
 \\
 Hierdoor ontvangen subscribers alleen de berichten uit de klassen die voor hen relevant zijn, zonder enige kennis van de publishers. 
 Met het publish-subscribe-model specificeert de afzender nooit expliciet wie de ontvanger is en weet het zelfs niet of er al dan niet ontvangers zijn.
@@ -230,15 +197,15 @@ Met het publish-subscribe-model specificeert de afzender nooit expliciet wie de 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.4\textwidth]{../voorstel/img/fig1-publish-subscribe.png}
-  \caption{\label{fig:pub-sub}Publisher-Subscriber system~\autocite{Sharvari2019}.}
+  \caption{\label{fig:pub-sub}Publisher-Subscriber system~\autocite{Sharvari2019}}
 \end{figure}
 
 \subsubsection{Point-to-Point-model}
-Dit model wordt gebruikt door het huidige messaging systeem in het bedrijf.
-Hier worden berichten door \emph{publishers} in specifieke wachtrijen geplaatst, genaamd queues waarna andere nodes, genaamd \emph{consumers} ze eruit halen. 
+Hier worden berichten door \emph{publishers} in specifieke wachtrijen geplaatst, 
+genaamd \textbf{queues} waarna andere nodes, genaamd \emph{consumers} ze eruit halen. 
 \\
 Messaging queues hebben een asynchrone werking, zijn \emph{socket-based} en maken gebruik van \emph{message queuing}, 
-waarbij het de \emph{point-to-point} methodiek gebruikt.
+waarbij het de \textbf{point-to-point} methodiek gebruikt.
 Hierbij plaatst de \emph{producer} berichten in een specifieke queue, waarna een \emph{consumer} de berichten uitleest in een sequentiële volgorde.
 Met andere woorden, een bericht wordt slechts aan één \emph{consumer} bezorgt.
 \\
@@ -251,35 +218,36 @@ Ze zijn geschikt voor gedistribueerde systemen waar processen onafhankelijk werk
   \caption{\label{fig:point-to-point}Point-to-point system~\autocite{Dinari2020}}
 \end{figure}
 
-\subsection{Niet relevante protocollen}
-\subsubsection{RPC-methoden voor messaging}
-In dit hoofdstuk worden de meest relevante \emph{Remote Procedure Call} (RPC) methoden besproken. 
-Deze communicatiemethode is synchroon, wat betekent dat de verzendende partij moet wachten op een antwoord.
-Hierdoor is deze manier van communiceren niet optimaal voor het domein van dit onderzoek, 
-aangezien het niet de vereiste prestaties levert. 
-Desondanks worden deze methoden besproken om inzicht te geven in hoe ze werken en om aan te tonen waarom ze niet geschikt zijn.
+% \subsection{Niet relevante methodes}
 
-\subsubsection{XML en SOAP}
-Deze methoden zijn relevant voor communicatie omdat ze methoden en objecten via XML over HTTP kunnen aanroepen,
-wat communicatie mogelijk maakt tussen verschillende platformen en programmeertalen.
-Zoals eerder besproken zijn deze synchroon waardoor de snelheid nadelig beïnvloed wordt.
+% \subsubsection{RPC-methoden voor messaging}
+% In dit hoofdstuk worden de \emph{Remote Procedure Call} (RPC) methoden besproken. 
+% Deze communicatiemethode is synchroon, wat betekent dat de verzendende partij moet wachten op een antwoord.
+% Hierdoor is deze manier van communiceren niet optimaal voor het domein van dit onderzoek, 
+% aangezien het niet de vereiste prestaties levert. 
+% Desondanks worden deze methoden besproken om inzicht te geven in hoe ze werken en om aan te tonen waarom ze niet geschikt zijn.
 
-\subsubsection{REST}
-RESTful webservices gebruiken HTTP-verzoeken (zoals GET, POST) voor eenvoudige en efficiënte berichtuitwisseling en is heeft ook een synchrone werking. 
-De berichten, meestal in JSON formaat, maakt dit geschikt voor communicatie tussen webapplicaties.
+% \subsubsection{XML en SOAP}
+% Deze methoden zijn relevant voor communicatie omdat ze methoden en objecten via XML over HTTP kunnen aanroepen,
+% wat communicatie mogelijk maakt tussen verschillende platformen en programmeertalen.
+% Zoals eerder besproken zijn deze synchroon waardoor de snelheid nadelig beïnvloed wordt.
 
-\subsection{Pipes}
-\emph{Named pipes} hebben een synchrone werking en voorzien een bidirectionele 
-communicatie tussen onafhankelijke processen.
-Deze maakt het mogelijk om te kunnen functioneren tussen processen op hetzelfde systeem.
-\\
-\emph{Ordinary pipes} bieden beperkte eenzijdige communicatie en vereisen een parent-child relatie, 
-wat ze minder geschikt maakt voor communicatie tussen onafhankelijke processen~\autocite{Dinari2020}.
+% \subsubsection{REST}
+% RESTful webservices gebruiken HTTP-verzoeken (zoals GET, POST) voor eenvoudige en efficiënte berichtuitwisseling en is heeft ook een synchrone werking. 
+% De berichten, meestal in JSON formaat, maakt dit geschikt voor communicatie tussen webapplicaties.
 
-\subsection{Shared memory}
-Deze methode is niet relevant voor dit onderzoek omdat het gericht is op het delen van geheugenruimte 
-tussen processen op hetzelfde systeem. 
-Ze zijn nuttig voor het efficiënt delen van grote hoeveelheden data binnen hetzelfde systeem~\autocite{Dinari2020}.
+% \subsubsection{Pipes}
+% \textbf{Named pipes} hebben een synchrone werking en voorzien een bidirectionele 
+% communicatie tussen onafhankelijke processen.
+% Deze maakt het mogelijk om te kunnen functioneren tussen processen op hetzelfde systeem.
+% \\
+% \textbf{Ordinary pipes} bieden beperkte eenzijdige communicatie en vereisen een parent-child relatie, 
+% wat ze minder geschikt maakt voor communicatie tussen onafhankelijke processen~\autocite{Dinari2020}.
+
+% \subsubsection{Shared memory}
+% Deze methode is niet relevant voor dit onderzoek omdat het gericht is op het delen van geheugenruimte 
+% tussen processen op hetzelfde systeem. 
+% Ze zijn nuttig voor het efficiënt delen van grote hoeveelheden data binnen hetzelfde systeem~\autocite{Dinari2020}.
 
 \section{Synchroon vs. asynchroon}
 Services communiceren zowel \emph{synchroon} als \emph{asynchroon} en spelen deze benaderingen een cruciale rol, 
@@ -291,7 +259,7 @@ aangezien de schaalbaarheid van één service sterk afhankelijk is van andere se
 Deze manier van communicatie kan niet voldoen aan de niet-functionele eisen van het automatisch magazijn binnen TVH.
 \newline
 
-Daartegenover heeft \emph{asynchrone} communicatie een reeks voordelen. Ze bieden grotere schaalbaarheid, technologische 
+\emph{Asynchrone} communicatie heeft een reeks voordelen. Ze bieden grotere schaalbaarheid, technologische 
 flexibiliteit en aanpassingsvermogen aan veranderende zakelijke vereisten. 
 In plaats van de synchrone manier van communicatie is de \emph{asynchrone} gemakkelijker te herstructureren en te onderhouden. 
 Ze vergemakkelijken \emph{continuous delivery} door hun onafhankelijkheid omdat de communicatie 
@@ -344,21 +312,50 @@ Schaalbaarheid is beperkter; het aanpassen van de infrastructuur of het uitbreid
 Een groot voordeel hier is de volledige controle en dat er geen afhankelijkheden zijn van derden.
 
 \section{Messaging protocollen}
+In dit hoofdstuk worden de meest relevante messaging protocollen besproken die later in het vergelijkend onderzoek aan bod komen.
 
 \subsection{AMQP (Advanced Message Queuing Protocol)} 
+AMQP is een protocol gebaseerd op het publish-subscribe model, oorspronkelijk ontwikkeld voor de financiële sector, maar tegenwoordig ook beperkt toegepast in de ICT-sector. 
+Het belangrijkste doel van AMQP is het bieden van betrouwbaarheid bij het verzenden van berichten.  
+
+\subsubsection{Hoofdfuncties van AMQP}
+
+ 
+\subsubsection{Toepassingen}
+AMQP wordt gebruikt in uiteenlopende domeinen die belang hechten aan betrouwbaarheid, waaronder:
+\\
+\textbf{Autonome systemen:} Voor het coördineren van gedistribueerde processen. \\ 
+\textbf{Cloud computing:} Voor veilige en gestructureerde gegevensoverdracht.  \\
+\textbf{IoT-technologie:} Voor het waarborgen van betrouwbare communicatie en veiligheidsaspecten in IoT-apparaten.
 
 \subsection{STOMP (Streaming Text Orientated Messaging Protocol)}
 
 \subsection{MQTT (Message Queue Telemetry Transport)}
+MQTT is een publish/subscribe service protocol dat gebruikmaakt van een infrastructuur waarin clients verbinding maken met een centrale server, de zogenaamde broker. 
+Het protocol kent drie essentiële componenten: de publisher, de subscriber, en de server (broker)~\autocite{Usmani2021}.
 
-\section{Messaging-Technologieën}
+\subsubsection{Hoofdfuncties van MQTT}
+De publisher creëert data en plaatst deze op een topic dat dan door de broker gedistribueerd wordt naar relevante ontvangers.
+De subscribers zijn de eindgebruikers van de gegevens. Deze ontvangen de data via de broker om te verwerken.
+De broker coördineert de gegevensuitwisseling tussen publishers en subscribers en fungeert als de centrale infrastructuur.
 
+\subsubsection{Toepassingen}
+Het protocol vereist weinig bandbreedte en energie, dankzij de kleine headergrootte. Dit maakt het zeer geschikt voor IoT-apparaten.
 
-\section{Wat is een EoL systeem}
+\textbf{Industriële Automatisering (IIoT):} Apparaten in fabrieken of pijpleidingen communiceren met centrale systemen voor real-time monitoring.
+\textbf{Gezondheidszorg:} Monitoring op afstand van patiënten via draagbare apparaten zoals glucosemeters of hartslagmonitors.
+\textbf{Transport en Logistiek:} Beheer van voertuiglocaties en conditie van vracht zoals temperatuur van gekoelde opslag.
+ 
+\subsection{DDS (Data Distribution Service)}
 
-\subsection{Wat zijn de gevaren van EoL systemen}
+\subsection{SMQ (Simple Messaging Protocol)}
 
-\subsection{Welke manieren zijn er om EoL weg te werken}
+ 
+\section{Message brokers}
+Dit geeft een overzicht van de meest relevante messaging brokers beschikbaar op de markt:
+
+ 
+
 
 
 
