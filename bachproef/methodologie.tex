@@ -28,6 +28,7 @@
 
 Volgende hoofdstukken verlopen in sequentiële volgorde om dit onderzoek in de juiste richting te sturen.
 De literatuurstudie geeft een basis om verdere vakterminologie en werking van technologieën te kunnen begrijpen.
+\\
 De setup van het huidige systeem wordt besproken om de requirements te kunnen begrijpen.
 Het bekomen van een shortlist wordt toegelicht waarbij voor elke technologie de voor- en nadelen wordt beschreven.
 
@@ -46,7 +47,7 @@ De literatuurstudie vormt de basis van het onderzoek en is cruciaal voor het beg
 Hierdoor kan de kennis en requirements meegenomen worden doorheen de methodologie.
 
 
-\section{Phase 2: Requirements analyse huidige setup}
+\section{Phase 2: Requirements analyse van huidige setup}
 Dit hoofdstuk gaat dieper in op de huidige setup en werking tussen het WCS, messaging software en de PLC's.
 Documenten van het bedrijf en interviews met vakexperts vormen de basis voor dit overzicht.
 \\
@@ -140,17 +141,16 @@ Bij een point-to-point communiceert één afzender met één ontvanger, bijvoorb
 \\\\
 Bij het publish/subscribe model kunnen meerdere ontvangers zich abonneren op bepaalde berichten (topics) die door een applicatie gepubliceerd worden.
 
-Door JMS te gebruiken met message brokers die schaling en betrouwbaarheid ondersteunen, kan de OpenEdge-omgeving hoge verwerkingsvolumes en failover-functionaliteit realiseren. Dit is belangrijk voor bedrijfsomgevingen waar de continuïteit en betrouwbaarheid van berichtenstromen essentieel zijn.
+Door JMS te gebruiken met message brokers die schaling en betrouwbaarheid ondersteunen, kan de OpenEdge-omgeving hoge verwerkingsvolumes en failover-functionaliteit realiseren. 
+Dit is belangrijk voor bedrijfsomgevingen waar de continuïteit en betrouwbaarheid van berichtenstromen essentieel zijn.
 
 \subsubsection{Integratie met Verschillende Enterprise Systemen}
 Met de JMS Adapter kunnen OpenEdge-applicaties communiceren met andere zakelijke systemen zoals ERP's, CRM’s en databronnen, wat nuttig is in bedrijfsprocessen waarbij gegevens moeten worden gedeeld tussen verschillende systemen.
 
 \subsubsection{Configuratie en Beheer}
-De Progress OpenEdge JMS Adapter biedt configuratiemogelijkheden waarmee beheerders de communicatie kunnen aanpassen aan de vereisten van hun omgeving, zoals het instellen van queue-namen, topics, verbindingsparameters, en het beheren van uitzonderingen.
-
-
-
-
+De Progress OpenEdge JMS Adapter biedt configuratiemogelijkheden waarmee beheerders de communicatie kunnen aanpassen aan de vereisten van hun omgeving, 
+zoals het instellen van queue-namen, topics, verbindingsparameters, en het beheren van uitzonderingen.
+ 
 \subsection{WCS berichten} 
 Berichten komen binnen van de PLC via de communicatie server. Ieder bericht wordt getransformeerd naar variabelen die dan verder gebruikt worden in de code.
 Deze berichten bevatten informatie over transportbakken en zijn nodig om deze te kunnen traceren via de ERP.
@@ -197,17 +197,198 @@ Het systeem moet in staat zijn berichten consistent en zonder verlies over te br
 Dit is essentieel om de traceerbaarheid van transportbakken te garanderen en fouten in de logistieke processen te voorkomen.
 
 \subsubsection{Support en Community}
-Het is belangrijk dat de gekozen message broker support biedt en dat er een grote community aanwezig is, 
+Het is belangrijk dat de gekozen message broker support biedt en dat er een grote community aanwezig is 
 waarbij je terecht kunt voor advies, probleemoplossing en best practices.
 
-\section{Phase 3: ShortList}
+\section{Phase 3: Long List}
 
-\section{Phase 4: Testen}
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{|l|c|c|c|c|c|}
+  \hline
+  Message Broker & JVM Ondersteuning & Unix & Populaire Protocollen & Kostenmodel & Cloud toepasbaar \\
+  \hline
+  Apache Kafka & Ja & Ja & Kafka, MQTT, REST & Open-source (mogelijke kosten voor ondersteuning) & Ja (geschikt) \\
+  \hline
+  RabbitMQ & Ja & Ja & AMQP, MQTT, STOMP & Open-source (mogelijke kosten voor ondersteuning) & Ja (geschikt) \\
+  \hline
+  ActiveMQ & Ja & Ja & AMQP, MQTT, STOMP, OpenWire & Open-source (mogelijke kosten voor ondersteuning) & Ja (geschikt) \\
+  \hline
+  MQTT.js & Ja & Ja & MQTT & Open-source & Ja (geschikt) \\
+  \hline
+  IBM MQ & Ja & Ja & MQ, MQTT, JMS & Commercieel (abonnement) & Ja (geschikt) \\
+  \hline
+  Redis & Ja (optioneel) & Ja & Pub/Sub & Open-source (mogelijke kosten voor ondersteuning) & Ja (geschikt) \\
+  \hline
+  NSQ & Ja & Ja & NSQ Protocol & Open-source & Ja (geschikt) \\
+  \hline
+  Apache Pulsar & Ja & Ja & Pulsar Protocol, MQTT, Kafka & Open-source (mogelijke kosten voor ondersteuning) & Ja (native) \\
+  \hline
+  NATS & Ja & Ja & NATS Protocol & Open-source (mogelijke kosten voor ondersteuning) & Ja (native) \\
+  \hline
+  ZeroMQ & Ja & Ja & ØMQ & Open-source & Ja (geschikt) \\
+  \hline
+  Amazon SQS & Nee & Nee (cloud-service) & AWS-eigen protocol & Pay-per-use & Ja (native) \\
+  \hline
+  Google Cloud Pub/Sub & Nee & Nee (cloud-service) & Cloud Pub/Sub Protocol & Pay-per-use & Ja (native) \\
+  \hline
+  Azure Service Bus & Nee & Nee (cloud-service) & AMQP, MQTT, HTTP & Pay-per-use & Ja (native) \\
+  \hline
+  \end{tabular}
+  \caption{\label{tab:message_brokers}Longlist message brokers}
+  \end{table}
+
+\section{Phase 4: ShortList}
+
+\section{Phase 5: Testen}
 Opzoeken van test methodes 
 % https://www.researchgate.net/publication/342312542_Classification_and_evaluation_of_IoT_brokers_A_methodology
 
 Testen en monitoring opzetten per gekozen technologie
 
-\section{Phase 5: Resultaten}
+Opzet simulator PLC:
+\begin{listing}[h!]
+    \begin{minted}{python}
+      import socket
+import configparser
+import logging
+import os
+import random
+import threading
+import queue
+import time
+
+
+def setup_logging(log_file_path):
+    """Set up logging configuration."""
+    os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
+    logging.basicConfig(
+        filename=log_file_path,
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+    )
+
+
+def generate_random_message():
+    """Generates a random hexadecimal message."""
+    message_template = [
+        "02", "00", "1d", "20",
+        f"{random.randint(0, 255):02x}", f"{random.randint(0, 255):02x}", "20", "20", "00", "00", "20", "20",
+        f"{random.randint(0, 255):02x}", f"{random.randint(0, 255):02x}", "20", "20",
+        f"{random.randint(0, 255):02x}", "20", "20", "20", "20", "20", "20", "20", "20", "20",
+        "20", "20", "20", "20", "20", "03"
+    ]
+    return " ".join(message_template)
+
+
+def send_messages(socket_conn, port, message_queue, stop_event):
+    """Send messages from the queue to the socket."""
+    while not stop_event.is_set():
+        try:
+            message = message_queue.get(timeout=1)  # Wait for a message from the queue
+            socket_conn.send(bytes.fromhex(message.replace(" ", "")))
+            logging.info(f"Sent to {port}: {message}")
+            print(f"Sent to {port}: {message}")
+            time.sleep(0.1)  # Simulate delay
+        except queue.Empty:
+            continue   
+
+
+def receive_messages(socket_conn, port, buffer_size, stop_event):
+    """Receive messages from the socket."""
+    while not stop_event.is_set():
+        try:
+            data = socket_conn.recv(buffer_size)
+            if data:
+                message = data.hex()
+                logging.info(f"Received from {port}: {message}")
+                print(f"Received from {port}: {message}")
+        except socket.error as e:
+            logging.error(f"Error receiving from {port}: {e}")
+            break
+
+
+def handle_connection(host, port, buffer_size, message_queue, stop_event):
+    """Handle socket connection, send and receive messages."""
+    while not stop_event.is_set():
+        try:
+            # Create socket and connect to the server
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_conn:
+                socket_conn.connect((host, port))
+                socket_conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)  # Disable Nagle's algorithm
+                logging.info(f"Connected to {host}:{port}")
+                print(f"Connected to {host}:{port}")
+ 
+                send_thread = threading.Thread(target=send_messages, args=(socket_conn, port, message_queue, stop_event))
+                receive_thread = threading.Thread(target=receive_messages, args=(socket_conn, port, buffer_size, stop_event))
+ 
+                send_thread.start()
+                receive_thread.start() 
+                send_thread.join()
+                receive_thread.join()
+
+        except (ConnectionRefusedError, socket.timeout) as e:
+            logging.error(f"Could not connect to {host}:{port} - {e}. Retrying in 5 seconds...")
+            print(f"Retrying connection to {host}:{port} in 5 seconds...")
+            time.sleep(5)
+
+
+def generate_and_enqueue_messages(message_queue, stop_event):
+    """Generate and enqueue random messages."""
+    while not stop_event.is_set():
+        message = generate_random_message()
+        message_queue.put(message)
+        logging.info(f"Enqueued message: {message}")
+        print(f"Enqueued message: {message}")
+        time.sleep(0.5) 
+
+
+def main(): 
+
+    config = configparser.ConfigParser()
+    config.read("plc-config.ini")
+ 
+    log_file_path = config["LOGGING"]["LOG_FILE"]
+    setup_logging(log_file_path)
+ 
+    host = config["SOCKET"]["HOST"]
+    ports = [int(port.strip()) for port in config["SOCKET"]["PORTS"].split(",")]
+    buffer_size = int(config["SOCKET"]["BUFFER_SIZE"])
+
+    logging.info(f"Starting client for host {host} with ports {ports}")
+ 
+    message_queue = queue.Queue()
+    stop_event = threading.Event()
+
+    try: 
+        message_thread = threading.Thread(target=generate_and_enqueue_messages, args=(message_queue, stop_event))
+        message_thread.start()
+
+        connection_threads = []
+        for port in ports:
+            connection_thread = threading.Thread(target=handle_connection, args=(host, port, buffer_size, message_queue, stop_event))
+            connection_threads.append(connection_thread)
+            connection_thread.start()
+
+        message_thread.join()
+        for connection_thread in connection_threads:
+            connection_thread.join()
+
+    except KeyboardInterrupt:
+        logging.info("Shutting down client...")
+        stop_event.set()  # Signal all threads to stop
+
+    finally:
+        logging.info("Client stopped.")
+
+
+if __name__ == "__main__":
+    main()
+
+    \end{minted}
+    \caption[Python code PLC sim]{Code voor het simuleren van PLC verbinding}
+\end{listing}
+
+\section{Phase 6: Resultaten}
 
 Evalueren

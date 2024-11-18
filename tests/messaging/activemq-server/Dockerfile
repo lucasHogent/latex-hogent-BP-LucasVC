@@ -9,7 +9,7 @@ USER root
 EXPOSE 8161 61616 5672
 EXPOSE 8001 8002 8003 5672
 
-COPY java-listener.jar /opt/jprogram/listener.jar
+COPY ../java-listener/java-listener.jar /opt/jprogram/listener.jar
 COPY start_listener.sh /opt/jprogram/start_listener.sh
 COPY start_all.sh /opt/jprogram/start_all.sh
 COPY listener-config.json /opt/jprogram/config.json  

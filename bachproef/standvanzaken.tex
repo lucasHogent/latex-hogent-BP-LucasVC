@@ -132,20 +132,6 @@ Het WCS biedt een geïntegreerde interface voor een breed scala aan apparatuur w
 Het systeem kan de apparatuur in het magazijn beheren en aansturen~\autocite{Son2015}. 
 Binnen het bedrijf is het WCS een onderdeel van het monolithische ERP-pakket.
 
-\section{OpenEdge Progress 4GL} 
-De software die gebruikt wordt voor de implementatie van het ERP-pakket en dus ook het WCS, is geschreven met OpenEdge Progress 4GL software.
-Dit staat gekend onder OpenEdge ABL wat staat voor Advanced Business Language en is een high-level procedurele programmeer taal ontwikkeld door Progress Software Corporation.
-Progress 4GL (Fourth-Generation Language) richt zich op bedrijfsapplicaties, vooral die met veel database-interacties~\autocite{OpenEdge2017}. 
-Het biedt een vereenvoudigde syntaxis, waarmee ontwikkelaars snel toepassingen kunnen bouwen voor zakelijke omgevingen.
-Dankzij de optimalisatie voor databasebewerkingen is het geschikt voor toepassingen in sectoren als financiën en logistiek, 
-waar real-time datatoegang essentieel is.
- 
-\subsection{Progress OpenEdge JMS Adapter}
-ABL applicaties hebben een JMS (Java Messaging System) adapter nodig voor de communicatie met andere systemen, wat voorzien wordt door OpenEdge.
-De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te ontvangen van JMS message brokers zoals Apache ActiveMQ, IBM MQ, en TIBCO EMS. 
-Dit betekent dat OpenEdge-applicaties alleen kunnen integreren met andere systemen die JMS ondersteunen. 
-Een recente ontwikkeling (versie 12.8) maakt het mogelijk om Apache Kafka te integreren via een API die door OpenEdge wordt geleverd.
-
 \section{Communicatie tussen WCS en PLC}
 Een essentieel aspect van een geautomatiseerd magazijn is de soepele communicatie tussen de Programmable Logic Controllers (PLC’s) en 
 het Warehouse Control System (WCS). 
@@ -156,7 +142,23 @@ Tijdens de samenwerking tussen PLC’s en het WCS worden er verschillende datast
 Commando’s van WCS naar PLC: Het WCS stuurt instructies naar de PLC’s om specifieke handelingen uit te voeren, zoals het starten van een transportband of het positioneren van een kraan.
 Statusupdates van PLC naar WCS: De PLC’s geven informatie terug aan het WCS over de huidige status van apparatuur. Bijvoorbeeld, of een transportband in werking is, 
 de locatie van een item in het magazijn, en of er storingen of onderbrekingen zijn~\autocite{Laar2013}.
+\\\\
+Voor die communicatie wordt een middleware gebruikt van Progress OpenEdge, genaamd SonicMQ. 
+Deze staat in als messaging broker, wordt niet meer actief ondersteund en wordt later besproken in de sectie message brokers.
 
+\section{OpenEdge Progress 4GL} 
+De software die gebruikt wordt voor de implementatie van het ERP-pakket en dus ook het WCS, is geschreven met OpenEdge Progress 4GL software.
+Dit staat gekend onder OpenEdge ABL wat staat voor Advanced Business Language en is een high-level procedurele programmeer taal ontwikkeld door Progress Software Corporation.
+Progress 4GL (Fourth-Generation Language) richt zich op bedrijfsapplicaties, vooral die met veel database-interacties~\autocite{OpenEdge2017}. 
+Het biedt een vereenvoudigde syntaxis, waarmee ontwikkelaars snel toepassingen kunnen bouwen voor zakelijke omgevingen.
+Dankzij de optimalisatie voor databasebewerkingen is het geschikt voor toepassingen in sectoren als financiën en logistiek, 
+waar real-time datatoegang essentieel is.
+ 
+\subsection{Progress OpenEdge JMS Adapter}
+ABL applicaties zoals het WCS hebben een JMS (Java Messaging System) adapter nodig voor de communicatie met andere systemen, wat voorzien wordt door OpenEdge.
+De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te ontvangen van JMS message brokers zoals Apache ActiveMQ. 
+Dit betekent dat OpenEdge-applicaties alleen kunnen integreren met messaging middleware die JMS ondersteunen. 
+Een recente ontwikkeling (versie 12.8) maakt het mogelijk om Apache Kafka te integreren via een API die door OpenEdge wordt geleverd.
 
 \section{Communicatie methodes}
 Dit hoofdstuk bevat informatie over de relevante communicatiemethoden en geeft inzicht in hun werking.
@@ -175,7 +177,6 @@ Deze methode wordt gebruikt voor de connectie tussen de PLC en het WCS.
 \\ 
 \textbf{Datagram sockets} (op basis van UDP) zijn geschikt zijn voor snelle, maar minder betrouwbare communicatie en wordt gebruikt voor bijvoorbeeld audio en video.
 Beiden ondersteunen communicatie tussen verschillende netwerken en zijn veelgebruikt~\autocite{Dinari2020}.
-
 
 \subsection{Message queue-gebaseerd}
 Deze vorm van communicatie kent twee fundamentele modellen die de basis vormen voor de werking van een messaging-systeem. 
@@ -249,17 +250,18 @@ Ze zijn geschikt voor gedistribueerde systemen waar processen onafhankelijk werk
 % tussen processen op hetzelfde systeem. 
 % Ze zijn nuttig voor het efficiënt delen van grote hoeveelheden data binnen hetzelfde systeem~\autocite{Dinari2020}.
 
-\section{Synchroon vs. asynchroon}
+\subsection{Synchroon vs. asynchroon}
 Services communiceren zowel \emph{synchroon} als \emph{asynchroon} en spelen deze benaderingen een cruciale rol, 
 elk met hun eigen voor- en nadelen. \emph{Synchrone microservices} werken volgens een direct 
 afhankelijkheidsmodel, omdat services met elkaar communiceren in een vraag-antwoordpatroon. 
-Deze synchrone communicatie kan leiden tot ingewikkelde onderlinge afhankelijkheden, vertragingen en complexiteiten bij het debuggen 
-van de logica. Bovendien wordt het schalen van synchrone services uitdagend, 
-aangezien de schaalbaarheid van één service sterk afhankelijk is van andere services die het gebruikt \autocite{Bellemare2020}. 
-Deze manier van communicatie kan niet voldoen aan de niet-functionele eisen van het automatisch magazijn binnen TVH.
-\newline
+\\\\
 
-\emph{Asynchrone} communicatie heeft een reeks voordelen. Ze bieden grotere schaalbaarheid, technologische 
+\textbf{Synchrone} communicatie kan leiden tot ingewikkelde onderlinge afhankelijkheden, vertragingen en complexiteiten bij het debuggen 
+van de logica. Bovendien wordt het schalen van synchrone services uitdagend, 
+aangezien de schaalbaarheid van één service sterk afhankelijk is van andere services die het gebruikt \autocite{Bellemare2020}.  
+\\\\
+
+\textbf{Asynchrone} communicatie heeft een reeks voordelen. Ze bieden grotere schaalbaarheid, technologische 
 flexibiliteit en aanpassingsvermogen aan veranderende zakelijke vereisten. 
 In plaats van de synchrone manier van communicatie is de \emph{asynchrone} gemakkelijker te herstructureren en te onderhouden. 
 Ze vergemakkelijken \emph{continuous delivery} door hun onafhankelijkheid omdat de communicatie 
@@ -275,7 +277,7 @@ omdat dit niet opgevangen kan worden door de verzendende partij.
   \caption{\label{fig:sync-vs-async}Synchronous versus asynchronous communication \autocite[figure 14 -- 13]{MarkRichards2021}.}
 \end{figure}
 
-In praktische termen is het vinden van de juiste balans tussen synchrone en \emph{asynchrone microservices} cruciaal, 
+In praktische termen is het vinden van de juiste balans tussen \emph{synchrone} en \emph{asynchrone microservices} cruciaal, 
 afhankelijk van de specifieke behoeften van een organisatie en de aard van haar bedrijfsprocessen. 
 Een hybride aanpak waarin beide architecturen naast elkaar bestaan en elkaar aanvullen blijkt vaak de meest effectieve strategie te zijn. 
 Deze aanpak stelt organisaties in staat om de sterke punten van zowel synchrone als asynchrone modellen te benutten, 
@@ -283,33 +285,48 @@ waardoor flexibiliteit, schaalbaarheid en onderhoudsgemak worden gegarandeerd in
 In deze paper ligt de focus op \emph{asynchrone communicatie} voor het gebruik van \emph{messaging systemen}.
 \newline
 
-\section{Cloud vs. On-premise}
+\subsection{Cloud vs. On-premise}
 Dit hoofdstuk vergelijkt cloud- en on-premise-oplossingen, waarbij de verschillen, voordelen en uitdagingen van beide opties worden belicht. 
+De huidige setup in het bedrijf voor de communicatie tussen PLC en WMS is on-premise opgesteld.
 Cloud-oplossingen draaien op externe servers die via het internet toegankelijk zijn, 
 terwijl on-premise-oplossingen lokaal binnen de eigen infrastructuur worden beheerd en onderhouden.
 De snelheid over het netwerk kan onderzocht en getest worden voor beide toepassingen en is relevant voor het aanbevelingsrapport.
+Volgend overzicht is een samenvatting uit een onderzoek van \cite{Golec2021}:
 
-\subsubsection{Cloud}
-In het cloud model worden hardware, software en applicaties extern beheerd door een serviceprovider, wat zorgt voor meer flexibiliteit. 
-Organisaties kunnen functies toevoegen of verwijderen op basis van veranderende behoeften.
-\\
-De cloud is doorgaans kostenefficiënter, aangezien organisaties alleen betalen voor de gebruikte resources, 
-in plaats van grote initiële investeringen in hardware en software~\autocite{Golec2021}.
-Beveiliging blijft een zorg, maar de cloud biedt uitgebreide beveiligingsmaatregelen en beleidsregels, inclusief speciale cloud omgevingen voor gevoelige data. 
-De Europese Commissie heeft Codes of Conduct ontwikkeld om de data te beschermen.
-Onderhoud wordt volledig door de cloud provider verzorgd, inclusief automatische updates en upgrades, zonder extra kosten behalve voor de gebruikte hardware.
-Cloud oplossingen bieden meer schaalbaarheid en flexibiliteit. 
-Infrastructuur kan snel worden aangepast aan veranderende behoeften, wat sneller en eenvoudiger is dan bij on-premises modellen.
+% \textbf{Cloud:}
+% \begin{itemize}
+%   \item Flexibiliteit: Hardware, software en applicaties extern beheerd door een serviceprovider.
+%   \item Kostenefficiënter: organisaties betalen alleen voor de gebruikte resources.
+%   \item Beveiliging: Cloud biedt uitgebreide beveiligingsmaatregelen en beleidsregels, inclusief speciale cloud omgevingen voor gevoelige data.
+%   \item Onderhoud: wordt volledig door de cloud provider verzorgd, inclusief automatische updates en upgrades.
+%   \item Schaalbaarheid: infrastructuur kan snel worden aangepast aan veranderende behoeften, wat sneller en eenvoudiger is dan bij on-premises modellen.
+% \end{itemize}
 
-\subsubsection{On-Premise}
-Bij on-premises oplossingen beheert de organisatie zelf de hardware, software en applicaties op locatie in het eigen datacenter, wat meer controle en verantwoordelijkheid vereist.
-De huidige setup voor de communicatie tussen PLC en WMS is on-premise opgesteld.
-On-premises systemen brengen hogere initiële kosten met zich mee voor hardware en software, 
-en organisaties zijn verantwoordelijk voor het onderhoud van servers, data-back-ups en disaster recovery~\autocite{Golec2021}.
-De beveiliging is volledig in eigen handen, wat voor sommige organisaties een voordeel kan zijn, maar ook extra zorg en middelen vereist.
-Organisaties moeten zelf zorgen voor onderhoud en updates van de infrastructuur, wat tijdrovend kan zijn en extra kosten met zich meebrengt.
-Schaalbaarheid is beperkter; het aanpassen van de infrastructuur of het uitbreiden van servers is een tijdrovend proces in vergelijking met de cloud.
-Een groot voordeel hier is de volledige controle en dat er geen afhankelijkheden zijn van derden.
+% \textbf{On-Premise:}
+%   \begin{itemize}
+%     \item Flexibiliteit: Hardware, software en applicaties op locatie in het eigen datacenter, wat meer controle en verantwoordelijkheid vereist.
+%     \item Kostenefficiënter: brengen hogere initiële kosten met zich mee voor hardware en software.
+%     \item Beveiliging: is volledig in eigen handen, wat voor sommige organisaties een voordeel kan zijn, maar ook extra zorg en middelen vereist.
+%     \item Onderhoud: organisaties zijn verantwoordelijk voor het onderhoud van servers, data-back-ups en disaster recovery
+%     \item Schaalbaarheid: is beperkter, het aanpassen van de infrastructuur of het uitbreiden van servers is een tijdrovend proces in vergelijking met de cloud
+%   \end{itemize}
+   
+\begin{table}[!h]
+  \centering
+  \begin{tabular}{lcc}
+    \toprule Kenmerk & Cloud & On-Premise \\
+    \midrule Kosten & Pay-per-use & Hoge initiële investering \\
+    Beheer & Cloud provider & Eigen organisatie \\
+    Schaalbaarheid & Hoog & Beperkt \\
+    Beveiliging & Uitgebreide maatregelen & Eigen verantwoordelijkheid \\
+    Toegankelijkheid & Van overal & Beperkt tot lokaal netwerk \\
+    Onderhoud & Door cloud provider & Eigen organisatie \\
+    Performance & Meestal hoog & Kan variëren \\
+    Beschikbaarheid & Hoog & Afhankelijk van onderhoud \\
+    \bottomrule
+  \end{tabular}
+  \caption{\label{tab:cloud_vs_onpremise}Vergelijking tussen Cloud en On-Premise oplossingen\autocite{Golec2021}}
+\end{table}
 
 \section{Messaging protocollen}
 In dit hoofdstuk worden de meest relevante messaging protocollen besproken die later in het vergelijkend onderzoek aan bod komen.
@@ -319,7 +336,7 @@ AMQP is een protocol gebaseerd op het publish-subscribe model, oorspronkelijk on
 Het belangrijkste doel van AMQP is het bieden van betrouwbaarheid bij het verzenden van berichten.  
 
 \subsubsection{Hoofdfuncties van AMQP}
-
+TODO
  
 \subsubsection{Toepassingen}
 AMQP wordt gebruikt in uiteenlopende domeinen die belang hechten aan betrouwbaarheid, waaronder:
@@ -329,6 +346,7 @@ AMQP wordt gebruikt in uiteenlopende domeinen die belang hechten aan betrouwbaar
 \textbf{IoT-technologie:} Voor het waarborgen van betrouwbare communicatie en veiligheidsaspecten in IoT-apparaten.
 
 \subsection{STOMP (Streaming Text Orientated Messaging Protocol)}
+TODO
 
 \subsection{MQTT (Message Queue Telemetry Transport)}
 MQTT is een publish/subscribe service protocol dat gebruikmaakt van een infrastructuur waarin clients verbinding maken met een centrale server, de zogenaamde broker. 
@@ -347,12 +365,17 @@ Het protocol vereist weinig bandbreedte en energie, dankzij de kleine headergroo
 \textbf{Transport en Logistiek:} Beheer van voertuiglocaties en conditie van vracht zoals temperatuur van gekoelde opslag.
  
 \subsection{DDS (Data Distribution Service)}
-
+TODO
 \subsection{SMQ (Simple Messaging Protocol)}
-
+TODO
  
 \section{Message brokers}
-Dit geeft een overzicht van de meest relevante messaging brokers beschikbaar op de markt:
+Message brokers zijn... \\
+
+
+\section{EoL Systemen}
+Wat?\\
+Waarom gevaarlijk?\\
 
  
 
