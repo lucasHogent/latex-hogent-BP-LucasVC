@@ -1,0 +1,21 @@
+version '3.8'
+services
+  activemq
+    image rmohractivemqlatest
+    container_name activemq
+    ports
+      - 81618161  # Web Console
+      - 6161661616  # OpenWire
+      - 10991099  # JMX
+    environment
+      - ACTIVEMQ_ADMIN_LOGIN=admin
+      - ACTIVEMQ_ADMIN_PASSWORD=admin
+      - JAVA_OPTS=-Dcom.sun.management.jmxremote=true
+                 -Dcom.sun.management.jmxremote.port=1099
+                 -Dcom.sun.management.jmxremote.rmi.port=1099
+                 -Dcom.sun.management.jmxremote.authenticate=false
+                 -Dcom.sun.management.jmxremote.ssl=false
+                 -Djava.rmi.server.hostname=localhost
+    volumes
+      - .activemq-datadata
+      - .activemq-logslogs

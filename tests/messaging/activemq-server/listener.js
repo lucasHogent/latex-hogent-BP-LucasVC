@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Load configuration
-const config = JSON.parse(fs.readFileSync('/app/config.json', 'utf8'));
+const config = JSON.parse(fs.readFileSync('/opt/jprogram/config.json', 'utf8'));
 const { host, port, login, passcode, queue } = config.activemq;
 const ports = config.ports;
 const logPath = config.logPath;
