@@ -1,21 +1,29 @@
-version '3.8'
-services
-  activemq
-    image rmohractivemqlatest
-    container_name activemq
-    ports
-      - 81618161  # Web Console
-      - 6161661616  # OpenWire
-      - 10991099  # JMX
-    environment
-      - ACTIVEMQ_ADMIN_LOGIN=admin
-      - ACTIVEMQ_ADMIN_PASSWORD=admin
-      - JAVA_OPTS=-Dcom.sun.management.jmxremote=true
+
+services:
+  activemq:
+    image: rmohr/activemq:latest
+    container_name: activemq
+    ports:
+      - "61616:61616"   # ActiveMQ TCP port
+      - "8161:8161"     # ActiveMQ Web Console
+      - "9404:9404"     # JMX exporter port
+    environment:
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+      ACTIVEMQ_OPTS: -Dcom.sun.management.jmxremote=true
                  -Dcom.sun.management.jmxremote.port=1099
                  -Dcom.sun.management.jmxremote.rmi.port=1099
                  -Dcom.sun.management.jmxremote.authenticate=false
                  -Dcom.sun.management.jmxremote.ssl=false
                  -Djava.rmi.server.hostname=localhost
-    volumes
-      - .activemq-datadata
-      - .activemq-logslogs
+                 -javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=8020:/opt/jmx_exporter/config.yml
+    volumes:
+      - ./jmx:/config
+    networks:
+      - activemq-network
+
+ 
+
+networks:
+  activemq-network:
+    driver: bridge

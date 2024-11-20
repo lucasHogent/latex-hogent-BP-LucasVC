@@ -1,0 +1,19 @@
+{
+    "activemq": {
+        "host": "localhost",
+        "port": 61616,
+        "login": "admin",
+        "passcode": "admin",
+        "queue-send": "FromPLC",
+        "queue-recv": "ToPLC"
+         
+    },
+
+    "channelPorts": {
+        "1" : 8001,
+        "2" : 8002,
+        "3" : 8003
+    },
+
+    "logPath": "/opt/jprogram/plc/log"
+}
