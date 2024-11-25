@@ -49,8 +49,8 @@ end case.
 
 
 assign
-  cUser          = "admin"
-  cPassword      = "admin"
+  cUser          = "artemis"
+  cPassword      = "artemis"
   cAdapterURLSMQ = "failover:(amqp://localhost:5672)?amqp.idleTimeout=240000&jms.prefetchPolicy.all=1"   
   cFilter        = substitute("(channel='&1' OR channel='&2' OR channel='&3')", iChannel1, iChannel2, iChannel3)
   cClientID      = "WCS_" + string(iiPLC) + STRING(now) + STRING(random(1,1000000))
@@ -58,11 +58,11 @@ assign
   cReceiveQueue  = "FromPLC".                                  
  
 run jms/ptpsession.p persistent set hPtp ("-SMQConnect").
-run setBrokerUrl in hPtp ("failover:(amqp://localhost:5672)?amqp.idleTimeout=240000&jms.prefetchPolicy.all=1").
+run setBrokerUrl in hPtp (cAdapterURLSMQ).
 
 run setClientID in hPtp (cClientID).
-run setUser in hPtp ("admin").
-run setPassword in hPtp ("admin").
+run setUser in hPtp ("artemis").
+run setPassword in hPtp ("artemis").
 run beginSession in hPtp. 
       
 RUN createMessageConsumer IN hPtp(THIS-PROCEDURE, "readMessageFromQueue",

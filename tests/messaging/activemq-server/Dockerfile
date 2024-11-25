@@ -6,8 +6,14 @@ ARG JRE_VERSION="17"
 
 USER root
 
-EXPOSE 8161 61616 5672 9020
-EXPOSE 8001 8002 8003 5672 8020
+# sockets
+EXPOSE 8001 8002 8003 
+# amqp
+EXPOSE 61616 
+# web console
+EXPOSE 5672 
+# prometheus
+EXPOSE 8020 
 
 RUN yum update -y
 RUN yum install -y systemd sudo java-${JRE_VERSION}-openjdk wget procps

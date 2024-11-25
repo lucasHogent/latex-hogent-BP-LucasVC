@@ -1,2 +1,2 @@
-docker-compose up -d
-docker exec -it kafka /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic my-topic
+#docker run -d --hostname rabbitmq --name rabbitmq rabbitmq:3
+docker run -d --hostname rabbitmq --name rabbitmq rabbitmq:3-management

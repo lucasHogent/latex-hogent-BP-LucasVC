@@ -1,0 +1,10 @@
+Management.xml change port to 8020
+
+
+-javaagent:/opt/jmx_exporter/jmx_prometheus_javaagent.jar=8020:/opt/jmx_exporter/config.yml
+
+
+Good documentation
+  http://localhost:8161/migration-guide/connectors.html
+
+Bad integration with prometheus, unclear because artemis does not use jakarta
