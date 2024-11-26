@@ -3,7 +3,7 @@ package com.listener;
 import java.util.Map;
 
 class Config {
-    public RabbitMQConfig activemq;
+    public RabbitMQConfig broker;
 
     public Map<String, Integer> channelPorts;
 

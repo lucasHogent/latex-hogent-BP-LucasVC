@@ -39,6 +39,10 @@ public class ActiveMQSocketBridge {
 
     public static void main(String[] args) {
 
+        // TEST:
+        // args = new String[1];
+        // args[0] = "1";
+
         System.out.println("args " + args[0].trim());
         try {
             channel = Integer.parseInt(args[0].trim());
@@ -47,8 +51,9 @@ public class ActiveMQSocketBridge {
                 throw new Exception("No valid channel");
             }
             // Path to the JSON configuration file
+            // TEST
             // File configFile = new File(
-            // "C:\\Users\\lucas784\\Desktop\\Bachelorproef\\latex-hogent-BP-LucasVC\\tests\\messaging\\activemq-server\\listener-config.json");
+            // "C:\\Users\\lucas784\\Desktop\\Bachelorproef\\latex-hogent-BP-LucasVC\\tests\\messaging\\artemis-server\\listener\\listener-config.json");
 
             File configFile = new File("/opt/jprogram/config.json");
 
@@ -125,6 +130,8 @@ public class ActiveMQSocketBridge {
             MessageProducer producer = session.createProducer(session.createQueue(queueNameSend));
             producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
+            Socket clientSocket = serverSocket.accept();
+
             MessageConsumer consumer = session.createConsumer(
                     session.createQueue(queueNameRecv), "channel = '" + channel + "'");
 
@@ -133,13 +140,10 @@ public class ActiveMQSocketBridge {
                 try {
                     if (msg instanceof TextMessage) {
                         String body = ((TextMessage) msg).getText();
-                        logMessage("WCS->PLC from queue ", port, body);
-                        System.out.println("Received message from ActiveMQ: " + body);
                         try {
-                            PrintWriter writer = new PrintWriter(serverSocket.accept().getOutputStream(), true);
-                            writer.println("Message from AMQ: " + body);
-                            System.out.println("Forwarded AMQ message to client: " + body);
-                            logMessage("AMQ->SOCKET ", port, body);
+                            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+                            writer.println(body);
+                            logMessage("WCS->PLC ", port, body);
                         } catch (IOException e) {
                             System.err.println("Error sending message to client: " + e.getMessage());
                         }
@@ -153,10 +157,8 @@ public class ActiveMQSocketBridge {
 
             // Main loop to accept and handle client connections
             while (true) {
-                try (Socket clientSocket = serverSocket.accept();
-                        BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(clientSocket.getInputStream()));
-                        PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)) {
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(clientSocket.getInputStream()));) {
 
                     System.out.println("Socket connection established on port " + port);
                     clientSocket.setTcpNoDelay(true);
@@ -178,19 +180,13 @@ public class ActiveMQSocketBridge {
                                 // Extract the message, including 02 and 03
                                 String data = fullMessage.substring(startIndex, endIndex + 1);
                                 data = bytesToHex(data.getBytes()); // Convert to hex if needed
-
-                                System.out.println("Received data on port " + port + ": " + data);
-                                logMessage("Incoming SOCKET PLC->WCS ", port, data);
+                                logMessage("PLC->WCS ", port, data);
 
                                 // Send the received data to ActiveMQ
                                 TextMessage message = session.createTextMessage(data);
                                 message.setStringProperty("channel", String.valueOf(channel));
                                 producer.send(message);
-                                System.out.println("Sent message to AMQ channel " + channel);
 
-                                // Optionally send a response back to the client
-                                writer.println("Acknowledged: " + data);
-                                System.out.println("Response sent to client (optional)");
                             }
                         }
                     }

@@ -14,21 +14,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeoutException;
 
-import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
-
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.DeliverCallback;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.Channel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.impl.AMQBasicProperties;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.DeliverCallback;
 
 public class RabbitMQSocketBridge {
     private static String rabbitmqHost;
@@ -42,17 +34,20 @@ public class RabbitMQSocketBridge {
     private static Integer port;
 
     public static void main(String[] args) {
+        // TEST
+        // args = new String[1];
+        // args[0] = "1";
 
         System.out.println("args " + args[0].trim());
         try {
-            channel = Integer.parseInt(args[0].trim());
+            COM_CHANNEL = Integer.parseInt(args[0].trim());
 
             if (COM_CHANNEL == null || COM_CHANNEL == 0) {
                 throw new Exception("No valid channel");
             }
             // Path to the JSON configuration file
             // File configFile = new File(
-            // "C:\\Users\\lucas784\\Desktop\\Bachelorproef\\latex-hogent-BP-LucasVC\\tests\\messaging\\activemq-server\\listener-config.json");
+            // "C:\\Users\\lucas784\\Desktop\\Bachelorproef\\latex-hogent-BP-LucasVC\\tests\\messaging\\rabbitmq-server\\listener\\listener-config.json");
 
             File configFile = new File("/opt/jprogram/config.json");
 
@@ -60,12 +55,12 @@ public class RabbitMQSocketBridge {
             ObjectMapper mapper = new ObjectMapper();
             Config config = mapper.readValue(configFile, Config.class);
 
-            rabbitmqHost = config.activemq.host;
-            rabbitmqPort = config.activemq.port;
-            login = config.activemq.login;
-            passcode = config.activemq.login;
-            SEND_QUEUE = config.activemq.queueSend;
-            RECV_QUEUE = config.activemq.queueRecv;
+            rabbitmqHost = config.broker.host;
+            rabbitmqPort = config.broker.port;
+            login = config.broker.login;
+            passcode = config.broker.login;
+            SEND_QUEUE = config.broker.queueSend;
+            RECV_QUEUE = config.broker.queueRecv;
             port = config.channelPorts.get(COM_CHANNEL.toString());
             logPath = config.logPath;
 
@@ -101,7 +96,7 @@ public class RabbitMQSocketBridge {
 
     // Log messages
     private static void logMessage(String direction, int port, String message) {
-        try (FileWriter writer = new FileWriter(logPath + "/channel" + channel + ".log", true)) {
+        try (FileWriter writer = new FileWriter(logPath + "/channel" + COM_CHANNEL + ".log", true)) {
             String timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date());
             String logEntry = String.format("%s | %s | Port %d | Message: %s%n", timestamp, direction, port, message);
             writer.write(logEntry);
@@ -127,19 +122,21 @@ public class RabbitMQSocketBridge {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Listening on port " + port);
 
-            // Setup ActiveMQ connection
+            // Setup rabbitmq connection
             Connection rabbitMQConnection = connectToRabbitMQ();
             Channel channel = rabbitMQConnection.createChannel();
 
             channel.queueDeclare(SEND_QUEUE, false, false, false, null);
             channel.queueDeclare(RECV_QUEUE, false, false, false, null);
 
+            Socket clientSocket = serverSocket.accept();
+
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
 
                 try {
                     PrintWriter writer = new PrintWriter(serverSocket.accept().getOutputStream(), true);
-                    writer.println("Message from AMQ: " + message);
+                    writer.println("Message from Rabbitmq: " + message);
                     logMessage("WCS->PLC ", port, message);
                 } catch (IOException e) {
                     System.err.println("Error sending message to client: " + e.getMessage());
@@ -150,9 +147,8 @@ public class RabbitMQSocketBridge {
 
             // Main loop to accept and handle client connections
             while (true) {
-                try (Socket clientSocket = serverSocket.accept();
-                        BufferedReader reader = new BufferedReader(
-                                new InputStreamReader(clientSocket.getInputStream()));
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(clientSocket.getInputStream()));
                         PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true)) {
 
                     System.out.println("Socket connection established on port " + port);
@@ -180,9 +176,8 @@ public class RabbitMQSocketBridge {
                                 logMessage("Incoming SOCKET PLC->WCS ", port, data);
 
                                 // Send the received data to RabbitMQ
-                                String message = data;
-                                AMQBasicProperties prop = new AMQP.BasicProperties.Builder().channel.basicPublish("",
-                                        SEND_QUEUE, "channel" + COM_CHANNEL.toString(), message.getBytes());
+                                channel.basicPublish("", SEND_QUEUE, null,
+                                        fullMessage.substring(startIndex, endIndex + 1).getBytes());
 
                                 writer.println("Acknowledged: " + data);
                             }
@@ -190,8 +185,6 @@ public class RabbitMQSocketBridge {
                     }
                 } catch (IOException e) {
                     System.err.println("Error handling connection on port " + port + ": " + e.getMessage());
-                } catch (JMSException e) {
-                    System.err.println("Error with ActiveMQ: " + e.getMessage());
                 }
             }
 

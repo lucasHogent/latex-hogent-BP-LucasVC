@@ -9,9 +9,9 @@ USER root
 # sockets
 EXPOSE 8001 8002 8003 
 # amqp
-EXPOSE 61616 
+EXPOSE 61616 5672
 # web console
-EXPOSE 5672 
+EXPOSE 8161 
 # prometheus
 EXPOSE 8021 
 
@@ -31,7 +31,7 @@ RUN sudo rm -rf apache-artemis-2.32.0-bin.tar.gz
 
 RUN ln -s /opt/apache-artemis-2.32.0/ /opt/artemis
  
-RUN /opt/artemis/bin/artemis create /opt/artemis/artemis-broker --user artemis --password artemis --silent --require-login 
+RUN /opt/artemis/bin/artemis create /opt/artemis/artemis-broker --user admin --password admin --silent --require-login 
  
 RUN cat <<EOF > /etc/systemd/system/artemis.service
 [Unit]
@@ -51,6 +51,33 @@ Group=root
 [Install]
 WantedBy=multi-user.target
 EOF
+
+RUN cat <<EOF > /etc/systemd/system/jprogram.service
+[Unit]
+Description=Java PLC Listener Service
+After=syslog.target network.target
+
+[Service]
+Type=forking
+ExecStart=/opt/jprogram/start_all.sh
+WorkingDirectory=/opt/jprogram
+KillMode=none
+SendSIGKILL=no
+User=root
+Group=root
+TimeoutSec=240
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+
+RUN mkdir /opt/jprogram
+COPY listener/java-listener.jar /opt/jprogram/listener.jar
+COPY listener/start_listener.sh /opt/jprogram/start_listener.sh
+COPY listener/start_all.sh /opt/jprogram/start_all.sh
+COPY listener/listener-config.json /opt/jprogram/config.json  
+COPY listener/listeners.txt /opt/jprogram/listeners.txt
  
 RUN mkdir /opt/artemis/artemis-broker/web
 COPY bootstrap.xml /opt/artemis/artemis-broker/etc

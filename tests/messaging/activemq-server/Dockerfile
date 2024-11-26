@@ -9,9 +9,9 @@ USER root
 # sockets
 EXPOSE 8001 8002 8003 
 # amqp
-EXPOSE 61616 
+EXPOSE 61616 5672
 # web console
-EXPOSE 5672 
+EXPOSE 8161 
 # prometheus
 EXPOSE 8020 
 
@@ -35,11 +35,11 @@ RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaage
 ENV ACTIVEMQ_USER=admin
 ENV ACTIVEMQ_PASSWORD=admin
 
-COPY java-listener.jar /opt/jprogram/listener.jar
-COPY start_listener.sh /opt/jprogram/start_listener.sh
-COPY start_all.sh /opt/jprogram/start_all.sh
-COPY listener-config.json /opt/jprogram/config.json  
-COPY listeners.txt /opt/jprogram/listeners.txt
+COPY listener/activemq-listener.jar /opt/jprogram/listener.jar
+COPY listener/start_listener.sh /opt/jprogram/start_listener.sh
+COPY listener/start_all.sh /opt/jprogram/start_all.sh
+COPY listener/listener-config.json /opt/jprogram/config.json  
+COPY listener/listeners.txt /opt/jprogram/listeners.txt
 COPY setenv opt/activemq/bin/setenv
 COPY jmx-config.yml /opt/jmx_exporter/config.yml
 
@@ -67,7 +67,7 @@ After=syslog.target network.target
 [Service]
 Type=forking
 ExecStart=/opt/jprogram/start_all.sh
-WorkingDirectory=/tmp
+WorkingDirectory=/opt/jprogram
 KillMode=none
 SendSIGKILL=no
 User=root

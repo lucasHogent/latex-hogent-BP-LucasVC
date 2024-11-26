@@ -29,6 +29,11 @@ scrape_configs:
     static_configs:
       - targets: ["amq:8020"]
       
+  - job_name: "rabbitmq"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["rabbitmq:15692"]    
+      
   - job_name: "artemis"
     scrape_interval: 5s
     fallback_scrape_protocol: "PrometheusText1.0.0"

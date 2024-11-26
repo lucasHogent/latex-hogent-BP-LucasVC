@@ -7,6 +7,9 @@ import threading
 import queue
 import time
 
+retry_interval = None
+send_interval = None
+
 
 def setup_logging(log_file_path):
     """Set up logging configuration."""
@@ -39,7 +42,7 @@ def send_messages(socket_conn, port, message_queue, stop_event):
             socket_conn.send(bytes.fromhex(message.replace(" ", "")))
             logging.info(f"Sent to {port}: {message}")
             print(f"Sent to {port}: {message}")
-            time.sleep(0.1)  # Simulate delay
+            time.sleep(send_interval) # Simulate delay
         except queue.Empty:
             continue  # No message to send; check stop_event
 
@@ -50,9 +53,9 @@ def receive_messages(socket_conn, port, buffer_size, stop_event):
         try:
             data = socket_conn.recv(buffer_size)
             if data:
-                message = data.hex()
-                logging.info(f"Received from {port}: {message}")
-                print(f"Received from {port}: {message}")
+                logging.info(f"Received from {port}: {data}")
+                print(f"Received from {port}: {data}")
+                
         except socket.error as e:
             logging.error(f"Error receiving from {port}: {e}")
             break
@@ -66,45 +69,39 @@ def handle_connection(host, port, buffer_size, message_queue, stop_event):
         try:
             # Create socket and connect to the server
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_conn:
-                socket_conn.connect((host, port))
-                socket_conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)  # Disable Nagle's algorithm
-                logging.info(f"Connected to {host}:{port}")
-                print(f"Connected to {host}:{port}")
+                try:
+                    socket_conn.connect((host, port))
+                    socket_conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)  
+                    logging.info(f"Connected to {host}:{port}")
+                    print(f"Connected to {host}:{port}")
 
-                # Create threads for sending and receiving messages
-                send_thread = threading.Thread(target=send_messages, args=(socket_conn, port, message_queue, stop_event))
-                receive_thread = threading.Thread(target=receive_messages, args=(socket_conn, port, buffer_size, stop_event))
+                    # Create threads for sending and receiving messages
+                    send_thread = threading.Thread(target=send_messages, args=(socket_conn, port, message_queue, stop_event))
+                    receive_thread = threading.Thread(target=receive_messages, args=(socket_conn, port, buffer_size, stop_event))
 
-                # Start threads
-                send_thread.start()
-                receive_thread.start()
+                    # Start threads
+                    send_thread.start()
+                    receive_thread.start()
 
-                # Wait for threads to finish
-                send_thread.join()
-                receive_thread.join()
-
+                    # Wait for threads to finish
+                    send_thread.join()
+                    receive_thread.join()
+                except (socket.error, socket.timeout) as e:
+                    print(f"Connection failed for port {host}:{port}: {e}. Retrying in {retry_interval} seconds...")
+                    time.sleep(retry_interval)
         except (ConnectionRefusedError, socket.timeout) as e:
-            logging.error(f"Could not connect to {host}:{port} - {e}. Retrying in 5 seconds...")
-            print(f"Retrying connection to {host}:{port} in 5 seconds...")
-            time.sleep(5)
-
-
-def generate_and_enqueue_messages(message_queue, stop_event):
-    """Generate and enqueue random messages."""
-    while not stop_event.is_set():
-        message = generate_random_message()
-        message_queue.put(message)
-        logging.info(f"Enqueued message: {message}")
-        print(f"Enqueued message: {message}")
-        time.sleep(5)  # Simulate delay between message generations
-
+            logging.error(f"Could not connect to {host}:{port} - {e}. Retrying in {retry_interval} seconds...")
+            print(f"Retrying connection to {host}:{port} in {retry_interval} seconds...")
+            time.sleep(retry_interval)
 
 def main():
     """Main entry point for the client."""
     # Load configurations
     config = configparser.ConfigParser()
+    #config.read("c:/Users/lucas784/Desktop/Bachelorproef/latex-hogent-BP-LucasVC/tests/plc/plc-config.ini")
     config.read("plc-config.ini")
 
+    print("Loaded sections:", config.sections())
     # Setup logging
     log_file_path = config["LOGGING"]["LOG_FILE"]
     setup_logging(log_file_path)
@@ -114,6 +111,10 @@ def main():
     ports = [int(port.strip()) for port in config["SOCKET"]["PORTS"].split(",")]
     buffer_size = int(config["SOCKET"]["BUFFER_SIZE"])
 
+    global retry_interval, send_interval
+    retry_interval = float(config["INTERVAL"]["RETRY"])
+    send_interval = float(config["INTERVAL"]["SEND"])
+
     logging.info(f"Starting client for host {host} with ports {ports}")
 
     # Create a Queue and a stop_event
@@ -121,9 +122,6 @@ def main():
     stop_event = threading.Event()
 
     try:
-        # Start message generation thread
-        # message_thread = threading.Thread(target=generate_and_enqueue_messages, args=(message_queue, stop_event))
-        # message_thread.start()
 
         # Start handling connections for each port
         connection_threads = []
@@ -132,8 +130,6 @@ def main():
             connection_threads.append(connection_thread)
             connection_thread.start()
 
-        # Wait for all threads to finish (indefinitely running unless interrupted)
-        # message_thread.join()
         for connection_thread in connection_threads:
             connection_thread.join()
 
