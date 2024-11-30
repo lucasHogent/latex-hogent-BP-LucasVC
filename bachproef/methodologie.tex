@@ -53,6 +53,7 @@ Documenten van het bedrijf en interviews met vakexperts vormen de basis voor dit
 \\
 Het doel is om na het lezen van dit hoofdstuk inzicht te krijgen in de requirements van het huidige systeem, 
 zodat deze kunnen dienen als basis voor de keuze van een surrogaat van het huidige messaging systeem.
+\\
  
 \subsection{PLC gebruik binnen TVH}
 Er zijn 7 verschillende PLC's in TVH Waregem die instaan voor verschillende zones van de conveyor.
@@ -80,11 +81,14 @@ Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat el
     \end{tabular}
     \caption[Channel assignment]{\label{tab:channel-assignment}Beschrijving van kanalen}
   \end{table}
-
+ 
 \subsubsection{PLC berichten}
 Berichten bestaan uit een frame opgedeeld in velden en hebben een specifieke lengte.
 De inhoud van een bericht is gebaseerd op het hexadecimale stelsel en wordt in detail toegelicht in de onderstaande tabel.
 Bepaalde controles worden uitgevoerd om de validiteit van een bericht af te toetsen. 
+\\\\
+Er worden ongeveer 80 berichten per minuut verstuurd per PLC, per kanaal.
+Het totale aantal verstuurde berichten per minuut komt uit op ongeveer 1680/min.
 
 \begin{table}[h!]
   \centering 
@@ -116,20 +120,29 @@ Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd:
   \caption[Voorbeeld PLC bericht]{Voorbeeld van een PLC bericht}
 \end{listing}
 
-Een bericht kan dus maximaal 32 bytes groot zijn en wordt in rekening gehouden voor de testen in latere fase.
-
+\subsection{Middleware tussen PLC en WCS}
+De PLC kan alleen maar een TCP/IP socket verbinding initiëren met een server.
+Omdat SonicMQ als middleware hierdoor geen verbinding kan maken zijn er listeners gemaakt in Java door TVH.
+Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP socket verbinding mogelijk te maken per PLC kanaal.
+De Java listeners sturen de PLC-berichten vervolgens door naar SonicMQ of ontvangen berichten van SonicMQ, 
+die ze via een socket naar de PLC doorsturen.
+Aan de kant van het WCS zijn er meer mogelijkheden om verbinding te kunnen maken met een server.
+\\\\
+SonicMQ bied geen support meer en is niet populair waardoor er ook geen community is.
+ 
 \subsection{WCS communicatie} 
 Op het ERP-systeem van TVH draaien acht verschillende batches die verantwoordelijk zijn voor de aansturing van de PLC. 
-Elke batch-instantie communiceert met specifieke PLC-kanalen en bevat daarvoor specifieke logica.
-Deze batches zijn verbonden via een specifieke poort met een \textbf{Progress JMS Adapter} op de communicatie server.
+Elke batch-instantie communiceert met specifieke PLC-kanalen en bevat daarvoor specifieke logica, geschreven in OpenEdge Progress 4GL.
+Deze batches zijn verbonden via een specifieke poort met een \textbf{Progress JMS Adapter} op de communicatie server omdat ze de ``Broker connect'' methode gebruiken.
 Hiermee kunnen de batches de berichten consumeren en versturen van de SonicMQ server.
+Daarnaast is het ook mogelijk om de Client connect methode te gebruiken, wat gemakkelijker is qua integratie.
 
-\subsection{Progress OpenEdge JMS Adapter}
+\subsubsection{Progress OpenEdge JMS Adapter}
 De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te ontvangen van JMS (Java Messaging System)
 message brokers zoals Apache ActiveMQ, IBM MQ, en TIBCO EMS. 
 Dit betekent dat OpenEdge-applicaties kunnen integreren met andere systemen die JMS ondersteunen, 
 zonder dat er directe afhankelijkheden nodig zijn.
-Hierdoor zijn we gelimiteerd in de keuze van message brokers.
+Hierdoor zijn we gelimiteerd in de keuze van message brokers tot brokers die JMS ondersteunen.
 \\
 \\
 Omdat JMS asynchrone communicatie ondersteunt, kunnen OpenEdge-applicaties berichten verzenden zonder te wachten op een onmiddellijke respons.
@@ -145,13 +158,14 @@ Door JMS te gebruiken met message brokers die schaling en betrouwbaarheid onders
 Dit is belangrijk voor bedrijfsomgevingen waar de continuïteit en betrouwbaarheid van berichtenstromen essentieel zijn.
 
 \subsubsection{Integratie met Verschillende Enterprise Systemen}
-Met de JMS Adapter kunnen OpenEdge-applicaties communiceren met andere zakelijke systemen zoals ERP's, CRM’s en databronnen, wat nuttig is in bedrijfsprocessen waarbij gegevens moeten worden gedeeld tussen verschillende systemen.
+Met de JMS Adapter kunnen OpenEdge-applicaties communiceren met andere systemen zoals ERP's, CRM’s, wat nuttig is in bedrijfsprocessen waarbij 
+gegevens moeten worden gedeeld tussen verschillende systemen.
 
 \subsubsection{Configuratie en Beheer}
 De Progress OpenEdge JMS Adapter biedt configuratiemogelijkheden waarmee beheerders de communicatie kunnen aanpassen aan de vereisten van hun omgeving, 
 zoals het instellen van queue-namen, topics, verbindingsparameters, en het beheren van uitzonderingen.
- 
-\subsection{WCS berichten} 
+
+\subsubsection{WCS berichten} 
 Berichten komen binnen van de PLC via de communicatie server. Ieder bericht wordt getransformeerd naar variabelen die dan verder gebruikt worden in de code.
 Deze berichten bevatten informatie over transportbakken en zijn nodig om deze te kunnen traceren via de ERP.
 Specifieke logica is nodig om bakken tot hun bestemming te krijgen, of om fout afhandeling te voorzien.
@@ -169,70 +183,85 @@ Volgende voorbeelden doen zich voor:
   \item \dots
 \end{enumerate}
 
-\subsection{Middleware tussen PLC en WCS}
-De PLC kan alleen maar een TCP/IP socket verbinding initiëren met een server.
-Omdat SonicMQ als middleware hierdoor geen verbinding kan maken zijn er listeners gemaakt in Java door TVH.
-Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP socket verbinding mogelijk te maken per PLC kanaal.
-De Java listeners sturen de PLC-berichten vervolgens door naar SonicMQ of ontvangen berichten van SonicMQ, 
-die ze via een socket naar de PLC doorsturen.
-Aan de kant van het WCS zijn er meer mogelijkheden om verbinding te kunnen maken met een server.
-
-
+\subsection{Monitoring}
+Het bestaande systeem wordt gemonitord met behulp van software zoals Prometheus, Grafana en Elastic.
+Hierdoor kunnen systeemfouten snel opgemerkt worden en berichten verstuurd worden als bepaalde waardes overschreden worden.
+ 
 \subsection{Samenvatting requirements messaging systeem}
 De belangrijkste requirements voor de huidige setup zijn als volgt:
 
 \subsubsection{Integratie met het WCS systeem}
-Het messaging systeem moet kunnen integreren met het huidige WCS-systeem dat Progress 4GL gebruikt. 
-Deze technologie maakt gebruik van een Progress OpenEdge JMS Adapter om de connectie te maken met een messaging broker.
-Deze integratie is noodzakelijk voor het efficiënt uitwisselen van informatie over transportbakken, inclusief routeringsinformatie, 
-foutmeldingen, en statusupdates.
+Het messaging systeem moet kunnen integreren met het huidige WCS-systeem dat gebruik maakt van Progress 4GL versie 11.7. 
+Hiervoor moet de broker het \textbf{JMS protocol ondersteunen} en geïnstalleerd kunnen worden op een \textbf{Unix platform}.
+Daarnaast moet de middleware ook gebruikt kunnen worden door \textbf{monitoring software}.
 
 \subsubsection{Performantie}
-Om de real-time eisen van het WCS en de PLC’s te ondersteunen, moet het messaging systeem lage latentie bieden. 
+Om de real-time eisen van het WCS en de PLC’s te ondersteunen, moet het messaging systeem \textbf{lage latentie} bieden. 
 Dit betekent dat berichten zonder merkbare vertraging moeten worden verstuurd en ontvangen, 
 zodat de snelheid van de conveyor niet wordt beperkt door de communicatiesnelheid.
+Om vertraging te voorkomen moet de verwerking van de berichten \textbf{asynchroon} gebeuren.
 
 \subsubsection{Betrouwbare Berichtenoverdracht}
-Het systeem moet in staat zijn berichten consistent en zonder verlies over te brengen. 
+Het systeem moet in staat zijn berichten \textbf{consistent en zonder verlies} over te brengen. 
 Dit is essentieel om de traceerbaarheid van transportbakken te garanderen en fouten in de logistieke processen te voorkomen.
+Hiervoor moet de broker het \textbf{AMQP protocol} ondersteunen.
 
 \subsubsection{Support en Community}
 Het is belangrijk dat de gekozen message broker support biedt en dat er een grote community aanwezig is 
 waarbij je terecht kunt voor advies, probleemoplossing en best practices.
 
+\subsubsection{Kosten}
+Support gaat vaak samen met kosten en is ook belangrijk om mee te nemen in de keuze van een messaging systeem.
+Sommige systemen hangen vast aan een kostenmodel, andere zijn open-source en brengen geen kosten met zich mee.
+
 \section{Phase 3: Long List}
+Onderstaande lijst geeft een overzicht van de meest populaire Messaging brokers beschikbaar op de markt.
+Hierdoor kan een eerste vergelijking gedaan worden en de niet relevante systemen gefilterd worden.
+\\
+De belangrijke criteria voor de keuze van een message broker zijn:
+\begin{itemize}
+  \item JVM ondersteuning
+  \item Unix compatibel 
+  \item AMQP protocol
+  \item Kostenmodel
+  \item Omgeving (Cloud en/of lokaal)
+  \item Community
+\end{itemize}
 
 \begin{table}[h!]
+  \footnotesize
   \centering
   \begin{tabular}{|l|c|c|c|c|c|}
   \hline
-  Message Broker & JVM Ondersteuning & Unix & Populaire Protocollen & Kostenmodel & Cloud toepasbaar \\
+  Message Broker & JVM & Unix & Protocollen & Kostenmodel & On premise \\
   \hline
-  Apache Kafka & Ja & Ja & Kafka, MQTT, REST & Open-source (mogelijke kosten voor ondersteuning) & Ja (geschikt) \\
+  Apache Kafka & Ja & Ja & Kafka, MQTT, REST & Open-source x & Ja \\
   \hline
-  RabbitMQ & Ja & Ja & AMQP, MQTT, STOMP & Open-source (mogelijke kosten voor ondersteuning) & Ja (geschikt) \\
+  RabbitMQ & Ja & Ja & AMQP, MQTT, STOMP & Open-source x & Ja \\
   \hline
-  ActiveMQ & Ja & Ja & AMQP, MQTT, STOMP, OpenWire & Open-source (mogelijke kosten voor ondersteuning) & Ja (geschikt) \\
+  Artemis & Ja & Ja & AMQP, MQTT, STOMP & Open-source x & Ja \\
   \hline
-  MQTT.js & Ja & Ja & MQTT & Open-source & Ja (geschikt) \\
+  ActiveMQ & Ja & Ja & AMQP, MQTT, STOMP, OpenWire & Open-source x & Ja \\
   \hline
-  IBM MQ & Ja & Ja & MQ, MQTT, JMS & Commercieel (abonnement) & Ja (geschikt) \\
+  MQTT.js & Ja & Ja & MQTT & Open-source & Ja \\
   \hline
-  Redis & Ja (optioneel) & Ja & Pub/Sub & Open-source (mogelijke kosten voor ondersteuning) & Ja (geschikt) \\
+  IBM MQ & Ja & Ja & MQ, MQTT, JMS & Abonnement & Ja \\
   \hline
-  NSQ & Ja & Ja & NSQ Protocol & Open-source & Ja (geschikt) \\
+  Redis & Ja & Ja & Pub/Sub & Open-source x & Ja \\
   \hline
-  Apache Pulsar & Ja & Ja & Pulsar Protocol, MQTT, Kafka & Open-source (mogelijke kosten voor ondersteuning) & Ja (native) \\
+  NSQ & Ja & Ja & NSQ & Open-source & Ja \\
   \hline
-  NATS & Ja & Ja & NATS Protocol & Open-source (mogelijke kosten voor ondersteuning) & Ja (native) \\
+  Apache Pulsar & Ja & Ja & Pulsar, MQTT, Kafka & Open-source x & Nee \\
   \hline
-  ZeroMQ & Ja & Ja & ØMQ & Open-source & Ja (geschikt) \\
+  NATS & Ja & Ja & NATS & Open-source x & Nee \\
   \hline
-  Amazon SQS & Nee & Nee (cloud-service) & AWS-eigen protocol & Pay-per-use & Ja (native) \\
+  ZeroMQ & Ja & Ja & ØMQ (Socket) & Open-source & Ja \\ 
   \hline
-  Google Cloud Pub/Sub & Nee & Nee (cloud-service) & Cloud Pub/Sub Protocol & Pay-per-use & Ja (native) \\
+  Amazon SQS & Nee & Nee & AWS protocol & Pay-per-use & Nee \\
   \hline
-  Azure Service Bus & Nee & Nee (cloud-service) & AMQP, MQTT, HTTP & Pay-per-use & Ja (native) \\
+  Google Cloud Pub/Sub & Nee & Nee & Cloud Pub/Sub & Pay-per-use & Nee \\
+  \hline
+  Azure Service Bus & Nee & Nee & AMQP, MQTT, HTTP & Pay-per-use & Nee \\
   \hline
   \end{tabular}
   \caption{\label{tab:message_brokers}Longlist message brokers}
@@ -240,155 +269,36 @@ waarbij je terecht kunt voor advies, probleemoplossing en best practices.
 
 \section{Phase 4: ShortList}
 
+Artemis, ActiveMQ, RabbitMQ
+
 \section{Phase 5: Testen}
 Opzoeken van test methodes 
 % https://www.researchgate.net/publication/342312542_Classification_and_evaluation_of_IoT_brokers_A_methodology
 
-Testen en monitoring opzetten per gekozen technologie
 
-Opzet simulator PLC:
-\begin{listing}[h!]
-    \begin{minted}{python}
-      import socket
-import configparser
-import logging
-import os
-import random
-import threading
-import queue
-import time
+\subsection{Test opzet}
+Testen gebeuren in een afgeschermde omgeving.
+Iedere broker draait in een docker container wat het gemakkelijk maakt om te wisselen tussen de containers.
 
+\subsubsection{Opzet Artemis}
 
-def setup_logging(log_file_path):
-    """Set up logging configuration."""
-    os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
-    logging.basicConfig(
-        filename=log_file_path,
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-    )
+\subsection{Systeem Hardware Informatie}
+\subsubsection*{Geheugen}
+\begin{itemize}
+    \item \textbf{Omschrijving:} System memory
+    \item \textbf{Fysieke ID:} 0
+    \item \textbf{Grootte:} 8GiB
+\end{itemize}
 
+\subsubsection*{CPU}
+\begin{itemize}
+    \item \textbf{Product:} Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
+    \item \textbf{Fabrikant:} Intel Corp. 
+    \item \textbf{Versie:} 6.85.0
+    \item \textbf{Breedte:} 64 bits
+\end{itemize}
 
-def generate_random_message():
-    """Generates a random hexadecimal message."""
-    message_template = [
-        "02", "00", "1d", "20",
-        f"{random.randint(0, 255):02x}", f"{random.randint(0, 255):02x}", "20", "20", "00", "00", "20", "20",
-        f"{random.randint(0, 255):02x}", f"{random.randint(0, 255):02x}", "20", "20",
-        f"{random.randint(0, 255):02x}", "20", "20", "20", "20", "20", "20", "20", "20", "20",
-        "20", "20", "20", "20", "20", "03"
-    ]
-    return " ".join(message_template)
-
-
-def send_messages(socket_conn, port, message_queue, stop_event):
-    """Send messages from the queue to the socket."""
-    while not stop_event.is_set():
-        try:
-            message = message_queue.get(timeout=1)  # Wait for a message from the queue
-            socket_conn.send(bytes.fromhex(message.replace(" ", "")))
-            logging.info(f"Sent to {port}: {message}")
-            print(f"Sent to {port}: {message}")
-            time.sleep(0.1)  # Simulate delay
-        except queue.Empty:
-            continue   
-
-
-def receive_messages(socket_conn, port, buffer_size, stop_event):
-    """Receive messages from the socket."""
-    while not stop_event.is_set():
-        try:
-            data = socket_conn.recv(buffer_size)
-            if data:
-                message = data.hex()
-                logging.info(f"Received from {port}: {message}")
-                print(f"Received from {port}: {message}")
-        except socket.error as e:
-            logging.error(f"Error receiving from {port}: {e}")
-            break
-
-
-def handle_connection(host, port, buffer_size, message_queue, stop_event):
-    """Handle socket connection, send and receive messages."""
-    while not stop_event.is_set():
-        try:
-            # Create socket and connect to the server
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as socket_conn:
-                socket_conn.connect((host, port))
-                socket_conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)  # Disable Nagle's algorithm
-                logging.info(f"Connected to {host}:{port}")
-                print(f"Connected to {host}:{port}")
  
-                send_thread = threading.Thread(target=send_messages, args=(socket_conn, port, message_queue, stop_event))
-                receive_thread = threading.Thread(target=receive_messages, args=(socket_conn, port, buffer_size, stop_event))
- 
-                send_thread.start()
-                receive_thread.start() 
-                send_thread.join()
-                receive_thread.join()
-
-        except (ConnectionRefusedError, socket.timeout) as e:
-            logging.error(f"Could not connect to {host}:{port} - {e}. Retrying in 5 seconds...")
-            print(f"Retrying connection to {host}:{port} in 5 seconds...")
-            time.sleep(5)
 
 
-def generate_and_enqueue_messages(message_queue, stop_event):
-    """Generate and enqueue random messages."""
-    while not stop_event.is_set():
-        message = generate_random_message()
-        message_queue.put(message)
-        logging.info(f"Enqueued message: {message}")
-        print(f"Enqueued message: {message}")
-        time.sleep(0.5) 
 
-
-def main(): 
-
-    config = configparser.ConfigParser()
-    config.read("plc-config.ini")
- 
-    log_file_path = config["LOGGING"]["LOG_FILE"]
-    setup_logging(log_file_path)
- 
-    host = config["SOCKET"]["HOST"]
-    ports = [int(port.strip()) for port in config["SOCKET"]["PORTS"].split(",")]
-    buffer_size = int(config["SOCKET"]["BUFFER_SIZE"])
-
-    logging.info(f"Starting client for host {host} with ports {ports}")
- 
-    message_queue = queue.Queue()
-    stop_event = threading.Event()
-
-    try: 
-        message_thread = threading.Thread(target=generate_and_enqueue_messages, args=(message_queue, stop_event))
-        message_thread.start()
-
-        connection_threads = []
-        for port in ports:
-            connection_thread = threading.Thread(target=handle_connection, args=(host, port, buffer_size, message_queue, stop_event))
-            connection_threads.append(connection_thread)
-            connection_thread.start()
-
-        message_thread.join()
-        for connection_thread in connection_threads:
-            connection_thread.join()
-
-    except KeyboardInterrupt:
-        logging.info("Shutting down client...")
-        stop_event.set()  # Signal all threads to stop
-
-    finally:
-        logging.info("Client stopped.")
-
-
-if __name__ == "__main__":
-    main()
-
-    \end{minted}
-    \caption[Python code PLC sim]{Code voor het simuleren van PLC verbinding}
-\end{listing}
-
-\section{Phase 6: Resultaten}
-
-Evalueren

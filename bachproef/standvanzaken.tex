@@ -159,6 +159,17 @@ ABL applicaties zoals het WCS hebben een JMS (Java Messaging System) adapter nod
 De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te ontvangen van JMS message brokers zoals Apache ActiveMQ. 
 Dit betekent dat OpenEdge-applicaties alleen kunnen integreren met messaging middleware die JMS ondersteunen. 
 Een recente ontwikkeling (versie 12.8) maakt het mogelijk om Apache Kafka te integreren via een API die door OpenEdge wordt geleverd.
+\\\\
+De Progress OpenEdge JMS Adapter biedt twee methoden voor het verbinden met een message broker: Client Connect en Broker Connect.
+\subsubsection{Broker Connect}
+Is een methode waarbij de communicatie wordt gemaakt via een tussenlaag. Services verbinden via een specifieke poort op de communicatie server
+dat de verbinding met de messaging broker beheerd. Dit is voordelig voor de veiligheid omdat de JMS broker niet rechtstreeks blootgesteld wordt.
+De opzet van deze methode kan complexer zijn dan Client connect.
+
+\subsubsection{Client Connect}
+Deze methode verbind direct met de messaging broker waardoor integratie eenvoudiger is. 
+Hierdoor is de message broker rechtstreeks blootgesteld op het netwerk.
+
 
 \section{Communicatie methodes}
 Dit hoofdstuk bevat informatie over de relevante communicatiemethoden en geeft inzicht in hun werking.
@@ -291,25 +302,25 @@ De huidige setup in het bedrijf voor de communicatie tussen PLC en WMS is on-pre
 Cloud-oplossingen draaien op externe servers die via het internet toegankelijk zijn, 
 terwijl on-premise-oplossingen lokaal binnen de eigen infrastructuur worden beheerd en onderhouden.
 De snelheid over het netwerk kan onderzocht en getest worden voor beide toepassingen en is relevant voor het aanbevelingsrapport.
-Volgend overzicht is een samenvatting uit een onderzoek van \cite{Golec2021}:
+Volgend overzicht is een samenvatting uit een onderzoek van \cite{Golec2021} en van \cite{Fisher2018}:
 
-% \textbf{Cloud:}
-% \begin{itemize}
-%   \item Flexibiliteit: Hardware, software en applicaties extern beheerd door een serviceprovider.
-%   \item Kostenefficiënter: organisaties betalen alleen voor de gebruikte resources.
-%   \item Beveiliging: Cloud biedt uitgebreide beveiligingsmaatregelen en beleidsregels, inclusief speciale cloud omgevingen voor gevoelige data.
-%   \item Onderhoud: wordt volledig door de cloud provider verzorgd, inclusief automatische updates en upgrades.
-%   \item Schaalbaarheid: infrastructuur kan snel worden aangepast aan veranderende behoeften, wat sneller en eenvoudiger is dan bij on-premises modellen.
-% \end{itemize}
+\textbf{Cloud:}
+\begin{itemize}
+  \item Flexibiliteit: Hardware, software en applicaties extern beheerd door een serviceprovider.
+  \item Kosten: organisaties betalen alleen voor de gebruikte resources. Dit kan hoger oplopen op langere termijn. 
+  \item Beveiliging: Cloud biedt uitgebreide beveiligingsmaatregelen en beleidsregels, inclusief speciale cloud omgevingen voor gevoelige data.
+  \item Onderhoud: wordt volledig door de cloud provider verzorgd, inclusief automatische updates en upgrades.
+  \item Schaalbaarheid: infrastructuur kan snel worden aangepast aan veranderende behoeften, wat sneller en eenvoudiger is dan bij on-premises modellen.
+\end{itemize}
 
-% \textbf{On-Premise:}
-%   \begin{itemize}
-%     \item Flexibiliteit: Hardware, software en applicaties op locatie in het eigen datacenter, wat meer controle en verantwoordelijkheid vereist.
-%     \item Kostenefficiënter: brengen hogere initiële kosten met zich mee voor hardware en software.
-%     \item Beveiliging: is volledig in eigen handen, wat voor sommige organisaties een voordeel kan zijn, maar ook extra zorg en middelen vereist.
-%     \item Onderhoud: organisaties zijn verantwoordelijk voor het onderhoud van servers, data-back-ups en disaster recovery
-%     \item Schaalbaarheid: is beperkter, het aanpassen van de infrastructuur of het uitbreiden van servers is een tijdrovend proces in vergelijking met de cloud
-%   \end{itemize}
+\textbf{On-Premise:}
+  \begin{itemize}
+    \item Flexibiliteit: Hardware, software en applicaties op locatie in het eigen datacenter, wat meer controle en verantwoordelijkheid vereist.
+    \item Kosten: brengen hogere initiële kosten met zich mee voor hardware en software maar is op langere termijn goedkoper.
+    \item Beveiliging: is volledig in eigen handen, wat een voordeel kan zijn, maar ook extra zorg en middelen vereist.
+    \item Onderhoud: organisaties zijn verantwoordelijk voor het onderhoud van servers, data-back-ups en disaster recovery
+    \item Schaalbaarheid: is beperkter, het aanpassen van de infrastructuur of het uitbreiden van servers is een tijdrovend proces in vergelijking met de cloud
+  \end{itemize}
    
 \begin{table}[!h]
   \centering
@@ -317,12 +328,12 @@ Volgend overzicht is een samenvatting uit een onderzoek van \cite{Golec2021}:
     \toprule Kenmerk & Cloud & On-Premise \\
     \midrule Kosten & Pay-per-use & Hoge initiële investering \\
     Beheer & Cloud provider & Eigen organisatie \\
-    Schaalbaarheid & Hoog & Beperkt \\
+    Schaalbaarheid & Gemakkelijk & Beperkt \\
     Beveiliging & Uitgebreide maatregelen & Eigen verantwoordelijkheid \\
     Toegankelijkheid & Van overal & Beperkt tot lokaal netwerk \\
-    Onderhoud & Door cloud provider & Eigen organisatie \\
-    Performance & Meestal hoog & Kan variëren \\
-    Beschikbaarheid & Hoog & Afhankelijk van onderhoud \\
+    Onderhoud & Door cloud provider & Eigen verantwoordelijkheid \\
+    Performance & Meestal hoog & Hoog \\
+    Beschikbaarheid & Hoog & Eigen verantwoordelijkheid \\
     \bottomrule
   \end{tabular}
   \caption{\label{tab:cloud_vs_onpremise}Vergelijking tussen Cloud en On-Premise oplossingen\autocite{Golec2021}}
@@ -332,11 +343,14 @@ Volgend overzicht is een samenvatting uit een onderzoek van \cite{Golec2021}:
 In dit hoofdstuk worden de meest relevante messaging protocollen besproken die later in het vergelijkend onderzoek aan bod komen.
 
 \subsection{AMQP (Advanced Message Queuing Protocol)} 
-AMQP is een protocol gebaseerd op het publish-subscribe model, oorspronkelijk ontwikkeld voor de financiële sector, maar tegenwoordig ook beperkt toegepast in de ICT-sector. 
-Het belangrijkste doel van AMQP is het bieden van betrouwbaarheid bij het verzenden van berichten.  
+AMQP is een protocol gebaseerd op het publish-subscribe model, een veelgebruikt protocol in de huidige IT infrastructuur.
+Het belangrijkste doel van AMQP is het bieden van betrouwbaarheid bij het verzenden van berichten \autocite{Adiono2020}.  
 
 \subsubsection{Hoofdfuncties van AMQP}
-TODO
+AMQP wordt ook gebruikt als standaard voor messaging. 
+Het AMQP-protocol wordt als meer compatibel beschouwd met onstabiele internetverbindingen omdat het een store-and-forward functie heeft. 
+Deze functie kan gegevens tijdelijk opslaan als de verbinding onstabiel is of tijdelijk uitvalt. 
+AMQP heeft ook een goede interoperabiliteit, omdat het multi-user, multi-infrastructuur, flexibele routing en beveiliging kan bieden.
  
 \subsubsection{Toepassingen}
 AMQP wordt gebruikt in uiteenlopende domeinen die belang hechten aan betrouwbaarheid, waaronder:
@@ -344,9 +358,6 @@ AMQP wordt gebruikt in uiteenlopende domeinen die belang hechten aan betrouwbaar
 \textbf{Autonome systemen:} Voor het coördineren van gedistribueerde processen. \\ 
 \textbf{Cloud computing:} Voor veilige en gestructureerde gegevensoverdracht.  \\
 \textbf{IoT-technologie:} Voor het waarborgen van betrouwbare communicatie en veiligheidsaspecten in IoT-apparaten.
-
-\subsection{STOMP (Streaming Text Orientated Messaging Protocol)}
-TODO
 
 \subsection{MQTT (Message Queue Telemetry Transport)}
 MQTT is een publish/subscribe service protocol dat gebruikmaakt van een infrastructuur waarin clients verbinding maken met een centrale server, de zogenaamde broker. 
@@ -358,20 +369,19 @@ De subscribers zijn de eindgebruikers van de gegevens. Deze ontvangen de data vi
 De broker coördineert de gegevensuitwisseling tussen publishers en subscribers en fungeert als de centrale infrastructuur.
 
 \subsubsection{Toepassingen}
-Het protocol vereist weinig bandbreedte en energie, dankzij de kleine headergrootte. Dit maakt het zeer geschikt voor IoT-apparaten.
+Het protocol vereist weinig bandbreedte en energie, dankzij de kleine headergrootte. 
+Dit maakt het zeer geschikt voor IoT-apparaten.
 
 \textbf{Industriële Automatisering (IIoT):} Apparaten in fabrieken of pijpleidingen communiceren met centrale systemen voor real-time monitoring.
 \textbf{Gezondheidszorg:} Monitoring op afstand van patiënten via draagbare apparaten zoals glucosemeters of hartslagmonitors.
 \textbf{Transport en Logistiek:} Beheer van voertuiglocaties en conditie van vracht zoals temperatuur van gekoelde opslag.
  
-\subsection{DDS (Data Distribution Service)}
-TODO
-\subsection{SMQ (Simple Messaging Protocol)}
-TODO
- 
 \section{Message brokers}
-Message brokers zijn... \\
-
+Message brokers zijn middleware die instaan voor de communicatie via publish/subscribe-queues tussen verschillende services.
+Producers sturen een bericht naar de broker door gebruik te maken van een bepaald protocol.
+De functie van een message broker is het opslaan op een wachtrij (queue), routeren en versturen van een bericht.
+Berichten worden opgepakt door de consumer dat zich ingeschreven heeft op berichten met een bepaald onderwerp.
+Nadat een bericht is verwerkt door de consumer, wordt deze verwijderd.
 
 \section{EoL Systemen}
 Wat?\\

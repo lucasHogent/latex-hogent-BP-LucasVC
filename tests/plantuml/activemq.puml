@@ -1,0 +1,12 @@
+@startuml activemq
+ 
+component "Message Broker \n(Poort 3001)" as Broker  
+component "PLC" as PLC
+component "WCS \nPoort 5672" as WCS
+component "Prometheus" as Metrics
+
+PLC <--> Broker  
+Broker <--> WCS  
+Broker --> Metrics 
+
+@enduml
