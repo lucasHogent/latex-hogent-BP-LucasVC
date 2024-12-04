@@ -1,0 +1,34 @@
+@startuml
+!include <C4/C4_Deployment.puml>
+
+HIDE_STEREOTYPE()
+LAYOUT_TOP_DOWN()
+
+title Test activemq (Dataflow Diagram)
+
+Node(activemqserver, "ActiveMQ Server Docker", "RedHat", Docker container) {
+     
+    Container(activemqserver_listeners, "Java Bridge", "Java JRE 17", "/opt/jprogram/start_listener.sh")
+    
+    Node(activemqserver_activemqbroker, "ActiveMQ Broker", "ActiveMQ 6.1.4", MsgContainer) {
+        ContainerQueue(activemqserver_activemqbroker_toplc, "ToPLC", "Queue")
+        ContainerQueue(activemqserver_activemqbroker_fromplc, "FromPLC", "Queue")
+        Container(activemqserver_activemqbroker_jmxexport, JMX exporter)
+    }
+}
+
+Container(plcsimulator, "PLC simulator Docker", "Python", "Channel")
+
+Container(prometheusserver, "Prometheus server Docker", "Redhat", "Prometheus")
+
+Container(wcsserver, "WCS server Docker", "Redhat", "Progress 4gl")
+
+Rel_U(activemqserver_listeners, activemqserver_activemqbroker_fromplc, "sends to")
+Rel_U(activemqserver_listeners, activemqserver_activemqbroker_toplc, "receives from")
+
+Rel_U(wcsserver, activemqserver_activemqbroker_toplc, "sends to") 
+Rel_U(wcsserver, activemqserver_activemqbroker_fromplc, "receives from") 
+Rel_U(activemqserver_activemqbroker_jmxexport, prometheusserver, "sends to")
+BiRel(plcsimulator, activemqserver_listeners, "sends to", "receives from")
+
+@enduml

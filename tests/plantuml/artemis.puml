@@ -6,11 +6,11 @@ LAYOUT_TOP_DOWN()
 
 title Test activemq (Dataflow Diagram)
 
-Node(activemqserver, "ActiveMQ Server Docker", "RedHat", "container name: amq") {
+Node(activemqserver, "Artemis Server Docker", "RedHat", "container name: amq") {
      
     Container(activemqserver_listeners, "Java Bridge", "Java JRE 17", "/opt/jprogram/start_listener.sh")
     
-    Node(activemqserver_activemqbroker, "ActiveMQ Broker", "ActiveMQ 6.1.4", "console: 8161", MsgContainer) {
+    Node(activemqserver_activemqbroker, "Artemis Broker", "ActiveMQ 6.1.4", "console: 8161", MsgContainer) {
         ContainerQueue(activemqserver_activemqbroker_toplc, "ToPLC", "Queue")
         ContainerQueue(activemqserver_activemqbroker_fromplc, "FromPLC", "Queue")
         Container(activemqserver_activemqbroker_jmxexport, "JMX exporter", "Java")
