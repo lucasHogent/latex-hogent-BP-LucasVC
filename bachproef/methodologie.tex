@@ -54,7 +54,7 @@ Documenten van het bedrijf en interviews met vakexperts vormen de basis voor dit
 Het doel is om na het lezen van dit hoofdstuk inzicht te krijgen in de requirements van het huidige systeem, 
 zodat deze kunnen dienen als basis voor de keuze van een surrogaat van het huidige messaging systeem.
 \\
- 
+
 \subsection{PLC gebruik binnen TVH}
 Er zijn 7 verschillende PLC's in TVH Waregem die instaan voor verschillende zones van de conveyor.
 Deze werden aangeleverd door Vanderlanden in het jaar 2013 en worden beheerd door het automatisatie team.
@@ -69,19 +69,19 @@ Een PLC is verantwoordelijk voor een specifieke zone van de conveyor en is opgeb
 Meerdere kanalen zijn nodig om de communicatiesnelheid te bevorderen en omdat elk kanaal zijn eigen type informatie verwerkt.
 
 \begin{table}[!h]
-    \centering
-    \begin{tabular}{lcr}
-      \toprule
-      \textbf{Kanaal} & \textbf{Beschrijving} & \textbf{Type}                \\
-      \midrule
-      1                & Route informatie over transportbak          & Snel           \\
-      2                & Informatie van PLC                          & Niet kritisch  \\
-      3                & Overige informatie over transportbak        & Snel           \\
-      \bottomrule
-    \end{tabular}
-    \caption[Channel assignment]{\label{tab:channel-assignment}Beschrijving van kanalen}
-  \end{table}
- 
+  \centering
+  \begin{tabular}{lcr}
+    \toprule
+    \textbf{Kanaal} & \textbf{Beschrijving} & \textbf{Type}                \\
+    \midrule
+    1                & Route informatie over transportbak          & Snel           \\
+    2                & Informatie van PLC                          & Niet kritisch  \\
+    3                & Overige informatie over transportbak        & Snel           \\
+    \bottomrule
+  \end{tabular}
+  \caption[Channel assignment]{\label{tab:channel-assignment}Beschrijving van kanalen}
+\end{table}
+
 \subsubsection{PLC berichten}
 Berichten bestaan uit een frame opgedeeld in velden en hebben een specifieke lengte.
 De inhoud van een bericht is gebaseerd op het hexadecimale stelsel en wordt in detail toegelicht in de onderstaande tabel.
@@ -91,33 +91,33 @@ Er worden ongeveer 80 berichten per minuut verstuurd per PLC, per kanaal.
 Het totale aantal verstuurde berichten per minuut komt uit op ongeveer 1680/min.
 
 \begin{table}[h!]
-  \centering 
-  \begin{tabular}{|c|c|c|c|}
-    \hline
-    \textbf{Veld} & \textbf{Inhoud} & \textbf{Data type} & \textbf{Lengte} \\
-    % \hline
-    % Dummy & Enkel PLC naar WCS
-    \hline 
-    Header & <STX> & Binair & 1 byte \\
-    \hline 
-    Lengte in bytes & 001D(HEX) & Binair & 2 bytes \\
-    \hline 
-    Seq. nummer &  [0-9] & ASCII & 1 byte  \\
-    \hline 
-    Inhoud & <...> & Binair & 27 bytes \\
-    \hline 
-    Terminator & <ETX> & Binair & 1 byte \\
-    \hline
-  \end{tabular}
-  \caption[Message content]{\label{tab:message-content}Inhoud bericht}
+\centering 
+\begin{tabular}{|c|c|c|c|}
+  \hline
+  \textbf{Veld} & \textbf{Inhoud} & \textbf{Data type} & \textbf{Lengte} \\
+  % \hline
+  % Dummy & Enkel PLC naar WCS
+  \hline 
+  Header & <STX> & Binair & 1 byte \\
+  \hline 
+  Lengte in bytes & 001D(HEX) & Binair & 2 bytes \\
+  \hline 
+  Seq. nummer &  [0-9] & ASCII & 1 byte  \\
+  \hline 
+  Inhoud & <...> & Binair & 27 bytes \\
+  \hline 
+  Terminator & <ETX> & Binair & 1 byte \\
+  \hline
+\end{tabular}
+\caption[Message content]{\label{tab:message-content}Inhoud bericht}
 \end{table}
 
 Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd: 
 \begin{listing}[h!]
-  \begin{minted}{python}
-    02 00 1d 20 30 36 20 20 00 00 20 20 30 37 20 20 30 20 20 20 20 20 20 20 20 20 20 20 20 20 20 03
-  \end{minted}
-  \caption[Voorbeeld PLC bericht]{Voorbeeld van een PLC bericht}
+\begin{minted}{python}
+  02 00 1d 20 30 36 20 20 00 00 20 20 30 37 20 20 30 20 20 20 20 20 20 20 20 20 20 20 20 20 20 03
+\end{minted}
+\caption[Voorbeeld PLC bericht]{Voorbeeld van een PLC bericht}
 \end{listing}
 
 \subsection{Middleware tussen PLC en WCS}
@@ -129,7 +129,7 @@ die ze via een socket naar de PLC doorsturen.
 Aan de kant van het WCS zijn er meer mogelijkheden om verbinding te kunnen maken met een server.
 \\\\
 SonicMQ bied geen support meer en is niet populair waardoor er ook geen community is.
- 
+
 \subsection{WCS communicatie} 
 Op het ERP-systeem van TVH draaien acht verschillende batches die verantwoordelijk zijn voor de aansturing van de PLC. 
 Elke batch-instantie communiceert met specifieke PLC-kanalen en bevat daarvoor specifieke logica, geschreven in OpenEdge Progress 4GL.
@@ -171,22 +171,22 @@ Deze berichten bevatten informatie over transportbakken en zijn nodig om deze te
 Specifieke logica is nodig om bakken tot hun bestemming te krijgen, of om fout afhandeling te voorzien.
 Volgende voorbeelden doen zich voor:
 \begin{enumerate}
-  \item Routeren naar een hospitaal punt door: 
-  \begin{enumerate}
-    \item Gewichtsfout
-    \item Hoogtefout
-    \item Onbekende bestemming
-  \end{enumerate}
-  \item Bestemming wordt gevraagd door de PLC
-  \item Bestemming wordt doorgegeven aan de PLC 
-  \item Specifieke logica moet uitgevoerd worden bij het passeren van een bepaald punt
-  \item \dots
+\item Routeren naar een hospitaal punt door: 
+\begin{enumerate}
+  \item Gewichtsfout
+  \item Hoogtefout
+  \item Onbekende bestemming
+\end{enumerate}
+\item Bestemming wordt gevraagd door de PLC
+\item Bestemming wordt doorgegeven aan de PLC 
+\item Specifieke logica moet uitgevoerd worden bij het passeren van een bepaald punt
+\item \dots
 \end{enumerate}
 
 \subsection{Monitoring}
 Het bestaande systeem wordt gemonitord met behulp van software zoals Prometheus, Grafana en Elastic.
 Hierdoor kunnen systeemfouten snel opgemerkt worden en berichten verstuurd worden als bepaalde waardes overschreden worden.
- 
+
 \subsection{Samenvatting requirements messaging systeem}
 De belangrijkste requirements voor de huidige setup zijn als volgt:
 
@@ -219,84 +219,82 @@ In dit hoofdstuk vertrekken we van een lijst met alle message brokers die beschi
 Deze worden gefilterd door bepaalde criteria toe te passen, waarna de overgebleven kandidaten getest worden.
 Op deze manier worden alle mogelijke opties geargumenteerd.
 
-\subsubsection{Beschikbare messaging software}
+\subsection{Beschikbare messaging software}
 Onderstaande lijst geeft een overzicht van de meest populaire messaging brokers beschikbaar op de markt.
 Met behulp van argumenten worden relevante systemen gefilterd die voldoen aan volgende criteria om te kunnen integreren met het huidige WCS:
 \begin{itemize}
-  \item JVM: JVM ondersteuning beschikbaar
-  \item Unix: Installatie mogelijk op Unix OS 
-  \item Protocol: Minstens het AMQP protocol
-  \item Kostenmodel: open source  
-  \item On premise: Moet lokaal kunnen geïnstalleerd worden
-  \item Actieve Community en support
+\item JVM: JVM ondersteuning beschikbaar
+\item Unix: Installatie mogelijk op Unix OS 
+\item Protocol: Minstens het AMQP protocol
+\item Kostenmodel: open source  
+\item On premise: Moet lokaal kunnen geïnstalleerd worden
+\item Actieve Community en support
 \end{itemize}
 
 \begin{table}[h!]
-  \footnotesize
-  \centering
-  \begin{tabular}{|l|c|c|c|c|c|}
-  \hline
-  Message Broker & JVM & Unix & Protocollen & Kostenmodel & On premise \\
-  \hline
-  Apache Kafka & Ja & Ja & Kafka, MQTT, REST & Open-source & Ja \\
-  \hline
-  RabbitMQ & Ja & Ja & AMQP, MQTT, STOMP & Open-source & Ja \\
-  \hline
-  ActiveMQ & Ja & Ja & AMQP, MQTT, STOMP, OpenWire & Open-source & Ja \\ 
-  \hline
-  Artemis & Ja & Ja & AMQP, MQTT, STOMP & Open-source & Ja \\
-  \hline
-  MQTT.js & Ja & Ja & MQTT & Open-source & Ja \\
-  \hline
-  IBM MQ & Ja & Ja & MQ, MQTT & Abonnement & Ja \\
-  \hline
-  Redis & Ja & Ja & Pub/Sub & Open-source x & Ja \\
-  \hline
-  NSQ & Ja & Ja & NSQ & Open-source & Ja \\
-  \hline
-  Apache Pulsar & Ja & Ja & AMQP, MQTT, STOMP & Open-source & Ja \\
-  \hline
-  NATS & Ja & Ja & NATS & Open-source x & Nee \\
-  \hline
-  ZeroMQ & Ja & Ja & ØMQ (Socket) & Open-source & Ja \\ 
-  \hline
-  Amazon SQS & Nee & Nee & AWS protocol & Pay-per-use & Nee \\
-  \hline
-  Google Cloud Pub/Sub & Nee & Nee & Cloud Pub/Sub & Pay-per-use & Nee \\
-  \hline
-  Azure Service Bus & Nee & Nee & AMQP, MQTT, HTTP & Pay-per-use & Nee \\
-  \hline
-  \end{tabular}
-  \caption{\label{tab:message_brokers}Longlist message brokers}
-  \end{table}
+\footnotesize
+\centering
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+Message Broker & JVM & Unix & Protocollen & Kostenmodel & On premise \\
+\hline
+Apache Kafka & Ja & Ja & Kafka, MQTT, REST & Open-source & Ja \\
+\hline
+RabbitMQ & Ja & Ja & AMQP, MQTT, STOMP & Open-source & Ja \\
+\hline
+ActiveMQ & Ja & Ja & AMQP, MQTT, STOMP, OpenWire & Open-source & Ja \\ 
+\hline
+Artemis & Ja & Ja & AMQP, MQTT, STOMP & Open-source & Ja \\
+\hline
+MQTT.js & Ja & Ja & MQTT & Open-source & Ja \\
+\hline
+IBM MQ & Ja & Ja & MQ, MQTT & Abonnement & Ja \\
+\hline
+Redis & Ja & Ja & Stream, Pub/Sub & Open-source x & Ja \\
+\hline
+NSQ & Ja & Ja & Stream, Pub/Sub & Open-source & Ja \\
+\hline
+Apache Pulsar & Ja & Ja & Stream, Pub/Sub & Open-source & Ja \\
+\hline
+NATS & Ja & Ja & NATS & Open-source & Nee \\
+\hline
+ZeroMQ & Ja & Ja & ØMQ (Socket) & Open-source & Ja \\ 
+\hline
+Amazon SQS & Nee & Nee & AWS protocol & Pay-per-use & Nee \\
+\hline
+Google Cloud Pub/Sub & Nee & Nee & Cloud Pub/Sub & Pay-per-use & Nee \\
+\hline
+Azure Service Bus & Nee & Nee & AMQP, MQTT, HTTP & Pay-per-use & Nee \\
+\hline
+\end{tabular}
+\caption{\label{tab:message_brokers}Longlist message brokers}
+\end{table}
 
-  https://medium.com/@usersk7/exploring-the-core-messaging-tools-kafka-rabbitmq-activemq-redis-pub-sub-and-apache-pulsar-4aa3b1f8bf16
+\subsubsection{Apache Kafka}
+Apache Kafka beschikt over een grote en actieve community waarvan diverse bedrijven betaalde ondersteuning aanbieden.
+Kafka wisselt data uit via streams en ondersteunt geen AMQP-protocol. 
+Communicatie met Kafka is mogelijk via een Kafka-adapter in Progress OpenEdge 12.8.
+Aangezien het WCS draait op Progress OpenEdge 11.7, is Kafka niet compatibel met de huidige setup.
+Hierdoor voldoet deze broker niet aan de gestelde requirements en kan deze niet als optie worden gekozen.
+Ondanks deze technologie momenteel niet kan gebruikt worden, kan het wel een kandidaat zijn in de toekomst.
 
-  \subsection{Apache Kafka}
-  Apache Kafka beschikt over een grote en actieve community waarvan diverse bedrijven betaalde ondersteuning aanbieden.
-  Kafka wisselt data uit via streams en ondersteunt geen AMQP-protocol. 
-  Communicatie met Kafka is mogelijk via een Kafka-adapter in Progress OpenEdge 12.8.
-  Aangezien het WCS draait op Progress OpenEdge 11.7, is Kafka niet compatibel met de huidige setup.
-  Hierdoor voldoet deze broker niet aan de gestelde requirements en kan deze niet als optie worden gekozen.
-  Ondanks deze technologie momenteel niet kan gebruikt worden, kan het wel een kandidaat zijn in de toekomst.
+\subsubsection{RabbitMQ}
+RabbitMQ is een open source message broker die geïnstalleerd kan worden op diverse Unix-distributies en een breed scala aan mogelijkheden biedt.
+Deze broker ondersteunt functies zoals routering, filtering, streaming, en meer.
+Routering naar queues is mogelijk via verschillende protocollen, waaronder AMQP, wat RabbitMQ zeer veelzijdig maakt.
+Daarnaast beschikt RabbitMQ over uitgebreide documentatie, actieve ontwikkeling, een grote community, en de mogelijkheid tot professionele ondersteuning.
+Omdat RabbitMQ JVM-ondersteuning biedt, is het geschikt voor onze shortlist en voldoet het aan de gestelde eisen.
 
-  \subsection{RabbitMQ}
-  RabbitMQ is een open source message broker die geïnstalleerd kan worden op diverse Unix-distributies en een breed scala aan mogelijkheden biedt.
-  Deze broker ondersteunt functies zoals routering, filtering, streaming, en meer.
-  Routering naar queues is mogelijk via verschillende protocollen, waaronder AMQP, wat RabbitMQ zeer veelzijdig maakt.
-  Daarnaast beschikt RabbitMQ over uitgebreide documentatie, actieve ontwikkeling, een grote community, en de mogelijkheid tot professionele ondersteuning.
-  Omdat RabbitMQ JVM-ondersteuning biedt, is het geschikt voor onze shortlist en voldoet het aan de gestelde eisen.
+\subsubsection{ActiveMQ Classic}
+ActiveMQ Classic is een populaire JVM-gebaseerde message broker met een grote en actieve community.
+Het kan eenvoudig worden geïnstalleerd in zowel lokale als cloudomgevingen en functioneert uitstekend op moderne Unix-systemen.
+De broker ondersteunt meerdere protocollen, waaronder AMQP, naast OpenWire, STOMP, en MQTT, wat het veelzijdig maakt in uiteenlopende toepassingen.
+Daarnaast is ActiveMQ Classic gratis en vereist het geen licentiekosten, wat het bijzonder aantrekkelijk maakt voor bedrijven met een beperkt budget.
+Hoewel ActiveMQ Classic een stabiele en bewezen oplossing is, verschuift het momentum van de community langzaam richting ActiveMQ Artemis, 
+waardoor toekomstige innovaties minder frequent kunnen zijn.
+Desondanks blijft het een betrouwbare keuze voor organisaties die op zoek zijn naar een kostenbesparende en robuuste message broker.
 
-  \subsection{ActiveMQ Classic}
-  ActiveMQ Classic is een populaire JVM-gebaseerde message broker met een grote en actieve community.
-  Het kan eenvoudig worden geïnstalleerd in zowel lokale als cloudomgevingen en functioneert uitstekend op moderne Unix-systemen.
-  De broker ondersteunt meerdere protocollen, waaronder AMQP, naast OpenWire, STOMP, en MQTT, wat het veelzijdig maakt in uiteenlopende toepassingen.
-  Daarnaast is ActiveMQ Classic gratis en vereist het geen licentiekosten, wat het bijzonder aantrekkelijk maakt voor bedrijven met een beperkt budget.
-  Hoewel ActiveMQ Classic een stabiele en bewezen oplossing is, verschuift het momentum van de community langzaam richting ActiveMQ Artemis, 
-  waardoor toekomstige innovaties minder frequent kunnen zijn.
-  Desondanks blijft het een betrouwbare keuze voor organisaties die op zoek zijn naar een kostenbesparende en robuuste message broker.
-
-  \subsection{ActiveMQ Artemis}
+\subsubsection{ActiveMQ Artemis}
 ActiveMQ Artemis is een open source JVM-gebaseerde broker, vergelijkbaar met ActiveMQ Classic, maar met een andere interne architectuur.
 Artemis gebruikt een eigen opslagmechanisme dat sneller is dan KahaDB, de opslaglaag die door ActiveMQ Classic wordt gebruikt.
 Berichten worden sequentieel opgeslagen, waardoor er geen aparte index nodig is.
@@ -306,114 +304,138 @@ Zowel community support als commerciële ondersteuning via verschillende bedrijv
 wat flexibiliteit biedt in onderhoud en beheer.
 Dit product komt ook in aanmerking met de vereisten en nemen we mee in de shortlist
 
-\subsection{MQTT.js}
+\subsubsection{MQTT.js}
 MQTT.js is een open source JavaScript-bibliotheek voor het implementeren van het MQTT-protocol in zowel Node.js- als browseromgevingen.
 Hierdoor is deze technologie niet gekozen worden voor de huidige setup.
 
-
-\subsection{IBM MQ}
-IBM MQ is een JVM-gebaseerde message broker die bekendstaat om zijn robuustheid en betrouwbaarheid in het verwerken van berichten.
-Het is geschikt voor Unix OS-omgevingen en ondersteunt een breed scala aan platforms, waaronder zowel on-premises als cloud omgevingen.
+\subsubsection{IBM MQ}
+IBM MQ is een JVM-gebaseerde message broker en is geschikt voor Unix OS-omgevingen en kan draaien op zowel on-premises als cloud omgevingen.
 IBM MQ ondersteunt meerdere protocollen, waaronder AMQP, wat het flexibel maakt in hybride omgevingen waar interoperabiliteit met verschillende systemen vereist is.
 De broker biedt enterprise-grade functionaliteit met ondersteuning voor transacties, garanties voor berichtlevering, en beveiliging, wat het ideaal maakt voor veeleisende toepassingen.
-Wat betreft het kostenmodel biedt IBM MQ licentiemodellen op basis van gebruik, met verschillende opties voor zowel lokale implementaties als cloud gebaseerde oplossingen.
+Wat betreft het kostenmodel biedt IBM MQ licentiemodellen op basis van vier categorieën, 
+met verschillende opties voor zowel lokale implementaties als cloud gebaseerde oplossingen.
 De kosten kunnen relatief hoog zijn, vooral in grotere omgevingen, maar bieden wel uitgebreide functionaliteiten en garanties.
-IBM MQ heeft een sterke community en biedt commerciële ondersteuning via IBM zelf, evenals via verschillende partners. Dit maakt het een goede keuze voor organisaties die behoefte hebben aan robuuste, goed ondersteunde messaging-oplossingen.
+IBM MQ heeft een gesloten community en biedt ondersteuning via IBM zelf. 
+Dit maakt het een goede keuze voor organisaties die behoefte hebben aan robuuste, goed ondersteunde messaging-oplossingen.
+Voor het WCS kan deze technologie als overmatig gezien worden omdat de vele functionaliteiten niet toegepast worden.
 
-\subsection{Redis}
-Redis is een in-memory data store die vaak wordt gebruikt als message broker in toepassingen waar lage latentie en hoge doorvoer vereist zijn. 
-Het ondersteunt JVM-integratie via verschillende clientbibliotheken en is volledig compatibel met Unix OS-omgevingen, 
-wat het geschikt maakt voor zowel lokale als cloudimplementaties.
-Hoewel Redis oorspronkelijk geen specifiek messaging-protocol zoals AMQP ondersteunt, kan het berichtenuitwisseling realiseren via pub/sub-mechanismen. 
-Dit maakt Redis een goede keuze voor toepassingen die snelle, asynchrone communicatie vereisen. Redis is bijzonder krachtig voor real-time toepassingen, 
-zoals caching, sessiebeheer en berichtenqueues.
+\subsubsection{Redis}
+Redis is een in-memory data store dat kan gebruikt worden als message broker dat gebruik maakt van streams of pub/sub via API. 
+Het ondersteunt JVM-integratie via verschillende client bibliotheken en is compatibel met Unix OS-omgevingen, 
+wat het geschikt maakt voor zowel lokale als cloud implementaties.
+Hoewel Redis oorspronkelijk geen specifiek messaging-protocol zoals AMQP ondersteunt, 
+kan het berichtenuitwisseling realiseren via pub/sub-mechanismen. 
 Wat betreft het kostenmodel, Redis is open source en gratis te gebruiken, wat het aantrekkelijk maakt voor organisaties met beperkte budgetten. 
 Redis biedt ook cloud-gebaseerde services via aanbieders zoals Redis Labs, met premium opties voor extra functionaliteit en ondersteuning.
 De community rond Redis is groot en actief, met veel beschikbare documentatie, tutorials en third-party tools. 
 Voor bedrijven die commerciële ondersteuning nodig hebben, biedt Redis Labs betaalde ondersteuning en aanvullende services, waaronder geavanceerde beveiliging en schaalbaarheid.
 
-\subsection{NSQ}
-NSQ is een open source, geïntegreerde, gedistribueerde message broker die ontworpen is voor hoge beschikbaarheid en schaalbaarheid. 
-Het is geschikt voor JVM-integratie via verschillende clientbibliotheken en werkt op Unix OS-omgevingen, 
-wat het geschikt maakt voor zowel lokale als cloudgebaseerde implementaties.
-NSQ is ontworpen om berichtenverkeer op grote schaal te verwerken en biedt ondersteuning voor pub/sub-communicatie. Hoewel NSQ geen native ondersteuning biedt voor het AMQP-protocol, 
-is het mogelijk om met behulp van middleware of protocollen zoals HTTP en TCP berichten te verzenden en ontvangen, wat NSQ veelzijdig maakt in diverse toepassingen.
-Wat betreft het kostenmodel, NSQ is open source en volledig gratis te gebruiken, wat het aantrekkelijk maakt voor bedrijven die op zoek zijn naar een kostenbesparende oplossing. 
+\subsubsection{NSQ}
+NSQ is een open source, gedistribueerde message broker die ontworpen is voor hoge beschikbaarheid en schaalbaarheid. 
+Het is geschikt voor JVM-integratie via verschillende client bibliotheken en werkt op Unix OS-omgevingen, 
+wat het geschikt maakt voor zowel lokale als cloud gebaseerde implementaties.
+NSQ is ontworpen om berichtenverkeer op grote schaal te verwerken en biedt geen AMQP-protocol, enkel ondersteuning voor pub/sub-communicatie. 
+Het kostenmodel van NSQ is open source en volledig gratis te gebruiken. 
 Er zijn geen licentiekosten, en de schaalbaarheid van het systeem maakt het geschikt voor zowel kleine als grote omgevingen.
 NSQ heeft een actieve community die regelmatig updates en ondersteuning biedt via GitHub en andere open source platforms. 
-Voor bedrijven die behoefte hebben aan commerciële ondersteuning, zijn er diverse consultants en serviceproviders die ondersteuning bieden bij implementatie en schaalvergroting van NSQ.
+Voor bedrijven die behoefte hebben aan commerciële ondersteuning, zijn er diverse consultants en serviceproviders die ondersteuning bieden.
 
-\subsection{Apache Pulsar}
+\subsubsection{Apache Pulsar}
 Apache Pulsar is een project gestart door Yahoo en open source sinds 2016.
 Dit is een gedistribueerde messaging systeem dat ondersteuning biedt voor zowel JVM-omgevingen als Unix OS-systemen.
 Het is geschikt voor zowel cloud- als lokale omgevingen. 
-Pulsar ondersteunt AMQP via een protocol gateway en biedt krachtige publish-subscribe en queue-based messaging.
-Pulsar is ontworpen voor schaalbaarheid en prestaties, ideaal voor real-time applicaties.
+Pulsar ondersteunt publish-subscribe en queue-based messaging.
+AMQP kan gebruikt worden via een connector maar brengt hierdoor extra complexiteit met zich mee.
 Deze software wordt gebruikt voor meer complexere use-cases en heeft een ingewikkelde setup.
 De community rondom Apache Pulsar is actief, met regelmatige updates en ondersteuning via de Apache Software Foundation. 
 Commerciële ondersteuning is beschikbaar via bedrijven die Pulsar als platform aanbieden.
 \\
 Bron: https://www.baeldung.com/apache-pulsar
-\newpage
-Volgende tabel is een gefilterde lijst.
-Deze message brokers worden getest door deze te implementeren in een gesimuleerde omgeving.
-Hierdoor kunnen we het installatie process documenteren en de prestaties meten om zo de shortlist te bekomen.
 
+\subsubsection{NATS}
+
+\subsubsection{ZeroMQ}
+
+\subsubsection{Amazon SQS}
+
+\subsubsection{Google Cloud Pub/Sub}
+
+\subsubsection{Azure Service Bus}
+
+\newpage
+\subsection{Compatibele messaging software}
+Volgende tabel is een gefilterde lijst van de beschikbare messaging brokers.
+Deze selectie wordt getest door deze te implementeren in een gesimuleerde omgeving.
+Hierdoor kan het installatie process gedocumenteerd worden en de prestaties gemeten worden om tot de shortlist te komen.
+
+\begin{table}[h!]
+\footnotesize
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+Message Broker & Prestatie & Ondersteuning & Kostenmodel \\
+\hline
+RabbitMQ & Ja & Ja & AMQP, MQTT, STOMP \\
+\hline
+ActiveMQ & Ja & Ja & AMQP, MQTT, STOMP, OpenWire \\ 
+\hline
+Artemis & Ja & Ja & AMQP, MQTT, STOMP  \\
+\hline
+Azure Service Bus & Ja & Ja & MQ, MQTT, JMS  \\
+\hline
+\end{tabular}
+\caption{\label{tab:message_brokers_filtered}Longlist compatibele message brokers}
+\end{table}
+
+\section{Phase 4: Testen}
+
+\subsection{Systeem Hardware Informatie}
+\subsubsection*{Geheugen}
+\begin{itemize}
+    \item \textbf{Omschrijving:} System memory
+    \item \textbf{Fysieke ID:} 0
+    \item \textbf{Grootte:} 8GiB
+\end{itemize}
+
+\subsubsection*{CPU}
+\begin{itemize}
+    \item \textbf{Product:} Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
+    \item \textbf{Fabrikant:} Intel Corp. 
+    \item \textbf{Versie:} 6.85.0
+    \item \textbf{Breedte:} 64 bits
+\end{itemize}
+
+\subsection{Test ActiveMQ}
+
+\section{Phase 5: ShortList}
+
+Artemis, ActiveMQ, RabbitMQ
 \begin{table}[h!]
   \footnotesize
   \centering
   \begin{tabular}{|l|c|c|c|c|}
   \hline
-  Message Broker & Prestatie & Ondersteuning & Kostenmodel \\
+  & Artemis & ActiveMQ & RabbitMQ \\
   \hline
-  RabbitMQ & Ja & Ja & AMQP, MQTT, STOMP \\
+  Ondersteuning &  &  &  \\
   \hline
-  ActiveMQ & Ja & Ja & AMQP, MQTT, STOMP, OpenWire \\ 
+  Performantie &  &  &  \\
   \hline
-  Artemis & Ja & Ja & AMQP, MQTT, STOMP  \\
+  Integratie &  &  &  \\ 
   \hline
-  IBM MQ & Ja & Ja & MQ, MQTT, JMS  \\
+  Kosten &   &  &  \\
   \hline
+  Score &   &  &  \\
+  \hline
+    
   \end{tabular}
-  \caption{\label{tab:message_brokers_filtered}Longlist compatibele message brokers}
+  \caption{\label{tab:message_brokers_short}Shortlist message brokers}
   \end{table}
 
 
-\section{Phase 4: Testen}
-  Opzoeken van test methodes 
-  % https://www.researchgate.net/publication/342312542_Classification_and_evaluation_of_IoT_brokers_A_methodology
-  
-  \subsection{Test opzet}
-  Testen gebeuren in een afgeschermde omgeving.
-  Iedere broker draait in een docker container wat het gemakkelijk maakt om te wisselen tussen de containers.
-  
-  \subsubsection{Opzet Artemis}
-  
-  \subsection{Systeem Hardware Informatie}
-  \subsubsection*{Geheugen}
-  \begin{itemize}
-      \item \textbf{Omschrijving:} System memory
-      \item \textbf{Fysieke ID:} 0
-      \item \textbf{Grootte:} 8GiB
-  \end{itemize}
-  
-  \subsubsection*{CPU}
-  \begin{itemize}
-      \item \textbf{Product:} Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
-      \item \textbf{Fabrikant:} Intel Corp. 
-      \item \textbf{Versie:} 6.85.0
-      \item \textbf{Breedte:} 64 bits
-  \end{itemize}
-
-
-\section{Phase 5: ShortList}
-
-Artemis, ActiveMQ, RabbitMQ
 
 
 
-
- 
 
 
 
