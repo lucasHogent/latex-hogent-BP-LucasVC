@@ -123,7 +123,7 @@ Deze wordt gebruikt in het bedrijf om te communiceren tussen de PLC's.
 Dit protocol is gebaseerd op standaard TCP/IP en wordt veel gebruikt in de industrie vanwege de snelheid en flexibiliteit ~\autocite{Joshi2024}. 
 Ethernet/IP ondersteunt real-time communicatie, wat essentieel is voor de snelle reactietijden die nodig zijn in een geautomatiseerd magazijn.
 Dit protocol maakt gebruik van standaard Ethernet-hardware, zoals kabels, switches en routers. 
-Dit vereenvoudigt de installatie en het onderhoud in industriële omgevingen en maakt het compatibel met bestaande IT-infrastructuur.
+Dit vereenvoudigd de installatie en het onderhoud in industriële omgevingen en maakt het compatibel met bestaande IT-infrastructuur.
 De PLC die deel uitmaakt van dit onderzoek, wisselt data uit van en naar het WCS via dit protocol.
 
 \section{Warehouse Control System (WCS)} 
@@ -150,7 +150,7 @@ Deze staat in als messaging broker, wordt niet meer actief ondersteund en wordt 
 De software die gebruikt wordt voor de implementatie van het ERP-pakket en dus ook het WCS, is geschreven met OpenEdge Progress 4GL software.
 Dit staat gekend onder OpenEdge ABL wat staat voor Advanced Business Language en is een high-level procedurele programmeer taal ontwikkeld door Progress Software Corporation.
 Progress 4GL (Fourth-Generation Language) richt zich op bedrijfsapplicaties, vooral die met veel database-interacties~\autocite{OpenEdge2017}. 
-Het biedt een vereenvoudigde syntaxis, waarmee ontwikkelaars snel toepassingen kunnen bouwen voor zakelijke omgevingen.
+Het biedt een vereenvoudigde syntax, waarmee ontwikkelaars snel toepassingen kunnen bouwen.
 Dankzij de optimalisatie voor databasebewerkingen is het geschikt voor toepassingen in sectoren als financiën en logistiek, 
 waar real-time datatoegang essentieel is.
  
@@ -169,7 +169,6 @@ De opzet van deze methode kan complexer zijn dan Client connect.
 \subsubsection{Client Connect}
 Deze methode verbind direct met de messaging broker waardoor integratie eenvoudiger is. 
 Hierdoor is de message broker rechtstreeks blootgesteld op het netwerk.
-
 
 \section{Communicatie methodes}
 Dit hoofdstuk bevat informatie over de relevante communicatiemethoden en geeft inzicht in hun werking.
@@ -383,18 +382,6 @@ De functie van een message broker is het opslaan op een wachtrij (queue), router
 Berichten worden opgepakt door de consumer dat zich ingeschreven heeft op berichten met een bepaald onderwerp.
 Nadat een bericht is verwerkt door de consumer, wordt deze verwijderd.
 
-\section{EoL Systemen}
-Wat?\\
-Waarom gevaarlijk?\\
-
- 
-
-
-
-
-
-
-
-
-
-
+% \section{EoL Systemen}
+% Wat?\\
+% Waarom gevaarlijk?\\
