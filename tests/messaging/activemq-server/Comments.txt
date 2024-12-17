@@ -1,1 +1,0 @@
-Why jprogram wont keep running?
