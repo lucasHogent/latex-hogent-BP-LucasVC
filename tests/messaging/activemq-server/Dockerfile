@@ -80,8 +80,8 @@ EOF
 
 ENV JAVA_HOME="/usr/lib/jvm/jre-"${JRE_VERSION}
  
-RUN sed -i 's/127.0.0.1/0.0.0.0/g' /opt/activemq/conf/activemq.xml
 RUN sed -i 's/127.0.0.1/0.0.0.0/g' /opt/activemq/conf/jetty.xml
+COPY activemq.xml /opt/activemq/conf/activemq.xml
 
 RUN systemctl enable activemq.service
 RUN systemctl enable jprogram.service  

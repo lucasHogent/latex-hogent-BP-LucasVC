@@ -42,8 +42,8 @@ public class ActiveMQSocketBridge {
         // TEST:
         // args = new String[1];
         // args[0] = "1";
+        // System.out.println("args " + args[0].trim());
 
-        System.out.println("args " + args[0].trim());
         try {
             channel = Integer.parseInt(args[0].trim());
 

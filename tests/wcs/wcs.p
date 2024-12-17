@@ -64,6 +64,36 @@ case iiPLC:
       iChannel1 = 1
       iChannel2 = 2
       iChannel3 = 3.
+  when 2 then
+    assign
+      iChannel1 = 4
+      iChannel2 = 5
+      iChannel3 = 6.
+  when 3 then
+    assign
+      iChannel1 = 7
+      iChannel2 = 8
+      iChannel3 = 9.
+  when 4 then
+    assign
+      iChannel1 = 10
+      iChannel2 = 11
+      iChannel3 = 12.
+  when 5 then
+    assign
+      iChannel1 = 13
+      iChannel2 = 14
+      iChannel3 = 15.
+  when 6 then
+    assign
+      iChannel1 = 16
+      iChannel2 = 17
+      iChannel3 = 18.	
+  when 7 then
+    assign
+      iChannel1 = 19
+      iChannel2 = 19
+      iChannel3 = 19.	  
   otherwise 
   return "PLC not supported!".
 end case.
@@ -74,11 +104,11 @@ assign
   cPassword      = "admin"
   cAdapterURLSMQ = "failover:(amqp://localhost:5672)?amqp.idleTimeout=240000&jms.prefetchPolicy.all=1"   
   cFilter        = substitute("(channel='&1' OR channel='&2' OR channel='&3')", iChannel1, iChannel2, iChannel3)
-  cClientID      = "WCS_" + string(iiPLC) + STRING(now) + STRING(random(1,1000000))
+  cClientID      = "WCS_" + string(iiPLC) + "_" + STRING(now) + STRING(random(1,1000000))
   cSendQueue     = "ToPLC"
   cReceiveQueue  = "FromPLC".                                  
  
-run jms/jmssession.p persistent set hPtp ("-SMQConnect").
+run jms/ptpsession.p persistent set hPtp ("-SMQConnect").
 run setBrokerUrl in hPtp (cAdapterURLSMQ).
 
 run setClientID in hPtp (cClientID).
@@ -87,18 +117,17 @@ run setPassword in hPtp ("admin").
 run beginSession in hPtp. 
 
    
-run createMessageConsumer in hPtp(this-procedure, "readMessageFromRabbitMQ",
+run createMessageConsumer in hPtp(this-procedure, "readMessageFromQueue",
   output hMsgConsumer).
 run ReceiveFromQueue in hPtp (cReceiveQueue, "" ,hMsgConsumer).
- message hMsgConsumer:internal-entries view-as alert-box.
-   
+  
 run StartReceiveMessages in hPtp.
   
 repeat:
   
   process events.
   
-  pause 0.1.
+  pause 0.01. 
 end.
 
 /* **********************  Internal Procedures  *********************** */
@@ -109,30 +138,33 @@ procedure readMessageFromQueue:
    Purpose:
    Notes:
   ------------------------------------------------------------------------------*/
-  define input  parameter hMessage     as handle no-undo.
+ define input  parameter hMessage     as handle no-undo.
   define input  parameter hMsgConsumer as handle no-undo.
   define output parameter hReply       as handle no-undo.
   
   define variable lcJson   as longchar  no-undo.
   define variable cChannel as character no-undo.
+  define variable mMessage as memptr    no-undo.
 
   lcJson  = dynamic-function("getText":U in hMessage).
     
-  display string(lcJson)with 2 col.
+  display string(lcJson) format "X(32)" with 2 col.
   
   output to value("C:\temp\wcs.log") append.
-  put unformatted now dynamic-function("getCharProperty" in hMessage, "channel") string(lcjson) skip.
+  put unformatted now " " dynamic-function("getCharProperty" in hMessage, "channel") " " string(lcjson) skip.
   output close.
   
-  run deleteMessage in hMessage.
+  cChannel = dynamic-function("getCharProperty" in hMessage, "channel").
   
+  run deleteMessage in hMessage. 
+ 
   RUN createTextMessage IN hPTP (OUTPUT hMessage).
   run clearbody in hMessage. 
   RUN setText IN hMessage (lcjson).
   run clearproperties in hMessage. 
   
-  run setStringProperty in hMessage ("channel", cChannel).
-  
+  run setStringProperty in hMessage ("channel", cChannel). 
+    
   RUN sendToQueue IN hPtp (
     cSendQueue,        /* Name of the queue */
     hMessage,       /* Message object */
@@ -142,9 +174,9 @@ procedure readMessageFromQueue:
     /* Messages doesn't stay on the queue */
     /* after a shutdown of the sonicMQ Broker.*/
     ).
-     
+  
   run deleteMessage in hMessage.
-        
+  
 end procedure.
 
 procedure readMessageFromRabbitMQ:
