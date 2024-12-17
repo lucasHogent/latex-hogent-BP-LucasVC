@@ -34,8 +34,8 @@ Het bekomen van een shortlist wordt toegelicht waarbij voor elke technologie de 
 
 
 \section{Phase 1: Literatuurstudie}
-Voor dit onderzoek heb ik eerst de vaktermen opgelijst en onderverdeeld in groepen met behulp van een mindmap.
-Vervolgens werd er gebruik gemaakt van het internet om wetenschappelijke artikelen op te zoeken en filterde ik de nodige informatie.
+Voor dit onderzoek werden de vaktermen opgelijst en onderverdeeld in groepen met behulp van een mindmap.
+Vervolgens werd er gebruik gemaakt van het internet om wetenschappelijke artikelen op te zoeken om de nodige informatie uit te filteren.
 \\
 Het doel van de literatuurstudie is om een basis van bestaande kennis te verkrijgen door de belangrijkste concepten toe te lichten die van toepassing zijn op dit onderzoek. 
 Dit houd in, het begrijpen van warehousing, WCS (Warehouse Control Systems), PLC (Programmable Logic Controllers), en de communicatieprotocollen die tussen deze systemen gebruikt worden.
@@ -47,13 +47,15 @@ De literatuurstudie vormt de basis van het onderzoek en is cruciaal voor het beg
 Hierdoor kan de kennis en requirements meegenomen worden doorheen de methodologie.
 
 \section{Phase 2: Long List}
-In dit hoofdstuk vertrekken we van een lijst met message brokers die beschikbaar zijn op de markt.
-Deze worden kort besproken en later gefilterd door bepaalde criteria toe te passen, waarna de overgebleven kandidaten getest worden.
+Dit hoofdstuk vertrekt vanuit een lijst met message brokers die beschikbaar zijn op de markt.
+Deze worden later gefilterd door bepaalde criteria toe te passen, waarna de overgebleven kandidaten getest kunnen worden.
 Op deze manier worden alle mogelijke opties geargumenteerd.
 
 \subsection{Beschikbare messaging software}
+Deze lijst bevat relevante message brokers als startpunt die beschikbaar zijn op de markt.
+Bronnen werden geraadpleegd via zoekmachines, forums en blogs.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \footnotesize
 \centering
 \begin{tabular}{|l|c|c|c|c|c|}
@@ -94,125 +96,6 @@ Solace PubSub+ & Ja & Nee & AMQP & Pay-per-use & Nee \\
 \caption{\label{tab:message_brokers}Longlist message brokers}
 \end{table}
 
-\subsubsection{Apache Kafka}
-Apache Kafka beschikt over een grote en actieve community waarvan diverse bedrijven betaalde ondersteuning aanbieden.
-Kafka wisselt data uit via streams en ondersteunt geen AMQP-protocol. 
-Communicatie met Kafka is mogelijk via een Kafka-adapter in Progress OpenEdge 12.8.
-Aangezien het WCS draait op Progress OpenEdge 11.7, is Kafka niet compatibel met de huidige setup.
-Hierdoor voldoet deze broker niet aan de gestelde requirements en kan deze niet als optie worden gekozen.
-Ondanks deze technologie momenteel niet kan gebruikt worden, kan het wel een kandidaat zijn in de toekomst.
-
-\subsubsection{RabbitMQ}
-RabbitMQ is een open source message broker die geïnstalleerd kan worden op diverse Linux-distributies en een breed scala aan mogelijkheden biedt.
-Deze broker ondersteunt functies zoals routering, filtering, streaming, en meer.
-Routering naar queues is mogelijk via verschillende protocollen, waaronder AMQP, wat RabbitMQ zeer veelzijdig maakt.
-Daarnaast beschikt RabbitMQ over uitgebreide documentatie, actieve ontwikkeling, een grote community, en de mogelijkheid tot professionele ondersteuning.
-Omdat RabbitMQ JMS-ondersteuning biedt, is het geschikt voor onze shortlist en voldoet het aan de gestelde eisen.
-
-\subsubsection{ActiveMQ Classic}
-ActiveMQ Classic is een populaire JMS-gebaseerde message broker met een grote en actieve community.
-Het kan eenvoudig worden geïnstalleerd in zowel lokale als cloudomgevingen en functioneert uitstekend op moderne Linux-systemen.
-De broker ondersteunt meerdere protocollen, waaronder AMQP, naast OpenWire, STOMP, en MQTT, wat het veelzijdig maakt in uiteenlopende toepassingen.
-Daarnaast is ActiveMQ Classic gratis en vereist het geen licentiekosten, wat het bijzonder aantrekkelijk maakt voor bedrijven met een beperkt budget.
-Hoewel ActiveMQ Classic een stabiele en bewezen oplossing is, verschuift het momentum van de community langzaam richting ActiveMQ Artemis, 
-waardoor toekomstige innovaties minder frequent kunnen zijn.
-Desondanks blijft het een betrouwbare keuze voor organisaties die op zoek zijn naar een kostenbesparende en robuuste message broker.
-
-\subsubsection{ActiveMQ Artemis}
-ActiveMQ Artemis is een open source JMS-gebaseerde broker, vergelijkbaar met ActiveMQ Classic, maar met een andere interne architectuur.
-Artemis gebruikt een eigen opslagmechanisme dat sneller is dan KahaDB, de opslaglaag die door ActiveMQ Classic wordt gebruikt.
-Berichten worden sequentieel opgeslagen, waardoor er geen aparte index nodig is.
-Dit vermindert de kans op prestatieverlies, zelfs bij het verwerken van grote hoeveelheden berichten.
-De broker ondersteunt verschillende protocollen, waaronder AMQP, waardoor Artemis geschikt is voor diverse toepassingen.
-Zowel community support als commerciële ondersteuning via verschillende bedrijven is beschikbaar, 
-wat flexibiliteit biedt in onderhoud en beheer.
-
-\subsubsection{MQTT.js}
-MQTT.js is een open source JavaScript library voor het implementeren van het MQTT-protocol in zowel Node.js- als browseromgevingen.
-
-Bron: https://github.com/mqttjs
-
-\subsubsection{IBM MQ}
-IBM MQ is een JMS-gebaseerde message broker en is geschikt voor Linux OS-omgevingen en kan draaien op zowel on-premises als cloud omgevingen.
-IBM MQ ondersteunt meerdere protocollen, waaronder AMQP, wat het flexibel maakt in hybride omgevingen waar interoperabiliteit met verschillende systemen vereist is.
-De broker biedt enterprise-grade functionaliteit met ondersteuning voor transacties, garanties voor berichtlevering, en beveiliging, wat het ideaal maakt voor veeleisende toepassingen.
-Wat betreft het kostenmodel biedt IBM MQ licentiemodellen op basis van vier categorieën, 
-met verschillende opties voor zowel lokale implementaties als cloud gebaseerde oplossingen.
-Naast de betalende versie is er ook een gratis proef versie.
-De kosten kunnen relatief hoog zijn, maar biedt wel uitgebreide functionaliteiten en garanties.
-IBM MQ heeft een gesloten community en biedt ondersteuning via IBM zelf. 
-Dit maakt het een goede keuze voor organisaties die behoefte hebben aan robuuste, goed ondersteunde messaging-oplossingen.
-Voor het WCS kan deze technologie als overmatig gezien worden omdat de vele functionaliteiten niet toegepast worden.
-
-\subsubsection{Redis}
-Redis is een in-memory data platform dat kan gebruikt worden als message broker dat gebruik maakt van streams of pub/sub via API. 
-Het ondersteunt JMS enkel maar via verschillende client bibliotheken en is compatibel met Linux OS-omgevingen, 
-wat het geschikt maakt voor zowel lokale als cloud implementaties.
-Hoewel Redis oorspronkelijk geen specifiek messaging-protocol zoals AMQP ondersteunt, 
-kan het berichtenuitwisseling realiseren via pub/sub-mechanismen. 
-Wat betreft het kostenmodel, Redis is open source en gratis te gebruiken, wat het aantrekkelijk maakt voor organisaties met beperkte budgetten. 
-Redis biedt ook cloud-gebaseerde services via aanbieders zoals Redis Labs, met premium opties voor extra functionaliteit en ondersteuning.
-De community rond Redis is groot en actief, met veel beschikbare documentatie, tutorials en third-party tools. 
-Voor bedrijven die commerciële ondersteuning nodig hebben, biedt Redis Labs betaalde ondersteuning en aanvullende services, waaronder geavanceerde beveiliging en schaalbaarheid.
-
-\subsubsection{NSQ}
-NSQ is een open source, gedistribueerde message broker die ontworpen is voor hoge beschikbaarheid en schaalbaarheid. 
-JMS-integratie is enkel geschikt via client libraries van NSQ.
-Deze software werkt op Linux OS-omgevingen, wat het geschikt maakt voor zowel lokale als cloud gebaseerde implementaties.
-NSQ is ontworpen om berichtenverkeer op grote schaal te verwerken en biedt geen AMQP-protocol, enkel ondersteuning voor pub/sub-communicatie. 
-Het kostenmodel van NSQ is open source en volledig gratis te gebruiken. 
-Er zijn geen licentiekosten, en de schaalbaarheid van het systeem maakt het geschikt voor zowel kleine als grote omgevingen.
-NSQ heeft een actieve community die regelmatig updates en ondersteuning biedt via GitHub en andere open source platforms. 
-Voor bedrijven die behoefte hebben aan commerciële ondersteuning, zijn er diverse consultants en serviceproviders die ondersteuning bieden.
-
-\subsubsection{Apache Pulsar}
-Apache Pulsar is een project gestart door Yahoo en open source sinds 2016.
-Dit is een gedistribueerde messaging systeem dat ondersteuning biedt voor zowel streaming en messaging en wordt gezien als een "all-in-one" oplossing.
-Het vooral bedoeld voor cloud omgevingen maar is ook geschikt voor lokale omgevingen.
-AMQP kan gebruikt worden via een connector maar brengt hierdoor extra complexiteit met zich mee.
-Deze software wordt gebruikt voor meer complexere use-cases waar elasticiteit en horizontale uitbreiding nodig is
-en heeft daardoor een ingewikkelde setup.
-De community rondom Apache Pulsar is actief, met regelmatige updates en ondersteuning via de Apache Software Foundation. 
-Commerciële ondersteuning is beschikbaar via bedrijven die Pulsar als platform aanbieden.
-\\\\
-Bron: https://www.baeldung.com/apache-pulsar
-
-\subsubsection{NATS}
-NATS is een open source messaging systeem dat gebruik maakt van het NATS protocol. Dit omvat TCP, MQTT en Socket.
-Dit protocol gebruikt het publish-subscribe-model en geeft dus geen ondersteuning voor AMQP.
-Via een plugin kan JMS client verbinding ondersteund worden.
-Hiernaast gebruikt NATS JetStream voor streaming van data.
-Dit systeem kan zowel draaien in eigen beheer op een Linux systeem als op de cloud.
-Deze software is eenvoudig in gebruik maar is niet compatibel met het huidige systeem.
-De community van deze software lijkt minder groot dan die van Apache producten.
-Het gebruik is goed gedocumenteerd en bied mogelijkheden tot commerciële als community ondersteuning.
-\\\\
-Bron: https://docs.nats.io/nats-concepts/overview
-
-\subsubsection{ZeroMQ}
-ZeroMQ maakt geen gebruik van een message broker, waardoor systemen rechtstreeks met elkaar communiceren.
-Berichten worden gebufferd op de client waardoor de communicatie asynchroon kan gebeuren.
-AMQP is hier geen optie omdat deze technologie enkel socket ondersteund.
-Het is een geheel andere werking, waarbij ZeroMQ kan gezien worden als een library dat socket verbindingen vereenvoudigd.
-De community is kleiner dan die van Apache en de documentatie.
-
-\subsubsection{FioranoMQ}
-Fiorano's messaging-systeem, FioranoMQ, is gebaseerd op de JMS 1.1-standaard voor enterprise messaging.
-Dit product beweert een Java-implementatie te bieden met de nadruk op hoge prestaties, veiligheid en installatiegemak.
-Het kan grote berichten verwerken via het point-to-point-model of het publish-subscribe-model.
-Deze software kan op elk platform worden geïnstalleerd dat JRE 1.8 ondersteunt.
-Monitoring is mogelijk dankzij JMX-ondersteuning.
-Het is een minder populair product, waardoor de community klein is.
-Dit product biedt een gratis versie van 45 dagen en biedt ondersteuning na aankoop van een licentie.
-
-\subsubsection{SwiftMQ}
-
-\subsubsection{Amazon SQS}
-
-\subsubsection{Google Cloud Pub/Sub}
-
-\subsubsection{Azure Service Bus}
-
 \section{Phase 3: Requirements analyse van huidige setup}
 Dit hoofdstuk gaat dieper in op de huidige setup en werking tussen het WCS, messaging software en de PLC's.
 Documenten van het bedrijf en interviews met vakexperts vormen de basis voor dit overzicht.
@@ -227,7 +110,7 @@ De communicatie tussen een PLC en het WCS is gebaseerd op het TCP/IP protocol en
 Er is een tussenlaag tussen de PLC en het netwerk, RFC1006 van het merk Siemens waarin configuratie kan worden gedaan door het automatisatie team.
 Dit stelt de collega's in staat om bepaalde logica te implementeren of netwerk aanpassingen door te voeren.
 De snelheid van communicatie is essentieel, daarom moet het netwerk snel genoeg zijn zodat berichten aan een snel tempo verstuurd kunnen worden.
-
+\\\\
 De PLC's maken gebruik van een TCP/IP-socketverbinding en functioneren als client ten opzichte van het WCS, dat de rol van server vervult. 
 Dit betekent dat de PLC de verbinding initieert en persisteert met de server die verantwoordelijk is voor de communicatie.
 Een PLC is verantwoordelijk voor een specifieke zone van de conveyor en is opgebouwd uit drie kanalen die elk via een toegewezen poortnummer met de server communiceren. 
@@ -307,7 +190,7 @@ De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te o
 message brokers zoals Apache ActiveMQ. 
 Dit betekent dat OpenEdge-applicaties kunnen integreren met andere systemen die JMS ondersteunen, 
 zonder dat er directe afhankelijkheden nodig zijn.
-Hierdoor zijn we gelimiteerd in de keuze van message brokers tot brokers die \textbf{JMS ondersteunen}.
+Hierdoor is de keuze van message brokers gelimiteerd tot brokers die \textbf{JMS ondersteunen}.
 
 \subsubsection{Integratie met Verschillende Enterprise Systemen}
 Met de JMS Adapter kunnen OpenEdge-applicaties communiceren met andere systemen zoals ERP's, CRM’s, 
@@ -339,6 +222,7 @@ Volgende voorbeelden doen zich voor:
 Het bestaande systeem wordt visueel gemonitord met behulp van Grafana en Elastic. 
 Voor het ophalen van de logging wordt gebruik gemaakt van Prometheus.
 Hierdoor kunnen systeemfouten snel opgemerkt worden en berichten verstuurd worden als bepaalde waardes overschreden worden.
+\newpage
 
 \subsection{Samenvatting requirements messaging systeem}
 De belangrijkste requirements voor de huidige setup zijn als volgt:
@@ -349,7 +233,7 @@ Hiervoor moet de broker het \textbf{JMS protocol ondersteunen} en geïnstalleerd
 Daarnaast moet de middleware ook gebruikt kunnen worden door \textbf{monitoring software}.
 
 \subsubsection{Performantie}
-Om de real-time eisen van het WCS en de PLC’s te ondersteunen, moet het messaging systeem \textbf{lage latentie} bieden. 
+Om de real-time eisen van het WCS en de PLC’s te ondersteunen, moet het messaging systeem \textbf{hoge performantie} bieden. 
 Dit betekent dat berichten zonder merkbare vertraging moeten worden verstuurd en ontvangen, 
 zodat de snelheid van de conveyor niet wordt beperkt door de communicatiesnelheid.
 Om vertraging te voorkomen moet de verwerking van de berichten \textbf{asynchroon} gebeuren.
@@ -367,7 +251,7 @@ Daarnaast is het ook belangrijk dat er commerciële support beschikbaar is om SL
 \subsubsection{Kosten}
 Support gaat vaak samen met kosten en is ook belangrijk om mee te nemen in de keuze van een messaging systeem.
 Sommige systemen hangen vast aan een kostenmodel, andere zijn \textbf{open-source} en zijn kosteloos.
-
+\newpage
 \subsubsection{MoSCoW prioriteiten}
 
 \textbf{Must have:}
@@ -403,16 +287,265 @@ In deze sectie worden de message brokers uit de longlist opgelijst en stapsgewij
 Het doel is om een top 3 te bekomen waarbij uitvoerige testen kunnen uitgevoerd worden.
 
 \subsection{Must have}
-Volgende tabel is een lijst van de beschikbare messaging brokers uit de longlist bespreking.
-Message broker die niet voldoet aan één van de "must haves" worden verworpen omdat deze de hoogste prioriteit hebben. 
-Het meten van hoge performantie, wat onderdeel is van de "must haves", komen na de testen in aanmerking.
+In deze sectie wordt de longlist van beschikbare messaging brokers gefilterd op basis van de gestelde must-have criteria. 
+Messaging brokers die niet voldoen aan een van deze criteria worden verworpen, omdat de must-have eisen de hoogste prioriteit hebben.
+\\\\
+Voor elke technologie wordt een onderbouwde argumentatie gegeven op basis van de must-have criteria om de gemaakte keuzes inzichtelijk te maken. 
+Het aspect van hoge prestaties, dat eveneens onderdeel is van de must-have criteria, wordt geëvalueerd tijdens de testen.
+\\\\
+Producten die voldoen aan de ``must-have'' criteria worden als kandidaat gemarkeerd en meegenomen naar de volgende stap, waarin ``should-have'' criteria worden toegepast.
+ 
+\subsubsection{Apache Kafka}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} Kafka biedt een uitstekende prestatie, met name bij het verwerken van grote hoeveelheden gegevens in real-time via events streaming ~\autocite{Ueberfuhr2024}.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone gegevensverwerking en data-uitwisseling via streams.
+    \item \textbf{JMS ondersteuning:} Beschikt niet over native JMS-ondersteuning, maar kan indirect worden geïntegreerd met JMS via extra adapters.
+    \item \textbf{Installatie mogelijk op Linux OS:} Kafka kan eenvoudig worden geïnstalleerd en uitgevoerd op Linux-systemen.
+    \item \textbf{AMQP protocol ondersteunen:} Ondersteunt geen direct AMQP-protocol, wat een belangrijke beperking vormt tegenover huidige setup.
+    \item \textbf{Monitoring mogelijkheden:} Kafka biedt uitgebreide monitoringopties, inclusief integratie met tools zoals Prometheus en Grafana.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Kan lokaal worden geïnstalleerd en beheerd, wat flexibiliteit biedt voor implementaties.
+    \item \textbf{Commerciële support:} Beschikt over een grote en actieve community. Daarnaast bieden diverse bedrijven, zoals Confluent, betaalde ondersteuning aan.
+    \item \textbf{Voldoet niet volledig aan de vereisten:} Het ontbreken van AMQP-ondersteuning en de incompatibiliteit met de huidige Progress OpenEdge 11.7-omgeving maken het niet geschikt voor de huidige setup.  
+    Ondanks Kafka op dit moment niet kan worden gebruikt, blijft het een technologie die in de toekomst als kandidaat kan worden overwogen, 
+    bijvoorbeeld bij een upgrade naar Progress OpenEdge 12.8 waar een Kafka-adapter beschikbaar is ~\autocite{Progress2024}.
+\end{itemize}
 
+ 
+\subsubsection{RabbitMQ}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} RabbitMQ biedt uitstekende prestaties en is in staat grote hoeveelheden berichten snel en efficiënt te verwerken ~\autocite{baeldung2024}.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone gegevensuitwisseling.
+    \item \textbf{JMS ondersteuning:} Beschikt over JMS-ondersteuning, wat het geschikt maakt voor integratie in onze omgeving.
+    \item \textbf{Installatie mogelijk op Linux OS:} Kan eenvoudig worden geïnstalleerd op diverse Linux-distributies.
+    \item \textbf{AMQP protocol ondersteunen:} Ondersteunt AMQP, wat bijdraagt aan de veelzijdigheid en flexibiliteit van de broker.
+    \item \textbf{Monitoring mogelijkheden:} RabbitMQ biedt uitgebreide monitoringmogelijkheden via tools zoals RabbitMQ Management Plugin, evenals integraties met externe monitoringoplossingen.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Ondersteunt lokale installatie, wat belangrijk is voor onze setup.
+    \item \textbf{Commerciële support:} Beschikt over een grote en actieve community. Daarnaast is professionele ondersteuning beschikbaar via onder andere Pivotal en andere aanbieders.
+    \item \textbf{Voldoet aan de vereisten:} Met ondersteuning voor AMQP en JMS voldoet RabbitMQ aan de gestelde eisen en is het geschikt voor opname in de shortlist. 
+    Daarnaast wordt de broker actief ontwikkeld, beschikt het over uitgebreide documentatie en biedt het mogelijkheden voor professionele ondersteuning.
+\end{itemize}
+  
+\subsubsection{ActiveMQ Classic}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} ActiveMQ Classic biedt solide prestaties en is geschikt voor een breed scala aan messaging-toepassingen ~\autocite{Reock2020}.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone gegevensverwerking via verschillende protocollen.
+    \item \textbf{JMS ondersteuning:} Native ondersteuning voor JMS, wat het ideaal maakt voor Java-gebaseerde toepassingen.
+    \item \textbf{Installatie mogelijk op Linux OS:} Kan eenvoudig worden geïnstalleerd op moderne Linux-systemen en is ook geschikt voor cloudomgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} Ondersteunt AMQP, evenals andere protocollen zoals OpenWire, STOMP, en MQTT, wat het veelzijdig maakt.
+    \item \textbf{Monitoring mogelijkheden:} Beschikt over monitoringopties via JMX, evenals integratiemogelijkheden met externe tools zoals Prometheus en Grafana.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Kan lokaal worden geïnstalleerd, wat past binnen de eisen van de huidige infrastructuur.
+    \item \textbf{Commerciële support:} Actieve communityondersteuning is beschikbaar, evenals commerciële ondersteuning via aanbieders zoals Red Hat en andere partijen.
+    \item \textbf{Voldoet aan de vereisten:} ActiveMQ Classic is een bewezen, JMS-gebaseerde message broker die veelzijdige protocolondersteuning biedt en gratis beschikbaar is zonder licentiekosten. 
+    Hoewel het een stabiele en betrouwbare oplossing is, verschuift de focus van de community langzaam naar ActiveMQ Artemis. 
+    Dit kan betekenen dat toekomstige innovaties minder frequent zijn. Desondanks blijft ActiveMQ Classic een sterke keuze voor organisaties die een robuuste, kostenbesparende message broker zoeken.
+\end{itemize}
+ 
+\subsubsection{ActiveMQ Artemis}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} ActiveMQ Artemis biedt hoge prestaties dankzij de geoptimaliseerde interne architectuur ~\autocite{JustinReock2023}.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone berichtenverwerking, zelfs bij hoge doorvoersnelheden.
+    \item \textbf{JMS ondersteuning:} Native ondersteuning voor JMS, waardoor het ideaal is voor Java-gebaseerde toepassingen.
+    \item \textbf{Installatie mogelijk op Linux OS:} Kan eenvoudig worden geïnstalleerd op Linux-systemen en is geschikt voor moderne infrastructuren.
+    \item \textbf{AMQP protocol ondersteunen:} Ondersteunt AMQP, evenals andere protocollen zoals OpenWire, MQTT en STOMP, wat de veelzijdigheid vergroot.
+    \item \textbf{Monitoring mogelijkheden:} Beschikt over uitgebreide monitoringopties, inclusief JMX en integraties met tools zoals Prometheus en Grafana.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Kan lokaal worden geïnstalleerd, wat flexibiliteit biedt voor on-premise implementaties.
+    \item \textbf{Commerciële support:} Actieve communityondersteuning is beschikbaar, naast commerciële ondersteuning via bedrijven zoals Red Hat en andere aanbieders.
+    \item \textbf{Voldoet aan de vereisten:}
+    ActiveMQ Artemis is een moderne, open source JMS-gebaseerde message broker met een geavanceerde interne architectuur die uitstekende prestaties biedt ~\autocite{JustinReock2023}.
+    Alle aspecten van dit systeem voldoen aan de criteria waardoor deze in de shortlist kan opgenomen worden.
+\end{itemize}
+ 
+ 
+\subsubsection{MQTT.js}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} MQTT.js biedt uitstekende prestaties voor het implementeren van het MQTT-protocol ~\autocite{Yu2024}.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone berichtenverwerking, wat zorgt voor lage latency en hoge doorvoersnelheid.
+    \item \textbf{JMS ondersteuning:} MQTT.js biedt geen native ondersteuning voor JMS.
+    \item \textbf{Installatie mogelijk op Linux OS:} MQTT.js is een bibliotheek dat gebruikt wordt bij de implementatie van browsers.
+    \item \textbf{AMQP protocol ondersteunen:} Ondersteunt geen AMQP-protocol, maar is volledig geoptimaliseerd voor het MQTT-protocol.
+    \item \textbf{Monitoring mogelijkheden:} Voor monitoring kan MQTT.js worden gecombineerd met andere tools, zoals MQTT-servers met ingebouwde monitoring of externe monitoringoplossingen.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Kan lokaal geïnstalleerd worden in een Node.js-omgeving of geïntegreerd in browserapplicaties.
+    \item \textbf{Commerciële support:} Als open source library heeft MQTT.js geen officiële commerciële ondersteuning, maar is er een grote actieve community die ondersteuning biedt via forums en GitHub.
+    \item \textbf{Voldoet niet aan de vereisten:}  
+    MQTT.js is geen geschikte kandidaat voor onze vereisten omdat het alleen het MQTT-protocol ondersteunt en geen ondersteuning biedt voor andere protocollen zoals AMQP of JMS, wat essentieel is voor onze toepassingen. 
+    Daarnaast biedt het geen commerciële ondersteuning en heeft het beperkte monitoringmogelijkheden in vergelijking met andere brokers. 
+\end{itemize}
+ 
+
+\subsubsection{IBM MQ}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} IBM MQ biedt uitstekende prestaties en is ontworpen voor enterprise-grade toepassingen met hoge beschikbaarheid en betrouwbaarheid ~\autocite{IBM2024}.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone berichtenverwerking met garantie voor berichtlevering.
+    \item \textbf{JMS ondersteuning:} Biedt volledige ondersteuning voor JMS, wat het ideaal maakt voor integratie met Java-gebaseerde toepassingen.
+    \item \textbf{Installatie mogelijk op Linux OS:} IBM MQ kan draaien op Linux OS-omgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} Ondersteunt het AMQP-protocol.
+    \item \textbf{Monitoring mogelijkheden:} Biedt uitgebreide monitoring- en beheeropties, inclusief integratie met externe tools voor gedetailleerde prestatieanalyse.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Kan lokaal geïnstalleerd worden.
+    \item \textbf{Commerciële support:} IBM MQ biedt commerciële ondersteuning via IBM zelf, met een gesloten community en uitgebreide documentatie.
+    \item \textbf{Voldoet aan de vereisten:} IBM MQ is een robuuste JMS-gebaseerde message broker die veelzijdige protocolondersteuning biedt, waaronder AMQP. 
+    Het biedt enterprise-grade functionaliteit, met garanties voor berichtlevering, beveiliging, en transactiebeheer. 
+    De broker biedt uitgebreide functionaliteiten die het ideaal maken voor veeleisende toepassingen maar kan overkill zijn voor het huidige WCS systeem.
+\end{itemize}
+ 
+
+\subsubsection{Redis}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} Redis is een in-memory data platform dat uitzonderlijke snelheid biedt voor berichtenverwerking ~\autocite{Saxena2024}.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt asynchrone berichtenverwerking via pub/sub-mechanismen en streams.
+    \item \textbf{JMS ondersteuning:} Redis ondersteunt JMS alleen via verschillende client bibliotheken, waardoor het minder direct compatibel is met systemen die native JMS vereisen.
+    \item \textbf{Installatie mogelijk op Linux OS:} Redis is volledig compatibel met Linux OS-omgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} Ondersteunt geen AMQP-protocol.
+    \item \textbf{Monitoring mogelijkheden:} Biedt basis monitoring via ingebouwde tools en integratie met externe monitoringtools, zoals Prometheus.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Redis kan lokaal geïnstalleerd worden.
+    \item \textbf{Commerciële support:} Redis biedt commerciële ondersteuning via Redis Labs, met premium opties voor geavanceerde functionaliteit, beveiliging en schaalbaarheid.
+    \item \textbf{Voldoet niet aan de vereisten:} Redis biedt geen native ondersteuning voor JMS en AMQP wat essentieel is voor de huidige setup.
+\end{itemize}
+ 
+
+\subsubsection{NSQ}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} NSQ is ontworpen voor hoge beschikbaarheid en schaalbaarheid, en is geoptimaliseerd voor het verwerken van berichten op grote schaal, met lage latency.
+    \item \textbf{Asynchroon verzenden van gegevens:} NSQ ondersteunt volledig asynchrone berichtverwerking via pub/sub-communicatie.
+    \item \textbf{JMS ondersteuning:} JMS-integratie is mogelijk via client libraries van NSQ, maar wordt niet native ondersteund.
+    \item \textbf{Installatie mogelijk op Linux OS:} NSQ werkt op Linux OS-omgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} Ondersteunt geen AMQP-protocol.
+    \item \textbf{Monitoring mogelijkheden:} NSQ biedt basis monitoring en integratie met externe tools voor uitgebreide prestatieanalyse, zoals Prometheus.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Kan lokaal worden geïnstalleerd.
+    \item \textbf{Commerciële support:} NSQ heeft een actieve community die ondersteuning biedt via open source platforms, en commerciële ondersteuning is beschikbaar via consultants en serviceproviders.
+    \item \textbf{Voldoet niet volledig aan de vereisten:} Het biedt geen ondersteuning voor AMQP en JMS.
+\end{itemize}
+ 
+  
+\subsubsection{Apache Pulsar}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} Apache Pulsar is ontworpen voor hoge prestaties en kan zowel messaging als streaming op grote schaal verwerken.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt asynchrone berichtverwerking en streaming.
+    \item \textbf{JMS ondersteuning:} Apache Pulsar biedt geen native JMS-ondersteuning
+    \item \textbf{Installatie mogelijk op Linux OS:} Pulsar is compatibel met Linux OS-omgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} AMQP kan via een connector worden gebruikt, maar dit voegt extra complexiteit toe aan de configuratie en integratie van het systeem.
+    \item \textbf{Monitoring mogelijkheden:} Pulsar biedt monitoringmogelijkheden via integratie met externe monitoringplatforms zoals Prometheus en Grafana.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Apache Pulsar kan lokaal geïnstalleerd worden.
+    \item \textbf{Commerciële support:} Er is commerciële ondersteuning beschikbaar via bedrijven die Apache Pulsar als platform aanbieden, naast de actieve ondersteuning vanuit de Apache Software Foundation.
+    \item \textbf{Voldoet niet volledig aan de vereisten: }Apache Pulsar biedt ondersteuning voor AMQP via een connector maar brengt extra complexiteit met zich mee.
+    
+\end{itemize}
+
+  
+\subsubsection{NATS}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} NATS biedt uitstekende prestaties door gebruik te maken van een lichtgewicht, snel protocol dat geschikt is voor hoge doorvoer en lage latency.
+    \item \textbf{Asynchroon verzenden van gegevens:} NATS ondersteunt volledig asynchrone berichtverwerking.
+    \item \textbf{JMS ondersteuning:} NATS biedt geen native JMS-ondersteuning, maar via een plugin kan een JMS-clientverbinding worden ondersteund.
+    \item \textbf{Installatie mogelijk op Linux OS:} NATS kan geïnstalleerd worden op Linux OS-omgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} NATS ondersteunt geen AMQP, aangezien het gebruik maakt van zijn eigen NATS-protocol voor berichtenverkeer.
+    \item \textbf{Monitoring mogelijkheden:} NATS biedt monitoringopties via ingebouwde tools en integratie met externe monitoringsoftware zoals Prometheus.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} NATS kan lokaal worden geïnstalleerd, wat het geschikt maakt voor on-premise implementaties.
+    \item \textbf{Commerciële support:} NATS biedt zowel commerciële ondersteuning als ondersteuning via een actieve community.
+    \item \textbf{Voldoet niet aan de vereisten:} NATS ondersteunt geen AMQP en biedt alleen via een plugin beperkte JMS-functionaliteiten waardoor het niet compatibel is met de huidige setup.
+\end{itemize}
+
+  
+\subsubsection{ZeroMQ}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} ZeroMQ biedt uitstekende prestaties door direct gebruik te maken van socketverbindingen.
+    \item \textbf{Asynchroon verzenden van gegevens:} ZeroMQ ondersteunt asynchrone communicatie via bufferen van berichten op de client.
+    \item \textbf{JMS ondersteuning:} ZeroMQ biedt geen ondersteuning voor JMS, omdat het geen gebruik maakt van een traditionele message broker en systemen rechtstreeks met elkaar communiceert.
+    \item \textbf{Installatie mogelijk op Linux OS:} ZeroMQ kan geïnstalleerd worden op Linux OS-omgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} ZeroMQ ondersteunt geen AMQP, aangezien het gebruik maakt van sockets in plaats van protocollen zoals AMQP.
+    \item \textbf{Monitoring mogelijkheden:} ZeroMQ biedt beperkte ingebouwde monitoringmogelijkheden, en externe monitoring vereist aanvullende tools en integratie.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} ZeroMQ kan lokaal geïnstalleerd worden, wat het geschikt maakt voor on-premise implementaties.
+    \item \textbf{Commerciële support:} De community rond ZeroMQ is kleiner dan die van grotere projecten zoals Apache, en commerciële ondersteuning is beperkt.
+    \item \textbf{Voldoet niet aan de vereisten:}
+    ZeroMQ biedt geen ondersteuning voor AMQP of JMS, wat het niet geschikt maakt voor het huidige systeem die gebruik maken van deze protocollen. 
+    Daarnaast zijn er geen uitgebreide monitoringmogelijkheden en heeft het een kleinere community.
+    ZeroMQ is een goede keuze voor specifieke gevallen waar socketgebaseerde communicatie nodig is, maar niet geschikt voor toepassingen zoals voor het WCS.
+\end{itemize}
+
+ 
+\subsubsection{FioranoMQ}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} FioranoMQ biedt hoge prestaties voor enterprise messaging, met ondersteuning voor zowel point-to-point als publish-subscribe messaging modellen.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt asynchrone berichtverwerking.
+    \item \textbf{JMS ondersteuning:} Biedt volledige ondersteuning voor JMS 1.1, waardoor het een geschikte keuze is voor Java-gebaseerde toepassingen die de JMS-standaard vereisen.
+    \item \textbf{Installatie mogelijk op Linux OS:} FioranoMQ kan geïnstalleerd worden op elk platform dat JRE 1.8 ondersteunt, waaronder Linux OS-omgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} FioranoMQ ondersteunt geen AMQP.
+    \item \textbf{Monitoring mogelijkheden:} Biedt monitoring via JMX-integratie, waarmee het eenvoudig kan worden gekoppeld aan externe monitoringtools.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Kan lokaal worden geïnstalleerd.
+    \item \textbf{Commerciële support:} FioranoMQ biedt ondersteuning via betaalde licenties, met een gratis versie van 45 dagen en commerciële ondersteuning na aankoop van een licentie.
+    \item \textbf{Voldoet niet aan de vereisten: }
+    FioranoMQ biedt geen ondersteuning voor AMQP.
+    
+\end{itemize}
+
+
+\subsubsection{SwiftMQ}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} SwiftMQ is een high-performance message broker die ontworpen is voor het verwerken van grote hoeveelheden berichten met lage latency.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt asynchrone communicatie via de JMS-standaard.
+    \item \textbf{JMS ondersteuning:} SwiftMQ biedt volledige ondersteuning voor de JMS 1.1 en 2.0 standaarden.
+    \item \textbf{Installatie mogelijk op Linux OS:} SwiftMQ is compatibel met Linux OS-omgevingen.
+    \item \textbf{AMQP protocol ondersteunen:} SwiftMQ ondersteunt AMQP.
+    \item \textbf{Monitoring mogelijkheden:} SwiftMQ biedt ingebouwde monitoringtools en ondersteuning voor externe monitoring via JMX.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} SwiftMQ kan lokaal worden geïnstalleerd.
+    \item \textbf{Commerciële support:} SwiftMQ biedt commerciële ondersteuning via licenties, met verschillende supportopties afhankelijk van de gekozen versie.
+    \item \textbf{Voldoet aan de vereisten}
+\end{itemize}
+
+
+
+\subsubsection{Amazon SQS}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} Amazon SQS biedt betrouwbare en schaalbare berichtverwerking met lage latency en hoge doorvoer, ideaal voor gedistribueerde systemen.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone communicatie via het pull-berichtmodel, waardoor berichten efficiënt worden verwerkt zonder vertraging.
+    \item \textbf{JMS ondersteuning:} Amazon SQS biedt geen native JMS-ondersteuning, maar kan wel gebruikt worden met AWS SDK's die integratie mogelijk maken met Java toepassingen.
+    \item \textbf{Installatie mogelijk op Linux OS:} SQS is een volledig beheerde service in de cloud.
+    \item \textbf{AMQP protocol ondersteunen:} Amazon SQS ondersteunt geen AMQP.
+    \item \textbf{Monitoring mogelijkheden:} Amazon SQS biedt integratie met Amazon CloudWatch voor uitgebreide monitoring en alerts, zodat de status van queues en berichten kan worden gevolgd.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Omdat Amazon SQS een cloud-gebaseerde service is, kan het niet lokaal geïnstalleerd worden.
+    \item \textbf{Commerciële support:} Amazon SQS wordt ondersteund door AWS, met uitgebreide commerciële ondersteuning en documentatie via AWS supportplannen.
+    \item \textbf{Voldoet niet aan de vereisten:}
+    Omdat Amazon SQS geen ondersteuning biedt voor AMQP of JMS, niet lokaal kan geïnstalleerd worden is dit geen kandidaat.
+\end{itemize}
+
+
+
+
+\subsubsection{Google Cloud Pub/Sub}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} Google Cloud Pub/Sub biedt hoge doorvoer en lage latency, waardoor het geschikt is voor real-time messaging en schaalbare systemen.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone berichtverwerking via het publish-subscribe-model.
+    \item \textbf{JMS ondersteuning:} Google Cloud Pub/Sub biedt geen native JMS-ondersteuning, maar kan worden geïntegreerd met Java via de Google Cloud SDK en API's.
+    \item \textbf{Installatie mogelijk op Linux OS:} Google Cloud Pub/Sub is een cloud-gebaseerde service.
+    \item \textbf{AMQP protocol ondersteunen:} Google Cloud Pub/Sub ondersteunt geen AMQP.
+    \item \textbf{Monitoring mogelijkheden:} Google Cloud Pub/Sub integreert met Google Cloud Monitoring (voorheen Stackdriver) voor uitgebreide monitoring en alerts.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Omdat het een cloud-gebaseerde service is, kan Google Cloud Pub/Sub niet lokaal geïnstalleerd worden.
+    \item \textbf{Commerciële support:} Google Cloud Pub/Sub wordt ondersteund door Google Cloud met commerciële supportopties, documentatie en community-ondersteuning via Google Cloud Support.
+    \item \textbf{Voldoet niet aan de vereisten:} Het ondersteunt geen native JMS of AMQP en kan niet lokaal worden geïnstalleerd, waardoor dit geen kandidaat is.
+\end{itemize}
+
+
+ 
+\subsubsection{Azure Service Bus}
+\begin{itemize}
+    \item \textbf{Hoge performantie:} Azure Service Bus biedt hoge prestaties met lage latency en ondersteuning voor grootschalige berichtenverwerking.
+    \item \textbf{Asynchroon verzenden van gegevens:} Ondersteunt volledig asynchrone berichtverwerking via zowel het queue-based model als het publish-subscribe model.
+    \item \textbf{JMS ondersteuning:} Biedt native ondersteuning voor JMS, wat het geschikt maakt voor integratie met Java-gebaseerde toepassingen.
+    \item \textbf{Installatie mogelijk op Linux OS:} Azure Service Bus is een cloud-gebaseerde service.
+    \item \textbf{AMQP protocol ondersteunen:} Azure Service Bus ondersteunt het AMQP-protocol.
+    \item \textbf{Monitoring mogelijkheden:} Azure Service Bus biedt monitoring en alerting via Azure Monitor.
+    \item \textbf{Moet lokaal kunnen geïnstalleerd worden:} Omdat Azure Service Bus een cloud-gebaseerde service is, kan het niet lokaal worden geïnstalleerd.
+    \item \textbf{Commerciële support:} Azure Service Bus wordt ondersteund door Microsoft, met commerciële ondersteuning via Microsoft Azure Support en uitgebreide documentatie.
+    \item \textbf{Voldoet aan de vereisten:} Omdat het een cloud-gebaseerde oplossing is, kan Azure Service Bus niet lokaal worden geïnstalleerd waardoor het niet voldoet aan alle vereisten.
+\end{itemize}
+ 
+
+\subsubsection{Samenvatting}
 \begin{table}[h!]
   \centering
   \footnotesize
 \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
   \hline
-  \textbf{Broker} & \textbf{Async} & \textbf{JMS} & \textbf{Linux} & \textbf{AMQP} & \textbf{Monitoring} & \textbf{Lokaal} & \textbf{Support} & \textbf{kandidaat}\\ \hline
+  \textbf{Broker} & \textbf{Async} & \textbf{JMS} & \textbf{Linux} & \textbf{AMQP} & \textbf{Monitoring} & \textbf{Lokaal} & \textbf{Support} & \textbf{Kandidaat}\\ \hline
   \textbf{Artemis}   & X & X & X & X & X & X & X & X \\ \hline
   \textbf{ActiveMQ}  & X & X & X & X & X & X & X & X \\ \hline
   \textbf{RabbitMQ}  & X & X & X & X & X & X & X & X \\ \hline
@@ -424,18 +557,65 @@ Het meten van hoge performantie, wat onderdeel is van de "must haves", komen na 
   \textbf{Pulsar}    & X & X & X &   & X & X & X &   \\ \hline
   \textbf{NATS}      & X &   & X & X & X & X & X &   \\ \hline
   \textbf{ZeroMQ}    & X &   & X &   & X & X &   &   \\ \hline
-  \textbf{FioranoMQ} & X & X & X & X & X & X & X & X \\ \hline
+  \textbf{FioranoMQ} & X & X & X & X & X & X & X &   \\ \hline
+  \textbf{SwiftMQ}   & X & X & X & X & X & X & X & X \\ \hline
   \textbf{Amazon}    & X &   &   & X & X &   & X &   \\ \hline
   \textbf{Google}    & X &   &   & X & X &   & X &   \\ \hline
-  \textbf{Azure}     & X & X &   & X & X &   & X &   \\ \hline
+  \textbf{Azure}     & X & X & X & X & X &   & X &   \\ \hline
 \end{tabular}
 \caption{Vergelijking van message brokers}
 \label{tab:vergelijking_message_brokers_must_have}
 \end{table}
 
+
+\newpage
 \subsection{Should have} 
-Onderstaande tabel oordeelt verder op basis van vorige tabel en wordt gebruikt voor de "should-haves" beoordeling.
-Installatiegemak wordt net zoals performantie besproken tijdens de testen.
+Onderstaande tabel oordeelt verder op basis van de kandidaten uit vorige tabel en worden tegen de "should-haves" criteria afgetoetst.
+Installatiegemak wordt net zoals performantie besproken in de conclusie.
+
+\subsubsection{Artemis}
+\begin{itemize}
+    \item \textbf{Open source:} Artemis is een open-source project onder de Apache Software Foundation.
+    \item \textbf{Documentatie:} Artemis heeft uitgebreide en goed onderhouden documentatie beschikbaar.
+    \item \textbf{Schaalbaar:} Artemis is ontworpen voor hoge schaalbaarheid en ondersteunt gedistribueerde messaging op grote schaal.
+    \item \textbf{Kandidaat:} Artemis is een uitstekende keuze voor zowel kleine als grote omgevingen, omdat het opensource is, schaalbaar is en sterke documentatie heeft.
+\end{itemize}
+
+\subsubsection{ActiveMQ}
+\begin{itemize}
+    \item \textbf{Open source:} ActiveMQ is een open-source project, beheerd door de Apache Software Foundation.
+    \item \textbf{Documentatie:} Goede documentatie is beschikbaar, met uitgebreide communityondersteuning.
+    \item \textbf{Schaalbaar:} ActiveMQ ondersteunt clustering en gedistribueerde messaging, waardoor het geschikt is voor schaalbare toepassingen.
+    \item \textbf{Kandidaat:} ActiveMQ is een veelzijdige en bewezen message broker die goed schaling ondersteunt en geschikt is voor een breed scala aan toepassingen.
+\end{itemize}
+
+\subsubsection{RabbitMQ}
+\begin{itemize}
+    \item \textbf{Open source:} RabbitMQ is open-source en vrij te gebruiken.
+    \item \textbf{Documentatie:} RabbitMQ heeft uitgebreide documentatie, tutorials, en een actieve community.
+    \item \textbf{Schaalbaar:} RabbitMQ biedt clustering en federatie om schaalbaarheid te waarborgen, en is geschikt voor grote implementaties.
+    \item \textbf{Kandidaat:} RabbitMQ is een populaire keuze voor het bouwen van schaalbare messaging-systemen, met veel support en documentatie.
+\end{itemize}
+
+\subsubsection{IBM MQ}
+\begin{itemize}
+    \item \textbf{Open source:} Is geen open-source software; het biedt licentiemodellen.
+    \item \textbf{Documentatie:} Heeft uitstekende documentatie en een breed scala aan officiële ondersteuning via IBM.
+    \item \textbf{Schaalbaar:} Ondersteunt schaalbaarheid en kan zowel in cloudomgevingen als on-premises worden gebruikt.
+    \item \textbf{Geen kandidaat:} Is een krachtige oplossing voor enterprise-level messaging, maar de kosten kunnen een belemmering zijn voor kleinere bedrijven of toepassingen die geen enterprise-grade functionaliteit nodig hebben.
+\end{itemize}
+
+\subsubsection{SwiftMQ}
+\begin{itemize}
+    \item \textbf{Open source:} Nee, SwiftMQ is niet open source. Het biedt commerciële licenties.
+    \item \textbf{Documentatie:} Er is behoorlijke documentatie beschikbaar, maar de community is kleiner dan bij andere brokers.
+    \item \textbf{Schaalbaar:} SwiftMQ is ontworpen voor schaalbare messaging.
+    \item \textbf{Geen kandidaat:} SwiftMQ is geschikt voor grotere toepassingen waar specifieke functies vereist zijn, maar het is geen ideale keuze voor projecten die open-source en schaalbare oplossingen nodig hebben.
+\end{itemize}
+
+\subsubsection{Samenvatting}
+Artemis, ActiveMQ, en RabbitMQ zijn sterke kandidaten vanwege hun open-source karakter, goede documentatie en schaalbaarheid.
+IBM MQ is een solide keuze voor bedrijven die behoefte hebben aan enterprise-level ondersteuning, maar het is niet open-source en kan dus duur zijn.
 
 \begin{table}[h!]
   \centering
@@ -447,35 +627,32 @@ Installatiegemak wordt net zoals performantie besproken tijdens de testen.
   \textbf{ActiveMQ}  & X & X & X & X \\ \hline
   \textbf{RabbitMQ}  & X & X & X & X \\ \hline  
   \textbf{IBM MQ}    &   & X & X &  \\ \hline 
-  \textbf{FioranoMQ} &   & X & X &  \\ \hline 
+  \textbf{SwiftMQ}   &   & X & X &  \\ \hline 
 \end{tabular}
 \caption{Vergelijking van message brokers}
 \label{tab:vergelijking_message_brokers_should_have}
 \end{table}
 
-Volgende tabel wordt getest door deze te implementeren in een gesimuleerde omgeving.
-Hierdoor kan het installatie process gedocumenteerd worden en de prestaties gemeten worden.  
-
-\begin{table}[h!]
-  \centering
-  \footnotesize
-\begin{tabular}{|l|c|c|c|c|c|}
-  \hline
-  \textbf{Broker} & \textbf{Opensource} & \textbf{Documentatie} & \textbf{Schaalbaar} & \textbf{kandidaat}\\ \hline
-  \textbf{Artemis}   & X & X & X & X \\ \hline
-  \textbf{ActiveMQ}  & X & X & X & X \\ \hline
-  \textbf{RabbitMQ}  & X & X & X & X \\ \hline   
-\end{tabular}
-\caption{Vergelijking van message brokers}
-\label{tab:vergelijking_message_brokers_candidates_poc}
-\end{table}
+Volgende kandidaten worden meegenomen naar de ``Proof of concept'' waar deze getest worden door deze te integreren in een gesimuleerde omgeving:
+\begin{itemize}
+  \item ActiveMQ
+  \item Artemis
+  \item RabbitMQ
+\end{itemize}
     
 \section{Phase 4: Proof of concept}
 Testen worden opgezet in een afgeschermde omgeving en maken gebruik van Docker containers.
 Op deze manier is het gemakkelijk de testen uit te voeren en te monitoren.
-Dit hoofdstuk zal de technologieën uit de shortlist 
+Dit hoofdstuk zal de kandidaten uit de shortlist testen door het opzetten in een gesimuleerde omgeving.
+\\\\
+Verloop van testen per technologie:
+\begin{itemize}
+  \item \textbf{Installeren:} Hoe verloopt het installeren
+  \item \textbf{Integreren:} Monitoring, connectie met WCS- en PLC-simulator
+  \item \textbf{Performantie:} Kan het systeem bepaald aantal berichten per minuut verwerken
+\end{itemize}
 
-\subsection{Systeem Hardware Informatie}  
+\subsection{Systeem Hardware Informatie}
 \begin{itemize}
     \item \textbf{CPU:} Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
     \item \textbf{Geheugen:} 8GiB
@@ -492,7 +669,7 @@ zoals in sectie \hyperref[listing:message_example]{PLC berichten}.
 De logica is voorzien van een logbestand om de berichten in beide richtingen te kunnen monitoren.
 
 \subsection{Simulatie WCS}
-Het WCS wordt gesimuleerd aan de hand van een \hyperref[sec:sec:codewcs]{script} geschreven in OpenEdge 4GL.
+Het WCS wordt gesimuleerd aan de hand van een \hyperref[sec:codewcs]{script} geschreven in OpenEdge 4GL.
 Via een .pf bestand worden de correcte parameters meegegeven bij het starten van het script.
 Er is geen configuratie bestand voorzien omdat de integratie afhankelijk is van de configuratie per message broker.
 \\\\
@@ -500,31 +677,96 @@ Het script wordt gestart op een lokale Windows omgeving en initieert de connecti
 De berichten worden geconsumeerd en onmiddellijk terug geproduceerd richting de message broker.
 Op deze manier wordt de werking van het productie systeem gesimuleerd.
 
+\subsection{Monitoring}
+Om transparantie te bieden over de prestaties van het systeem, zowel op applicatie- als systeemniveau, 
+wordt gebruikgemaakt van monitoringsoftware zoals beschreven in de requirements analyse.
+Bij elke testopstelling wordt een Docker-container met een Prometheus-instantie ingezet om de logging te verzamelen en te beheren.
+Daarnaast biedt software zoals Grafana de mogelijkheid om specifieke grafieken te genereren, 
+waarmee het gedrag van het systeem dat getest wordt, inzichtelijk kan worden gemaakt.
+Elk te testen kandidaat-systeem moet tijdens de testfase in staat zijn om de benodigde logging te leveren. 
+De opzet voor het verzamelen en verwerken van deze logging wordt gedetailleerd beschreven in de documentatie van elke test.
+\newpage
+
 \subsection{Test ActiveMQ}
+In deze test wordt een Docker container gemaakt met een RedHat OS instantie, waarop ActiveMQ Classic 
+geïnstalleerd wordt via een \hyperref[sec:codeamq]{DockerFile}.
+\\\\
 Overzicht van de infrastructuur:
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.5\textwidth]{img/test_amq_dataflow.png}
+  \includegraphics[width=.9\textwidth]{img/test_amq_dataflow.png}
   \caption{\label{fig:test_amq_dataflow}Dataflow test AMQ}
 \end{figure}
 
-DockerFile
+\subsubsection{Installatie}
+Het installeren van dit systeem is duidelijk uitgelegd in de officiële documentatie van Apache ActiveMQ.
+Configuratie moet aangepast worden in ``activemq.xml'' om de service toegankelijk te maken voor externe services.
+Daarnaast moet het bestand ``setenv'' aangepast worden om de metrics via ``jmx\_exporter'' beschikbaar te maken.
 
-\subsection{Test RabbitMQ}
-Overzicht van de infrastructuur:
+\subsubsection{Integratie}
+Het WCS script kan de verbinding maken met de ActiveMQ server via poort 5672 door gebruik te maken van de JMS adapter.
+De Java listeners gebruiken de JMS library en connecteren via het Openwire protocol op poort 16161.
+Voor de monitoring wordt de ``jmx\_exporter'' gebruikt om de metrics beschikbaar te stellen voor externe software.
+Hierdoor kan de monitoring data benaderd worden via een poort naar eigen keuze, in dit geval 8020.
+
+\subsubsection{Performantie}
+In deze test worden 19 PLC connecties gemaakt met de Java listeners die elk per 0.1 seconde een bericht versturen naar de  ``FromPLC'' queue.
+Hierdoor worden meer dan 1680 berichten per minuut gesimuleerd en wordt er voldaan aan de minimale vereisten op gebied van performantie.
+Het opmeten van deze test wordt verdeeld in twee categorieën, dequeued messages1680 en enqueued messages.
+Om correct de throughput te meten moeten we beide categorieën meten omdat dit de volledige transactie representeert. 
+\\\\
+Volgende grafiek bevestigd dat er per minuut meer dan 1680 berichten kan geplaatst worden op de twee queues:
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.5\textwidth]{img/test_rabbitmq_dataflow.png}
+  \includegraphics[width=.9\textwidth]{img/amq-enqueue-count.png}
+  \caption{\label{fig:amq_enqueue_count}Enqueue ActiveMQ}
+\end{figure}
+
+Zoals de grafiek laat zien kan de message broker meer dan 1680 berichten naar de consumer versturen binnen de minuut.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.9\textwidth]{img/amq-dequeue-count.png}
+  \caption{\label{fig:amq_dequeue_count}Dequeue ActiveMQ}
+\end{figure}
+
+\subsubsection{Samenvatting}
+Installatie en integratie kon gebeuren zonder al te complexe aanpassingen.
+Monitoring is mogelijk en gemakkelijk te verkrijgen. 
+Er is ook een console beschikbaar waar de metrics kunnen geraadpleegd worden.
+Qua performantie voldoet dit product en kan het over twee queues meer dan 1680 berichten verwerken.
+  
+
+\subsection{Test RabbitMQ}
+\subsubsection{Installatie}
+ 
+\subsubsection{Integratie}
+ 
+Overzicht infrastructuur:
+\begin{figure}[h!]
+  \centering
+  % \includegraphics[width=.5\textwidth]{img/test_rabbitmq_dataflow.png}
   \caption{\label{fig:test_rabbitmq_dataflow}Dataflow test RabbitMQ}
 \end{figure}
 
+\subsubsection{Performantie}
+Volgende grafiek geeft weer hoeveel berichten er per minuut verzonden kunnen worden naar de message queue.
+
+
 \subsection{Test Artemis}
+
+\subsubsection{Installatie}
+ 
+\subsubsection{Integratie}
+
 Overzicht van de infrastructuur:
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.5\textwidth]{img/test_artemis_dataflow.png}
+  % \includegraphics[width=.5\textwidth]{img/test_artemis_dataflow.png}
   \caption{\label{fig:test_artemis_dataflow}Dataflow test Artemis}
 \end{figure}
+
+\subsubsection{Performantie}
+Volgende grafiek geeft weer hoeveel berichten er per minuut verzonden kunnen worden naar de message queue.
 
 
 
