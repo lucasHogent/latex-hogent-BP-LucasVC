@@ -155,45 +155,29 @@ public class ActiveMQSocketBridge {
                 }
             });
 
-            // Main loop to accept and handle client connections
-            while (true) {
-                try (BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream()));) {
+             while (true) {
+                try (InputStream inputStream = clientSocket.getInputStream();) {
 
                     System.out.println("Socket connection established on port " + port);
                     clientSocket.setTcpNoDelay(true);
-                    StringBuilder buffer = new StringBuilder(); // Buffer to accumulate incoming data
 
-                    int charRead;
-                    while ((charRead = reader.read()) != -1) {
-                        char currentChar = (char) charRead;
-                        buffer.append(currentChar);
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
 
-                        if (currentChar == '\u0003') {
-                            String fullMessage = buffer.toString();
-                            buffer.setLength(0); // Clear the buffer after extracting the message
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
 
-                            // Ensure the message starts with 02 and ends with 03
-                            int startIndex = fullMessage.indexOf('\u0002');
-                            int endIndex = fullMessage.indexOf('\u0003');
-                            if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
-                                // Extract the message, including 02 and 03
-                                String data = fullMessage.substring(startIndex, endIndex + 1);
-                                data = bytesToHex(data.getBytes()); // Convert to hex if needed
-                                logMessage("PLC->WCS ", port, data);
+                        String data = new String(buffer, 0, bytesRead, "UTF-8");
 
-                                // Send the received data to ActiveMQ
-                                TextMessage message = session.createTextMessage(data);
-                                message.setStringProperty("channel", String.valueOf(channel));
-                                producer.send(message);
+                        data = bytesToHex(data.getBytes(), bytesRead);
 
-                            }
-                        }
+                        System.out.println("Received data on port " + port + ": " + data);
+                        logMessage("Incoming SOCKET PLC->WCS ", port, data);
+
+                        channel.basicPublish("", SEND_QUEUE, null, data.getBytes());
+
                     }
                 } catch (IOException e) {
                     System.err.println("Error handling connection on port " + port + ": " + e.getMessage());
-                } catch (JMSException e) {
-                    System.err.println("Error with ActiveMQ: " + e.getMessage());
                 }
             }
 

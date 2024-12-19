@@ -3,7 +3,7 @@ package com.example;
 import java.util.Map;
 
 class Config {
-    public ActiveMQConfig activemq;
+    public ArtemisConfig Artemis;
 
     public Map<String, Integer> channelPorts;
 

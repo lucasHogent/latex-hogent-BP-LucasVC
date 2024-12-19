@@ -33,18 +33,39 @@ def generate_random_message():
     return " ".join(message_template)
 
 
-def send_messages(socket_conn, port, message_queue, stop_event):
-    """Send messages from the queue to the socket."""
+def send_messages(socket_conn, host, port, stop_event):
+    """Send messages from the queue to the socket and ensure delivery."""
     while not stop_event.is_set():
         try:
-            # message = message_queue.get(timeout=1)  # Wait for a message from the queue
+            if socket_conn is None:
+                logging.info(f"Attempting to connect to {host}:{port}")
+                socket_conn = socket.create_connection((host, port))
+                logging.info(f"Connected to {host}:{port}")
+
             message = generate_random_message()
-            socket_conn.send(bytes.fromhex(message.replace(" ", "")))
+            full_message = bytes.fromhex(message.replace(" ", ""))
+            
+            # Send message
+            socket_conn.sendall(full_message)
             logging.info(f"Sent to {port}: {message}")
             print(f"Sent to {port}: {message}")
-            time.sleep(send_interval) # Simulate delay
+            
+             
+            time.sleep(send_interval)  # Simulate delay
         except queue.Empty:
             continue  # No message to send; check stop_event
+        except Exception as e:
+            logging.error(f"Error sending to {port}: {e}")
+            print(f"Error sending to {port}: {e}")
+            time.sleep(retry_interval) 
+            if socket_conn:
+                try:
+                    socket_conn.close()
+                except Exception as close_error:
+                    logging.warning(f"Error closing socket: {close_error}")
+                finally:
+                    socket_conn = None
+            
 
 
 def receive_messages(socket_conn, port, buffer_size, stop_event):
@@ -61,7 +82,7 @@ def receive_messages(socket_conn, port, buffer_size, stop_event):
             break
 
 
-def handle_connection(host, port, buffer_size, message_queue, stop_event):
+def handle_connection(host, port, buffer_size, stop_event):
     """Handle socket connection, send and receive messages."""
 
     print(host, port)
@@ -76,7 +97,7 @@ def handle_connection(host, port, buffer_size, message_queue, stop_event):
                     print(f"Connected to {host}:{port}")
 
                     # Create threads for sending and receiving messages
-                    send_thread = threading.Thread(target=send_messages, args=(socket_conn, port, message_queue, stop_event))
+                    send_thread = threading.Thread(target=send_messages, args=(socket_conn, host, port, stop_event))
                     receive_thread = threading.Thread(target=receive_messages, args=(socket_conn, port, buffer_size, stop_event))
 
                     # Start threads
@@ -116,9 +137,7 @@ def main():
     send_interval = float(config["INTERVAL"]["SEND"])
 
     logging.info(f"Starting client for host {host} with ports {ports}")
-
-    # Create a Queue and a stop_event
-    message_queue = queue.Queue()
+  
     stop_event = threading.Event()
 
     try:
@@ -126,7 +145,7 @@ def main():
         # Start handling connections for each port
         connection_threads = []
         for port in ports:
-            connection_thread = threading.Thread(target=handle_connection, args=(host, port, buffer_size, message_queue, stop_event))
+            connection_thread = threading.Thread(target=handle_connection, args=(host, port, buffer_size, stop_event))
             connection_threads.append(connection_thread)
             connection_thread.start()
 

@@ -5,7 +5,7 @@ import java.util.Map;
 class Config {
     public RabbitMQConfig broker;
 
-    public Map<String, Integer> channelPorts;
+    public Map<String, int[]> plcChannelPorts;
 
     public String logPath;
 }

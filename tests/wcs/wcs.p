@@ -52,7 +52,8 @@ define variable cLog           as character no-undo.
 
 define variable hPtp           as handle    no-undo.
 define variable hMsgConsumer   as handle    no-undo.
- 
+define variable hMsgConsumer2   as handle    no-undo.
+
 define variable iChannel1      as integer   no-undo.
 define variable iChannel2      as integer   no-undo.
 define variable iChannel3      as integer   no-undo.
@@ -116,11 +117,23 @@ run setUser in hPtp ("admin").
 run setPassword in hPtp ("admin").
 run beginSession in hPtp. 
 
-   
 run createMessageConsumer in hPtp(this-procedure, "readMessageFromQueue",
   output hMsgConsumer).
 run ReceiveFromQueue in hPtp (cReceiveQueue, "" ,hMsgConsumer).
-  
+
+
+run createMessageConsumer in hPtp(this-procedure, "readMessageFromRabbitMQ1",
+  output hMsgConsumer2).
+run ReceiveFromQueue in hPtp (cReceiveQueue + "80" + string(iChannel1, "99"), "" ,hMsgConsumer2).  
+
+run createMessageConsumer in hPtp(this-procedure, "readMessageFromRabbitMQ2",
+  output hMsgConsumer2).
+run ReceiveFromQueue in hPtp (cReceiveQueue + "80" + string(iChannel2, "99"), "" ,hMsgConsumer2). 
+
+run createMessageConsumer in hPtp(this-procedure, "readMessageFromRabbitMQ3",
+  output hMsgConsumer2).
+run ReceiveFromQueue in hPtp (cReceiveQueue + "80" + string(iChannel3, "99"), "" ,hMsgConsumer2). 
+ 
 run StartReceiveMessages in hPtp.
   
 repeat:
@@ -179,80 +192,89 @@ procedure readMessageFromQueue:
   
 end procedure.
 
+procedure readMessageFromRabbitMQ1:
+define input  parameter hMessage     as handle no-undo.
+  define input  parameter hMsgConsumer as handle no-undo.
+  define output parameter hReply       as handle no-undo.
+  
+  run readMessageFromRabbitMQ("80" + string(iChannel1, "99"), hMessage, hMsgConsumer).
+  
+end procedure.
+
+procedure readMessageFromRabbitMQ2:
+define input  parameter hMessage     as handle no-undo.
+  define input  parameter hMsgConsumer as handle no-undo.
+  define output parameter hReply       as handle no-undo.
+  
+  run readMessageFromRabbitMQ("80" + string(iChannel2, "99"), hMessage, hMsgConsumer).
+
+end procedure.
+
+procedure readMessageFromRabbitMQ3:
+define input  parameter hMessage     as handle no-undo.
+  define input  parameter hMsgConsumer as handle no-undo.
+  define output parameter hReply       as handle no-undo.
+  
+  run readMessageFromRabbitMQ("80" + string(iChannel3, "99"), hMessage, hMsgConsumer).
+
+end procedure.
+
 procedure readMessageFromRabbitMQ:
   /*------------------------------------------------------------------------------
    Purpose:
    Notes:
   ------------------------------------------------------------------------------*/
-  define input  parameter hMessage     as handle no-undo.
-  define input  parameter hMsgConsumer as handle no-undo.
-  define output parameter hReply       as handle no-undo.
+  define input  parameter icChannel    as character no-undo.
+  define input  parameter hMessage     as handle  no-undo.
+  define input  parameter hMsgConsumer as handle  no-undo. 
   
+   
   define variable cChannel as character no-undo.
+  define variable mMessage as memptr    no-undo.
   define variable lcJson   as longchar  no-undo.
 
   run getMessageBody in hMessage(output table message-body).
   
+  
   for each message-body:
     lcJson = extractMessage(message-body.item-bytes-value).
   end.
-  
-      
-  display string(lcJson)with 2 col.
+        
+  display string(lcJson) format "X(32)"with 2 col.
   
   output to value("C:\temp\wcs.log") append.
-  put unformatted now dynamic-function("getCharProperty" in hMessage, "channel") string(lcjson) skip.
+  put unformatted now     icChannel       string(lcjson) skip.
   output close.
+  
   
   run deleteMessage in hMessage.
   
-  RUN createTextMessage IN hPTP (OUTPUT hMessage).
-  run clearbody in hMessage. 
-  RUN setText IN hMessage (lcjson).
-  run clearproperties in hMessage. 
-  
-  run setStringProperty in hMessage ("channel", cChannel).
+  RUN createBytesMessage IN hPtp (OUTPUT hMessage).
+  copy-lob lcJson to mMessage.
+  RUN SetMemPtr IN hMessage (mMessage,1,GET-SIZE(mMessage)).
+   
   
   RUN sendToQueue IN hPtp (
-    cSendQueue,        /* Name of the queue */
+    cSendQueue + icChannel,        /* Name of the queue */
     hMessage,       /* Message object */
-    ?,              /* Message priority: 0-9 (optional) */
-    0,              /* TimeToLive in milliseconds (optional) */
+    1,              /* Message priority: 0-9 (optional) */
+    50000,              /* TimeToLive in milliseconds (optional) */
     "PERSISTENT"           /* Delivery mode (optional); NON-PERSISTENT : */ 
     /* Messages doesn't stay on the queue */
     /* after a shutdown of the sonicMQ Broker.*/
     ).
      
   run deleteMessage in hMessage.
+  
+  CATCH e AS Progress.Lang.Error:
+    MESSAGE "Error sending message to queue: " + e:GetMessage(1) VIEW-AS ALERT-BOX.
+  END.
 
 end procedure.
 
 /* ************************  Function Implementations ***************** */
 
-function convertToHex returns character private
-  ( input iiValue as integer ):
-  /*------------------------------------------------------------------------------
-   Purpose:
-   Notes:
-  ------------------------------------------------------------------------------*/  
-  case iiValue:
-    when 10 then 
-      return "A".
-    when 11 then 
-      return "B".
-    when 12 then 
-      return "C".
-    when 13 then 
-      return "D".
-    when 14 then 
-      return "E".
-    when 15 then 
-      return "F".
-    otherwise 
-    return string(iiValue).
-  end case.
-    
-end function.
+ 
 
 function extractMessage returns character private
   ( input irData as raw ):
@@ -266,19 +288,15 @@ function extractMessage returns character private
 
   define variable c1         as character.
   define variable c2         as character.
+  def var m as memptr no-undo.
  
- 
-  
-  do i = 1 to length(irData) + 2:
-
-    ibyteValue = get-byte(irData, i).
-    c1 = string(ibyteValue modulo 16).
-    if ibyteValue > 16 then
-      c2 = string(ibyteValue / 16 ).
-    else c2 = "0"  .
-   
-    cHexString = cHexString + convertToHex(int(c2)) + convertToHex(int(c1)) + " ".
-  end.
+  m = irData.
+  i = get-size(m) .
+  do i = 1 to get-size(m) by 2 :
+   c1 = get-string(m, i, 2).
+	 
+    cHexString = cHexString + c1 .
+   end.
   
   return cHexString.
 

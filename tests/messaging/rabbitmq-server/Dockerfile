@@ -2,13 +2,21 @@
 FROM redhat/ubi8:latest
 
 ENV RABBITMQ_VERSION=3.12.1 ERLANG_VERSION=26.2.5.5
+ARG JRE_VERSION="17"
 
 # Update the system and install dependencies
-RUN yum update -y && yum install -y wget
+
+RUN yum update -y
+RUN yum install -y systemd sudo java-${JRE_VERSION}-openjdk wget procps
+RUN java -version
+
+RUN echo "JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")" | sudo tee -a /etc/profile
+RUN source /etc/profile
 
 RUN cd /tmp/
 RUN curl -sfL -O https://github.com/rabbitmq/erlang-rpm/releases/download/v26.2.5.5/erlang-26.2.5.5-1.el8.x86_64.rpm
 RUN dnf install -y ./erlang-26.2.5.5-1.el8.x86_64.rpm
+
 
 
 ## primary RabbitMQ signing key
