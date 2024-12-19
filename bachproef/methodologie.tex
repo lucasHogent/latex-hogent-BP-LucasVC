@@ -279,6 +279,7 @@ Sommige systemen hangen vast aan een kostenmodel, andere zijn \textbf{open-sourc
   \item Actieve Community en support
   \item UI console via web pagina
   \item Integratie met huidig systeem
+  \item Filtering op properties
 \end{itemize}
 
 \newpage
@@ -507,9 +508,6 @@ Producten die voldoen aan de ``must-have'' criteria worden als kandidaat gemarke
     Omdat Amazon SQS geen ondersteuning biedt voor AMQP of JMS, niet lokaal kan geïnstalleerd worden is dit geen kandidaat.
 \end{itemize}
 
-
-
-
 \subsubsection{Google Cloud Pub/Sub}
 \begin{itemize}
     \item \textbf{Hoge performantie:} Google Cloud Pub/Sub biedt hoge doorvoer en lage latency, waardoor het geschikt is voor real-time messaging en schaalbare systemen.
@@ -522,8 +520,6 @@ Producten die voldoen aan de ``must-have'' criteria worden als kandidaat gemarke
     \item \textbf{Commerciële support:} Google Cloud Pub/Sub wordt ondersteund door Google Cloud met commerciële supportopties, documentatie en community-ondersteuning via Google Cloud Support.
     \item \textbf{Voldoet niet aan de vereisten:} Het ondersteunt geen native JMS of AMQP en kan niet lokaal worden geïnstalleerd, waardoor dit geen kandidaat is.
 \end{itemize}
-
-
  
 \subsubsection{Azure Service Bus}
 \begin{itemize}
@@ -538,7 +534,6 @@ Producten die voldoen aan de ``must-have'' criteria worden als kandidaat gemarke
     \item \textbf{Voldoet aan de vereisten:} Omdat het een cloud-gebaseerde oplossing is, kan Azure Service Bus niet lokaal worden geïnstalleerd waardoor het niet voldoet aan alle vereisten.
 \end{itemize}
  
-
 \subsubsection{Samenvatting}
 \begin{table}[h!]
   \centering
@@ -657,6 +652,9 @@ Verloop van testen per technologie:
     \item \textbf{CPU:} Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
     \item \textbf{Geheugen:} 8GiB
 \end{itemize}
+Docker containers.
+metrics: 127.0.0.1:9323 in Prometheus beschikbaar
+ook via Grafana
 
 \subsection{Simulatie PLC}
 Om de PLC te simuleren is er een \hyperref[sec:codeplc]{Python script} geschreven omdat dit snel en gemakkelijk te implementeren is.
@@ -699,20 +697,25 @@ Overzicht van de infrastructuur:
 \end{figure}
 
 \subsubsection{Installatie}
-Het installeren van dit systeem is duidelijk uitgelegd in de officiële documentatie van Apache ActiveMQ.
+Het installeren van dit systeem wordt duidelijk uitgelegd in de officiële documentatie van Apache ActiveMQ.
 Configuratie moet aangepast worden in ``activemq.xml'' om de service toegankelijk te maken voor externe services.
 Daarnaast moet het bestand ``setenv'' aangepast worden om de metrics via ``jmx\_exporter'' beschikbaar te maken.
 
 \subsubsection{Integratie}
-Het WCS script kan de verbinding maken met de ActiveMQ server via poort 5672 door gebruik te maken van de JMS adapter.
-De Java listeners gebruiken de JMS library en connecteren via het Openwire protocol op poort 16161.
-Voor de monitoring wordt de ``jmx\_exporter'' gebruikt om de metrics beschikbaar te stellen voor externe software.
-Hierdoor kan de monitoring data benaderd worden via een poort naar eigen keuze, in dit geval 8020.
+Het WCS-script kan via poort 5672 een AMQP-verbinding tot stand brengen met de ActiveMQ-server.
+De Java-listeners op die server zijn een aparte service, maken gebruik van een JMS-library en verbinden via het Openwire-protocol op poort 16161.
+\\\\
+Om de simulatie zo realistisch mogelijk te maken, zijn er twee queues opgezet. 
+Berichten afkomstig van de PLC worden via de gebruikte poort, via de Java-listener naar de queue gestuurd en krijgen daarbij een property genaamd kanaal.
+Dankzij deze property kunnen de berichten eenvoudig worden gefilterd op kanaal. 
+\\\\
+Voor monitoring wordt de jmx\_exporter gebruikt, waarmee de metrics beschikbaar worden gesteld aan externe software zoals Prometheus. 
+Deze monitoringdata kan benaderd worden via een zelf te configureren poort, in dit geval poort 8020.
 
 \subsubsection{Performantie}
 In deze test worden 19 PLC connecties gemaakt met de Java listeners die elk per 0.1 seconde een bericht versturen naar de  ``FromPLC'' queue.
 Hierdoor worden meer dan 1680 berichten per minuut gesimuleerd en wordt er voldaan aan de minimale vereisten op gebied van performantie.
-Het opmeten van deze test wordt verdeeld in twee categorieën, dequeued messages1680 en enqueued messages.
+Het opmeten van deze test wordt verdeeld in twee categorieën, dequeued- en enqueued messages.
 Om correct de throughput te meten moeten we beide categorieën meten omdat dit de volledige transactie representeert. 
 \\\\
 Volgende grafiek bevestigd dat er per minuut meer dan 1680 berichten kan geplaatst worden op de twee queues:
@@ -730,17 +733,26 @@ Zoals de grafiek laat zien kan de message broker meer dan 1680 berichten naar de
 \end{figure}
 
 \subsubsection{Samenvatting}
-Installatie en integratie kon gebeuren zonder al te complexe aanpassingen.
-Monitoring is mogelijk en gemakkelijk te verkrijgen. 
-Er is ook een console beschikbaar waar de metrics kunnen geraadpleegd worden.
-Qua performantie voldoet dit product en kan het over twee queues meer dan 1680 berichten verwerken.
-  
+De installatie en integratie kunnen worden uitgevoerd zonder al te complexe aanpassingen, 
+wat het proces gebruiksvriendelijk en eenvoudig maakt.
+Monitoring is eenvoudig en gemakkelijk toegankelijk. 
+Een mooie extra is de admin console die beschikbaar is via ``http://localhost:8161/admin'', waar de metrics kunnen worden geraadpleegd.
+Wat betreft prestaties voldoet dit product aan de verwachtingen omdat het meer dan 1680 berichten  binnen de minuut kan verwerken via twee queues.
 
 \subsection{Test RabbitMQ}
 \subsubsection{Installatie}
- 
+Deze software heeft een zeer uitgebreide documentatie
+gemakkelijk te installeren met basis instellingen.
+Uitgebreide configuratie
+
+
 \subsubsection{Integratie}
- 
+management port 15672
+geintegreerde metrics exposer voor Prometheus
+Geen filtering mogelijk dus moeten listeners per drie kanalen doorsturen naar een wcs consumer.
+19 queues gemaakt
+
+
 Overzicht infrastructuur:
 \begin{figure}[h!]
   \centering
@@ -749,8 +761,10 @@ Overzicht infrastructuur:
 \end{figure}
 
 \subsubsection{Performantie}
-Volgende grafiek geeft weer hoeveel berichten er per minuut verzonden kunnen worden naar de message queue.
-
+In deze test worden opnieuw 19 PLC connecties gemaakt met de Java listeners die elk per 0.1 seconde een bericht versturen naar de relevante queue.
+Hierdoor worden meer dan 1680 berichten per minuut verstuurd om te kunnen voldoen aan de minimale vereisten op gebied van performantie.
+Het opmeten van deze test wordt verdeeld in twee categorieën, dequeued- en enqueued messages.
+Om correct de throughput te meten moeten we beide categorieën meten omdat dit de volledige transactie representeert.
 
 \subsection{Test Artemis}
 
