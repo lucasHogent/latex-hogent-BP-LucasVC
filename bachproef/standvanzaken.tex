@@ -62,47 +62,47 @@ De volgende hoofdstukken geven een dieper inzicht in de volgende onderwerpen:
 \end{enumerate}
 
 \section{Inleiding tot Warehousing}
-Omdat het onderzoek zich afspeelt in het domein van warehousing, wordt in dit hoofdstuk een algemeen overzicht besproken.
+Omdat het onderzoek zich afspeelt in het domein van warehousing, wordt in dit hoofdstuk een algemeen overzicht gegeven.
 Warehousing of magazijnbeheer is het proces van het ontvangen, opslaan, beheren en verzenden van goederen in een specifieke omgeving. 
 Magazijnen worden gebruikt voor een efficiënte doorstroom van materialen, waaronder grondstoffen, halffabricaten en eindproducten.
 Material handling is een belangrijk onderdeel van warehousing, waarbij gebruik wordt gemaakt van apparatuur zoals 
 transportbanden, heftrucks en automatische geleide voertuigen (AGV’s) om materialen door het magazijn te verplaatsen en te beheren.
 \\
-Binnen het magazijn vindt er een verscheidenheid aan activiteiten plaats, waaronder de ontvangst van goederen, 
-het labelen en opslaan ervan, orderpicking en de uiteindelijke verzending naar klanten of productieafdelingen. 
+Binnen het magazijn vindt een verscheidenheid aan activiteiten plaats, waaronder de ontvangst van goederen, 
+het labelen en opslaan ervan, orderpicking en de uiteindelijke verzending naar klanten of productieafdelingen~\autocite{Berg1999}. 
 Elk van deze stappen draagt bij aan een efficiënte bedrijfsvoering en zorgt ervoor dat producten veilig en op tijd beschikbaar 
-zijn voor verdere verwerking of levering~\autocite{Berg1999}.
+zijn voor verdere verwerking of levering.
 \\
-TVH heeft het type distributie magazijn, waarbij verschillende producten van verschillende leveranciers verzameld  
+TVH heeft het type distributiemagazijn, waarbij verschillende producten van verschillende leveranciers verzameld  
 en gebundeld worden zodat die efficiënt naar klanten kan gedistribueerd worden. 
 Dit is een type dat vaak bij retailbedrijven en logistieke dienstverleners gebruikt wordt.
-Verder kan je een distributie magazijn verdelen in twee soorten.
+Verder kan een distributie magazijn verdeeld worden in twee soorten.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.8\textwidth]{../bachproef/img/warehousing_flow.png}
-  \caption[Flow in a typical fully automated warehouse]{\label{fig:warehousing-flow}Standaard flow in een automatisch magazijn~\autocite{Koster2018}}
+  \includegraphics[width=0.95\textwidth]{../bachproef/img/warehousing_flow.png}
+  \caption[Flow in a typical fully automated warehouse]{\label{fig:warehousing-flow}Standaard stroom in een automatisch magazijn~\autocite{Koster2018}}
 \end{figure}
 
 \subsection{Handmatige systemen}
-In deze soort beweegt de orderpicker zich naar de goederenlocaties, vaak met behulp van voertuigen zoals pickkarren of heftrucks. 
+Bij dit type systeem beweegt de orderpicker zich naar de goederenlocaties, vaak met behulp van voertuigen zoals pickkarren of heftrucks~\autocite{Berg1999}. 
 Deze systemen worden ook wel picker-to-product systemen genoemd, waarbij de medewerker fysiek de benodigde items verzamelt. 
-Handmatige systemen zijn eenvoudig maar tijdrovend en vereisen veel arbeidskracht~\autocite{Berg1999}.
+Handmatige systemen zijn eenvoudig maar tijdrovend en vereisen veel arbeidskracht.
 
 \subsection{Automatische systemen}
-In deze systemen worden producten naar de orderpicker gebracht, vaak via ASRS-systemen (Automated Storage and Retrieval Systems). 
+In deze systemen worden producten naar de orderpicker gebracht, vaak via ASRS-systemen (Automated Storage and Retrieval Systems)~\autocite{Berg1999}. 
 Dit zijn product-to-picker systemen waarbij de items automatisch worden verplaatst naar een vast pickpunt. 
 Geautomatiseerde systemen kunnen de efficiëntie aanzienlijk verhogen door de reistijd van de orderpickers te verminderen 
-en het picken te versnellen~\autocite{Berg1999}.
+en het picken te versnellen.
 Het domein van dit onderzoek richt zich op het geautomatiseerde systeem. 
 
 \section{Programmable Logic Controllers (PLC’s)}
-Om een automatisch magazijn effectief aan te sturen, spelen Programmable Logic Controllers (PLC's) een cruciale rol.
-PLC's zijn oorspronkelijk ontwikkeld om elektromechanische relais te digitaliseren in de industriële automatisering~\autocite{Bolton2015}. 
+Om een automatisch magazijn effectief aan te sturen, spelen Programmable Logic Controllers (PLC's) een cruciale rol~\autocite{Bolton2015}.
+PLC's zijn oorspronkelijk ontwikkeld om elektromechanische relais te digitaliseren in de industriële automatisering. 
 Door hun betrouwbaarheid, veelzijdigheid en robuustheid worden PLC’s breed toegepast in de industriële sector, waaronder in warehousing. 
 In een magazijnomgeving monitoren en besturen PLC's tal van processen, zoals het transporteren van goederen, 
 het positioneren van kranen en liften, en het uitvoeren van laad- en losactiviteiten.
-Logistieke software wordt vaak gebruikt om bepaalde orders door te geven aan een PLC.
+Logistieke software wordt vaak gebruikt om specifieke orders door te geven aan een PLC.
 
 \subsection{Protocollen voor de communicatie van PLC's} 
 De communicatie voor PLC’s kan worden gerealiseerd door middel van verschillende industriële protocollen, 
@@ -110,17 +110,17 @@ afhankelijk van de specificaties en vereisten van het magazijn en de gekozen har
 Veelgebruikte protocollen zijn:
 
 \subsubsection{Modbus}
-Een relatief eenvoudig protocol dat oorspronkelijk ontwikkeld werd voor communicatie tussen PLC’s en sensoren of actuatoren. 
+Een relatief eenvoudig protocol dat oorspronkelijk is ontwikkeld voor communicatie tussen PLC’s en sensoren of actuatoren. 
 Het is een van de oudste protocollen en wordt nog steeds vaak gebruikt vanwege de eenvoud en lage kosten~\autocite{Joshi2024}. 
 
 \subsubsection{Profinet}
 Dit protocol biedt hoge snelheden en real-time communicatie 
 en wordt vaak toegepast in grootschalige industriële automatiseringsprojecten, waaronder magazijnbeheer. 
 Profinet is zeer geschikt voor situaties waarin hoge eisen worden gesteld aan nauwkeurigheid en stabiliteit.
-Deze wordt gebruikt in het bedrijf om te communiceren tussen de PLC's.
+Dit protocol wordt binnen het bedrijf gebruikt om te communiceren tussen de PLC's mogelijk te maken.
 
 \subsubsection{Ethernet/IP}
-Dit protocol is gebaseerd op standaard TCP/IP en wordt veel gebruikt in de industrie vanwege de snelheid en flexibiliteit ~\autocite{Joshi2024}. 
+Dit protocol is gebaseerd op standaard TCP/IP en wordt veel gebruikt in de industrie vanwege de snelheid en flexibiliteit~\autocite{Joshi2024}. 
 Ethernet/IP ondersteunt real-time communicatie, wat essentieel is voor de snelle reactietijden die nodig zijn in een geautomatiseerd magazijn.
 Dit protocol maakt gebruik van standaard Ethernet-hardware, zoals kabels, switches en routers. 
 Dit vereenvoudigd de installatie en het onderhoud in industriële omgevingen en maakt het compatibel met bestaande IT-infrastructuur.
@@ -138,18 +138,18 @@ het Warehouse Control System (WCS).
 Deze communicatie stelt het WCS in staat om gedetailleerde commando’s te sturen naar de PLC’s en om statusinformatie terug te ontvangen over de huidige staat van het magazijn en de apparatuur. 
 Een stabiele en snelle datastroom tussen deze systemen is cruciaal voor een efficiënte werking en het minimaliseren van stilstand of fouten.
 \\\\
-Tijdens de samenwerking tussen PLC’s en het WCS worden er verschillende datastromen uitgewisseld via het Ethernet/IP netwerk.
+Tijdens de samenwerking tussen PLC’s en het WCS worden er verschillende datastromen uitgewisseld via het Ethernet/IP-netwerk.
 Commando’s van WCS naar PLC: Het WCS stuurt instructies naar de PLC’s om specifieke handelingen uit te voeren, zoals het starten van een transportband of het positioneren van een kraan.
-Statusupdates van PLC naar WCS: De PLC’s geven informatie terug aan het WCS over de huidige status van apparatuur. Bijvoorbeeld, of een transportband in werking is, 
-de locatie van een item in het magazijn, en of er storingen of onderbrekingen zijn~\autocite{Laar2013}.
+Statusupdates van PLC naar WCS: De PLC’s geven informatie terug aan het WCS over de huidige status van apparatuur. Bijvoorbeeld of een transportband in werking is, 
+de locatie van een item in het magazijn en of er storingen of onderbrekingen zijn~\autocite{Laar2013}.
 \\\\
-Voor die communicatie wordt een middleware gebruikt van Progress OpenEdge, genaamd SonicMQ. 
-Deze staat in als messaging broker, wordt niet meer actief ondersteund en wordt later besproken in de sectie message brokers.
+Voor die communicatie wordt middleware gebruikt van Progress OpenEdge, genaamd SonicMQ. 
+Deze fungeert als messaging broker, wordt niet meer actief ondersteund en wordt later besproken in de sectie messagebrokers.
 
 \section{OpenEdge Progress 4GL} 
-De software die gebruikt wordt voor de implementatie van het ERP-pakket en dus ook het WCS, is geschreven met OpenEdge Progress 4GL software.
-Dit staat gekend onder OpenEdge ABL wat staat voor Advanced Business Language en is een high-level procedurele programmeer taal ontwikkeld door Progress Software Corporation.
-Progress 4GL (Fourth-Generation Language) richt zich op bedrijfsapplicaties, vooral die met veel database-interacties~\autocite{OpenEdge2017}. 
+De software die gebruikt wordt voor de implementatie van het ERP-pakket en dus ook het WCS, is geschreven met OpenEdge Progress 4GL.
+Dit staat gekend als OpenEdge ABL wat staat voor Advanced Business Language en is een high-level procedurele programmeertaal ontwikkeld door Progress Software Corporation.
+Progress 4GL (Fourth-Generation Language) richt zich op bedrijfsapplicaties, vooral die met veel database-interacties~\autocite{OpenEdge2017}.
 Het biedt een vereenvoudigde syntax, waarmee ontwikkelaars snel toepassingen kunnen bouwen.
 Dankzij de optimalisatie voor databasebewerkingen is het geschikt voor toepassingen in sectoren als financiën en logistiek, 
 waar real-time datatoegang essentieel is.
@@ -160,19 +160,19 @@ De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te o
 Dit betekent dat OpenEdge-applicaties alleen kunnen integreren met messaging middleware die JMS ondersteunen. 
 Een recente ontwikkeling (versie 12.8) maakt het mogelijk om Apache Kafka te integreren via een API die door OpenEdge wordt geleverd.
 \\\\
-De Progress OpenEdge JMS Adapter biedt twee methoden voor het verbinden met een message broker: Client Connect en Broker Connect.
+De Progress OpenEdge JMS Adapter biedt twee methoden voor het verbinden met een message broker: ``Client Connect'' en  ``Broker Connect''.
 \subsubsection{Broker Connect}
-Is een methode waarbij de communicatie wordt gemaakt via een tussenlaag. Services verbinden via een specifieke poort op de communicatie server
-dat de verbinding met de messaging broker beheerd. Dit is voordelig voor de veiligheid omdat de JMS broker niet rechtstreeks blootgesteld wordt.
-De opzet van deze methode kan complexer zijn dan Client connect.
+Dit is een methode waarbij de communicatie wordt gemaakt via een tussenlaag. Services verbinden via een specifieke poort op de communicatie server
+die de verbinding met de messaging broker beheert. Dit is voordelig voor de veiligheid omdat de JMS-broker niet rechtstreeks blootgesteld wordt.
+De opzet van deze methode kan complexer zijn dan ``Client Connect''.
 
 \subsubsection{Client Connect}
-Deze methode verbind direct met de messaging broker waardoor integratie eenvoudiger is. 
+Deze methode verbindt direct met de messaging broker waardoor integratie eenvoudiger is. 
 Hierdoor is de message broker rechtstreeks blootgesteld op het netwerk.
 
 \section{Communicatie methodes}
 Dit hoofdstuk bevat informatie over de relevante communicatiemethoden en geeft inzicht in hun werking.
-Deze methodes kunnen zowel on-premise als on-cloud gebruikt worden door het IT infrastructuur.
+Deze methodes kunnen zowel on-premise als on-cloud gebruikt worden door het IT-infrastructuur.
 \\
 \emph{Inter-Process Communication (IPC)} omvat alle vormen van communicatie tussen services, 
 zowel binnen hetzelfde systeem als via een netwerk. 
@@ -194,15 +194,15 @@ Afhankelijk van de gekozen message broker worden verschillende protocollen toege
 Deze worden later besproken.
 
 \subsubsection{Publish-subscribe-model}
-Het publish-subscribe-model is gebaseerd op \textbf{topics} waarop berichten worden gepubliceerd door de \emph{producer} 
-en waar meerdere \emph{subscribers} (abonnees) zich kunnen op inschrijven~\autocite{Dinari2020}. 
+Het publish-subscribe-model is gebaseerd op \textbf{topics} waarop berichten worden gepubliceerd door de \emph{producer},
+en waarop meerdere \emph{subscribers} (abonnees) zich kunnen inschrijven~\autocite{Dinari2020}.
 \\
-In een op \emph{topic} gebaseerd systeem worden berichten geplaatst in \emph{topics} wat logische kanalen zijn.
-\emph{Subscribers} ontvangen berichten van de \emph{topics} waarop ze zich hebben geabonneerd.
+In een op \emph{topic} gebaseerd systeem worden berichten geplaatst in \emph{topics}, die logische kanalen zijn~\autocite{Dinari2020}.
+\emph{Subscribers} ontvangen berichten van de \emph{topics} waarop deze zich hebben geabonneerd.
 Alle \emph{subscribers} ontvangen dezelfde berichten uit dezelfde \emph{topics}. 
-Deze methode zorgt voor een \textbf{one-to-many} vorm van communicatie~\autocite{Dinari2020}.
+Deze methode zorgt voor een \textbf{one-to-many} vorm van communicatie.
 \\
-Hierdoor ontvangen subscribers alleen de berichten uit de klassen die voor hen relevant zijn, zonder enige kennis van de publishers. 
+Hierdoor ontvangen subscribers alleen de berichten uit de categorieën die voor hen relevant zijn, zonder enige kennis van de publishers. 
 Met het publish-subscribe-model specificeert de afzender nooit expliciet wie de ontvanger is en weet het zelfs niet of er al dan niet ontvangers zijn.
 
 \begin{figure}[h!]
@@ -213,15 +213,15 @@ Met het publish-subscribe-model specificeert de afzender nooit expliciet wie de 
 
 \subsubsection{Point-to-Point-model}
 Hier worden berichten door \emph{publishers} in specifieke wachtrijen geplaatst, 
-genaamd \textbf{queues} waarna andere nodes, genaamd \emph{consumers} ze eruit halen. 
+genaamd \textbf{queues}, waarna andere nodes, genaamd \emph{consumers} deze eruit halen. 
 \\
 Messaging queues hebben een asynchrone werking, zijn \emph{socket-based} en maken gebruik van \emph{message queuing}, 
 waarbij het de \textbf{point-to-point} methodiek gebruikt.
 Hierbij plaatst de \emph{producer} berichten in een specifieke queue, waarna een \emph{consumer} de berichten uitleest in een sequentiële volgorde.
 Met andere woorden, een bericht wordt slechts aan één \emph{consumer} bezorgt.
 \\
-Dit maakt het voor applicaties mogelijk om asynchroon te communiceren zonder te moeten wachten op een antwoord van de ontvanger.
-Ze zijn geschikt voor gedistribueerde systemen waar processen onafhankelijk werken~\autocite{Dinari2020}.
+Dit maakt het voor applicaties mogelijk om asynchroon te communiceren zonder te moeten wachten op een antwoord van de ontvanger~\autocite{Dinari2020}.
+Ze zijn geschikt voor gedistribueerde systemen waar processen onafhankelijk werken.
 
 \begin{figure}[h!]
   \centering
@@ -271,10 +271,10 @@ van de logica. Bovendien wordt het schalen van synchrone services uitdagend,
 aangezien de schaalbaarheid van één service sterk afhankelijk is van andere services die het gebruikt \autocite{Bellemare2020}.  
 \\\\
 
-\textbf{Asynchrone} communicatie heeft een reeks voordelen. Ze bieden grotere schaalbaarheid, technologische 
+\textbf{Asynchrone} communicatie heeft een reeks voordelen. Deze bieden grotere schaalbaarheid, technologische 
 flexibiliteit en aanpassingsvermogen aan veranderende zakelijke vereisten. 
 In plaats van de synchrone manier van communicatie is de \emph{asynchrone} gemakkelijker te herstructureren en te onderhouden. 
-Ze vergemakkelijken \emph{continuous delivery} door hun onafhankelijkheid omdat de communicatie 
+Het vergemakkelijkt de \emph{continuous delivery} door hun onafhankelijkheid omdat de communicatie 
 met een \emph{messaging systeem} opgevangen wordt. 
 Hun verminderde afhankelijkheden en geïsoleerde karakter maken het testen relatief eenvoudiger en robuuster.
 Het enige grote nadeel in asynchrone communicatie is \emph{error handling}, 
@@ -342,30 +342,30 @@ Volgend overzicht is een samenvatting uit een onderzoek van \cite{Golec2021} en 
 In dit hoofdstuk worden de meest relevante messaging protocollen besproken die later in het vergelijkend onderzoek aan bod komen.
 
 \subsection{AMQP (Advanced Message Queuing Protocol)} 
-AMQP is een protocol gebaseerd op het publish-subscribe model, een veelgebruikt protocol in de huidige IT infrastructuur.
-Het belangrijkste doel van AMQP is het bieden van betrouwbaarheid bij het verzenden van berichten \autocite{Adiono2020}.  
+AMQP is een protocol gebaseerd op het publish-subscribe model, een veelgebruikt protocol in de huidige IT infrastructuur~\autocite{Adiono2020}.
+Het belangrijkste doel van AMQP is het bieden van betrouwbaarheid bij het verzenden van berichten.  
 
 \subsubsection{Hoofdfuncties van AMQP}
 AMQP wordt ook gebruikt als standaard voor messaging. 
 Het AMQP-protocol wordt als meer compatibel beschouwd met onstabiele internetverbindingen omdat het een store-and-forward functie heeft. 
-Deze functie kan gegevens tijdelijk opslaan als de verbinding onstabiel is of tijdelijk uitvalt. 
+Deze functie kan data tijdelijk opslaan als de verbinding onstabiel is of tijdelijk uitvalt. 
 AMQP heeft ook een goede interoperabiliteit, omdat het multi-user, multi-infrastructuur, flexibele routing en beveiliging kan bieden.
  
 \subsubsection{Toepassingen}
 AMQP wordt gebruikt in uiteenlopende domeinen die belang hechten aan betrouwbaarheid, waaronder:
 \\
 \textbf{Autonome systemen:} Voor het coördineren van gedistribueerde processen. \\ 
-\textbf{Cloud computing:} Voor veilige en gestructureerde gegevensoverdracht.  \\
+\textbf{Cloud computing:} Voor veilige en gestructureerde dataoverdracht.  \\
 \textbf{IoT-technologie:} Voor het waarborgen van betrouwbare communicatie en veiligheidsaspecten in IoT-apparaten.
 
 \subsection{MQTT (Message Queue Telemetry Transport)}
-MQTT is een publish/subscribe service protocol dat gebruikmaakt van een infrastructuur waarin clients verbinding maken met een centrale server, de zogenaamde broker. 
-Het protocol kent drie essentiële componenten: de publisher, de subscriber, en de server (broker)~\autocite{Usmani2021}.
+MQTT is een publish/subscribe service protocol dat gebruikmaakt van een infrastructuur waarin clients verbinding maken met een centrale server, de zogenaamde broker~\autocite{Usmani2021}. 
+Het protocol kent drie essentiële componenten: de publisher, de subscriber, en de server (broker).
 
 \subsubsection{Hoofdfuncties van MQTT}
 De publisher creëert data en plaatst deze op een topic dat dan door de broker gedistribueerd wordt naar relevante ontvangers.
-De subscribers zijn de eindgebruikers van de gegevens. Deze ontvangen de data via de broker om te verwerken.
-De broker coördineert de gegevensuitwisseling tussen publishers en subscribers en fungeert als de centrale infrastructuur.
+De subscribers zijn de eindgebruikers van de data. Deze ontvangen de data via de broker om te verwerken.
+De broker coördineert de datauitwisseling tussen publishers en subscribers en fungeert als de centrale infrastructuur.
 
 \subsubsection{Toepassingen}
 Het protocol vereist weinig bandbreedte en energie, dankzij de kleine headergrootte. 
@@ -379,21 +379,21 @@ Dit maakt het zeer geschikt voor IoT-apparaten.
 Message brokers zijn middleware die instaan voor de communicatie via publish/subscribe-queues tussen verschillende services.
 Producers sturen een bericht naar de broker door gebruik te maken van een bepaald protocol.
 De functie van een message broker is het opslaan op een wachtrij (queue), routeren en versturen van een bericht.
-Berichten worden opgepakt door de consumer dat zich ingeschreven heeft op berichten met een bepaald onderwerp.
+Berichten worden opgepakt door de consumer die zich ingeschreven heeft op berichten met een bepaald onderwerp.
 Nadat een bericht is verwerkt door de consumer, wordt deze verwijderd.
 
 \section{EoL Systemen}
 In de snel veranderende wereld van technologie is het beheer van besturingssystemen die het einde van hun levensduur (EOL) 
-hebben bereikt zijn een belangrijke zorg voor organisaties van alle groottes. 
-Deze verouderde systemen vormen een aanzienlijke beveiligingsrisico en kunnen de operationele efficiëntie belemmeren ~\autocite{Mittal2024}.
+hebben bereikt, een belangrijke zorg voor organisaties van alle groottes. 
+Deze verouderde systemen vormen een aanzienlijk beveiligingsrisico en kunnen de operationele efficiëntie belemmeren ~\autocite{Mittal2024}.
 
 \subsection{Wat zijn EOL-besturingssystemen?}
-Een \textbf{EOL-besturingssysteem} is een systeem dat niet langer wordt ondersteund of onderhouden door de leverancier. 
+Een \textbf{EOL-besturingssysteem} is een systeem, dat niet langer wordt ondersteund of onderhouden door de leverancier. 
 Dit betekent dat de leverancier geen beveiligingspatches of updates meer zal uitbrengen voor het systeem, 
 waardoor het kwetsbaar wordt voor bekende en opkomende bedreigingen ~\autocite{Mittal2024}.
 
 \subsection{Waarom zijn EOL-besturingssystemen gevaarlijk?}
-EOL-besturingssystemen zijn gevaarlijk omdat ze kwetsbaar zijn voor cyberaanvallen. 
+EOL-besturingssystemen zijn gevaarlijk omdat deze kwetsbaar zijn voor cyberaanvallen. 
 Hackers weten dat deze systemen niet langer worden ondersteund en kunnen vaak bekende kwetsbaarheden benutten om toegang te krijgen tot netwerken en systemen.
 \\\\
 Naast beveiligingsrisico's kunnen EOL-besturingssystemen ook de operationele efficiëntie beïnvloeden.

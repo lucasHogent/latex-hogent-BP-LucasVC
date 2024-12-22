@@ -636,7 +636,7 @@ Volgende kandidaten worden meegenomen naar de ``Proof of concept'' waar deze get
 \end{itemize}
     
 \section{Phase 4: Proof of concept}
-Testen worden opgezet in een afgeschermde omgeving en maken gebruik van Docker containers.
+Testen werden opgezet in een afgeschermde omgeving en maken gebruik van Docker containers.
 Op deze manier is het gemakkelijk de testen uit te voeren en te monitoren.
 Dit hoofdstuk zal de kandidaten uit de shortlist testen door het opzetten in een gesimuleerde omgeving.
 \\\\
@@ -657,7 +657,7 @@ metrics: 127.0.0.1:9323 in Prometheus beschikbaar
 ook via Grafana
 
 \subsection{Simulatie PLC}
-Om de PLC te simuleren is er een \hyperref[sec:codeplc]{Python script} geschreven omdat dit snel en gemakkelijk te implementeren is.
+Om de PLC te simuleren is er een \hyperref[listing:code_plc]{Python script} geschreven omdat dit snel en gemakkelijk te implementeren is.
 De code zal gebruikt worden voor iedere test omdat de manier van integratie voor iedere test hetzelfde zal zijn.
 Configuratie kan aangepast worden via een .ini bestand om zo de hostname, poorten, interval en logbestand te kunnen aanpassen.
 \\\\
@@ -667,7 +667,7 @@ zoals in sectie \hyperref[listing:message_example]{PLC berichten}.
 De logica is voorzien van een logbestand om de berichten in beide richtingen te kunnen monitoren.
 
 \subsection{Simulatie WCS}
-Het WCS wordt gesimuleerd aan de hand van een \hyperref[sec:codewcs]{script} geschreven in OpenEdge 4GL.
+Het WCS wordt gesimuleerd aan de hand van een \hyperref[listing:code_wcs]{script} geschreven in OpenEdge 4GL.
 Via een .pf bestand worden de correcte parameters meegegeven bij het starten van het script.
 Er is geen configuratie bestand voorzien omdat de integratie afhankelijk is van de configuratie per message broker.
 \\\\
@@ -687,12 +687,12 @@ De opzet voor het verzamelen en verwerken van deze logging wordt gedetailleerd b
 
 \subsection{Test ActiveMQ}
 In deze test wordt een Docker container gemaakt met een RedHat OS instantie, waarop ActiveMQ Classic 
-geïnstalleerd wordt via een \hyperref[sec:codeamq]{DockerFile}.
+geïnstalleerd wordt via een \hyperref[listing:docker_amq]{DockerFile}.
 \\\\
 Overzicht van de infrastructuur:
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.9\textwidth]{img/test_amq_dataflow.png}
+  \includegraphics[width=.95\textwidth]{img/test_amq_dataflow.png}
   \caption{\label{fig:test_amq_dataflow}Dataflow test AMQ}
 \end{figure}
 
@@ -721,14 +721,14 @@ Om correct de throughput te meten moeten we beide categorieën meten omdat dit d
 Volgende grafiek bevestigd dat er per minuut meer dan 1680 berichten kan geplaatst worden op de twee queues:
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.9\textwidth]{img/amq-enqueue-count.png}
+  \includegraphics[width=.95\textwidth]{img/amq-enqueue-count.png}
   \caption{\label{fig:amq_enqueue_count}Enqueue ActiveMQ}
 \end{figure}
-
-Zoals de grafiek laat zien kan de message broker meer dan 1680 berichten naar de consumer versturen binnen de minuut.
+\newpage
+Zoals de grafiek laat zien kan de message broker meer dan 1680 berichten naar de consumer versturen van iedere queue binnen de minuut.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.9\textwidth]{img/amq-dequeue-count.png}
+  \includegraphics[width=.95\textwidth]{img/amq-dequeue-count.png}
   \caption{\label{fig:amq_dequeue_count}Dequeue ActiveMQ}
 \end{figure}
 
@@ -739,32 +739,64 @@ Monitoring is eenvoudig en gemakkelijk toegankelijk.
 Een mooie extra is de admin console die beschikbaar is via ``http://localhost:8161/admin'', waar de metrics kunnen worden geraadpleegd.
 Wat betreft prestaties voldoet dit product aan de verwachtingen omdat het meer dan 1680 berichten  binnen de minuut kan verwerken via twee queues.
 
-\subsection{Test RabbitMQ}
-\subsubsection{Installatie}
-Deze software heeft een zeer uitgebreide documentatie
-gemakkelijk te installeren met basis instellingen.
-Uitgebreide configuratie
 
+\subsection{Test RabbitMQ}
+
+\subsubsection{Installatie}
+Deze software heeft een zeer uitgebreide documentatie op de officiële site waardoor het gemakkelijk te installeren is.
+RabbitMQ vereist officiële repositories, Erlang runtime en GPG-sleutels om de installatie te verifiëren.
+Er is geen configuratie bestand voorzien tijdens de installatie waardoor de originele settings van kracht zijn.
+Om deze settings aan te passen is er in de documentatie een voorbeeld \hyperref[sec:config_rabbitmq]{configuratiebestand} voorzien.
+De basis configuratie kon met minimale aanpassingen een werkende messaging broker tot stand brengen.
+Omdat de configuratie uitgebreid is, kan deze technologie voldoen aan complexe opstellingen.
 
 \subsubsection{Integratie}
-management port 15672
-geintegreerde metrics exposer voor Prometheus
-Geen filtering mogelijk dus moeten listeners per drie kanalen doorsturen naar een wcs consumer.
-19 queues gemaakt
-
+Om de Java listeners en het WCS te laten communiceren met de message broker werd gekozen voor het AMQP protocol via het poort 5672.
+Monitoring voor Prometheus is voorzien in het RabbitMQ management packet en is bereikbaar via ``http://localhost:15672/''.
+Omdat er geen filtering mogelijk is moet er voor ieder kanaal een queue voorzien worden en wijken we af van de opzet van het huidige systeem.
+Hierdoor zijn er 38 queues, 19 voor de FromPLC berichten en 19 voor de ToPLC berichten.
 
 Overzicht infrastructuur:
 \begin{figure}[h!]
   \centering
-  % \includegraphics[width=.5\textwidth]{img/test_rabbitmq_dataflow.png}
+  \includegraphics[width=.95\textwidth]{img/test-rabbitmq-dataflow.png}
   \caption{\label{fig:test_rabbitmq_dataflow}Dataflow test RabbitMQ}
 \end{figure}
 
 \subsubsection{Performantie}
-In deze test worden opnieuw 19 PLC connecties gemaakt met de Java listeners die elk per 0.1 seconde een bericht versturen naar de relevante queue.
+In deze test worden opnieuw 19 socket connecties gemaakt door het plc script met de Java listeners die elk per 0.1 seconde een bericht versturen naar de relevante queue.
 Hierdoor worden meer dan 1680 berichten per minuut verstuurd om te kunnen voldoen aan de minimale vereisten op gebied van performantie.
 Het opmeten van deze test wordt verdeeld in twee categorieën, dequeued- en enqueued messages.
-Om correct de throughput te meten moeten we beide categorieën meten omdat dit de volledige transactie representeert.
+Het verschil met vorige test is dat er hier meerdere queues zijn, 19 voor de FromPLC en 19 voor de ToPLC. 
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.95\textwidth]{img/rabbitmq-enqueue-count-FromPLC.png}
+  \caption{\label{fig:rabbitmq_enqueue_fromplc_count}RabbitMQ enqueue FromPLC}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.95\textwidth]{img/rabbitmq-dequeue-count-FromPLC.png}
+  \caption{\label{fig:rabbitmq_dequeue_fromplc_count}RabbitMQ dequeue FromPLC}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.95\textwidth]{img/rabbitmq-enqueue-count-ToPLC.png}
+  \caption{\label{fig:rabbitmq_enqueue_toplc_count}RabbitMQ enqueue ToPLC}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.95\textwidth]{img/rabbitmq-dequeue-count-ToPLC.png}
+  \caption{\label{fig:fig:rabbitmq_dequeue_fromplc_count}RabbitMQ dequeue ToPLC}
+\end{figure}
+
+\subsubsection{Samenvatting}
+
+
+
 
 \subsection{Test Artemis}
 

@@ -1,19 +1,28 @@
 %---------- Bijlagen ---------------------------------------------------------
 
-\section{Code PLC}\label{sec:codeplc}
+\section{Code PLC}\label{sec:code_plc}
 
-\subsection{Python script PLC}
-\inputminted{python3}{../tests/plc/plc-simulator.py}
+\subsection{Python script PLC} \label{sec:script_plc}
+\inputminted{python3}{../tests/plc/plc-simulator.py}\label{listing:script_plc}
 
-\subsection{Dockerfile PLC}
-\inputminted{python3}{../tests/plc/Dockerfile}
+\subsection{Dockerfile PLC} \label{sec:dockerplc}
+\inputminted{python3}{../tests/plc/Dockerfile} \label{listing:docker_plc}
 
 
-\section{Code WCS}\label{sec:codewcs}
+\section{Code WCS}\label{sec:code_wcs}
 
-\subsection{Progress 4GL script WCS}
-\inputminted{python3}{../tests/wcs/wcs.p}
+\subsection{Progress 4GL script WCS} \label{sec:script_wcs}
+\inputminted{python3}{../tests/wcs/wcs.p} \label{listing:script_wcs}
 
-\section{ActiveMQ Classic test}\label{sec:codeamq}
-\inputminted{python3}{../tests/messaging/activemq-server/Dockerfile}
-% \label{code:docker_amq}
+
+\section{ActiveMQ Classic test}\label{sec:code_amq}
+\subsection{Dockerfile}\label{sec:docker_amq}
+\inputminted{python3}{../tests/messaging/activemq-server/Dockerfile}\label{listing:docker_amq}
+ 
+
+\section{RabbitMQ test}\label{sec:code_rabbitmq}
+\subsection{Dockerfile}\label{sec:docker_rabbitmq}
+\inputminted{python3}{../tests/messaging/rabbitmq-server/Dockerfile}\label{listing:docker_rabbitmq}
+
+\subsection{Configfile}\label{sec:config_rabbitmq}
+\inputminted{python3}{../tests/messaging/rabbitmq-server/rabbitmq.conf}\label{listing:config_rabbitmq}
