@@ -54,7 +54,7 @@ Op deze manier worden alle mogelijke opties geargumenteerd.
 Deze lijst bevat relevante message brokers als startpunt die beschikbaar zijn op de markt.
 Bronnen werden geraadpleegd via zoekmachines, forums en blogs.
 
-\begin{table}[!ht]
+\begin{table}[!h]
 \footnotesize
 \centering
 \begin{tabular}{|l|c|c|c|c|c|}
@@ -531,7 +531,8 @@ Producten die voldoen aan de ``must-have'' criteria worden als kandidaat gemarke
     \item \textbf{Commerciële support:} Azure Service Bus wordt ondersteund door Microsoft, met commerciële ondersteuning via Microsoft Azure Support en uitgebreide documentatie.
     \item \textbf{Voldoet aan de vereisten:} Omdat het een cloud-gebaseerde oplossing is, kan Azure Service Bus niet lokaal worden geïnstalleerd waardoor het niet voldoet aan alle vereisten.
 \end{itemize}
- 
+
+\newpage
 \subsubsection{Samenvatting}
 \begin{table}[h!]
   \centering
@@ -556,7 +557,7 @@ Producten die voldoen aan de ``must-have'' criteria worden als kandidaat gemarke
   \textbf{Google}    & X &   &   & X & X &   & X &   \\ \hline
   \textbf{Azure}     & X & X & X & X & X &   & X &   \\ \hline
 \end{tabular}
-\caption{Vergelijking van message brokers}
+\caption{Must have vergelijking van message brokers }
 \label{tab:vergelijking_message_brokers_must_have}
 \end{table}
 
@@ -622,7 +623,7 @@ IBM MQ is een solide keuze voor bedrijven die behoefte hebben aan enterprise-lev
   \textbf{IBM MQ}    &   & X & X &  \\ \hline 
   \textbf{SwiftMQ}   &   & X & X &  \\ \hline 
 \end{tabular}
-\caption{Vergelijking van message brokers}
+\caption{Should have vergelijking van message brokers}
 \label{tab:vergelijking_message_brokers_should_have}
 \end{table}
 
@@ -725,7 +726,7 @@ Volgende grafiek bevestigd dat er per minuut meer dan 1680 berichten kan geplaat
   \caption{\label{fig:amq_enqueue_count}Enqueue ActiveMQ}
 \end{figure}
 \newpage
-Zoals de grafiek laat zien kan de message broker meer dan 1680 berichten naar de consumer versturen van iedere queue binnen de minuut.
+Zoals de grafiek laat zien kan de message broker meer dan 1680 berichten naar de consumer versturen van iedere queue binnen één minuut.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.95\textwidth]{img/amq-dequeue-count.png}
@@ -737,15 +738,15 @@ De installatie en integratie kunnen worden uitgevoerd zonder al te complexe aanp
 wat het proces gebruiksvriendelijk en eenvoudig maakt.
 Monitoring is eenvoudig en gemakkelijk toegankelijk. 
 Een mooie extra is de admin console die beschikbaar is via ``http://localhost:8161/admin'', waar de metrics kunnen worden geraadpleegd.
-Wat betreft prestaties voldoet dit product aan de verwachtingen omdat het meer dan 1680 berichten  binnen de minuut kan verwerken via twee queues.
+Wat betreft prestaties voldoet dit product aan de verwachtingen omdat het meer dan 1680 berichten binnen één minuut kan verwerken via twee queues.
 
-
+\newpage
 \subsection{Test RabbitMQ}
 In deze test werd opnieuw een Docker container gemaakt met een RedHat OS instantie, waarop RabbitMQ 
-geïnstalleerd wordt via een \hyperref[listing:docker_rabbitmq]{DockerFile}.
+werd geïnstalleerd via een \hyperref[listing:docker_rabbitmq]{DockerFile}.
 \\\\
 Overzicht infrastructuur:
-\begin{figure}[h!]
+\begin{figure}[!h]
   \centering
   \includegraphics[width=.95\textwidth]{img/test-rabbitmq-dataflow.png}
   \caption{\label{fig:test_rabbitmq_dataflow}Dataflow test RabbitMQ}
@@ -767,7 +768,6 @@ Hierdoor zijn er 38 queues nodig, 19 voor de FromPLC berichten en 19 voor de ToP
 \\\\
 Berichten kunnen enkel verstuurd worden als binaire data waardoor de inhoud van een bericht eerst moet omgezet worden naar een binary array door de producer.
 Ook na het consumeren van een bericht moet deze eerst omgezet worden van binaire data naar het string datatype.
-
 
 \subsubsection{Performantie}
 In deze test worden opnieuw 19 socket connecties gemaakt door het plc script met de Java listeners die elk per 0.1 seconde een bericht versturen naar de relevante queue.
@@ -804,10 +804,10 @@ RabbitMQ lijkt een goede oplossing dat compatibel is met het huidige systeem,
 maar heeft wel wat aanpassingen nodig omdat filtering niet kan toegepast worden.
 Om dit product te gebruiken moet er voor ieder kanaal een aparte queue voorzien worden.
 Daarnaast moeten berichten ook omgezet worden en verstuurd worden als binaire data.
-
+\newpage
 
 \subsection{Test Artemis}
-In deze test werd ook een 
+In deze test wordt ook een \hyperref[listing:docker_artemis]{Dockerfile} gebruikt voor de installatie.
 Overzicht van de infrastructuur:
 \begin{figure}[h!]
   \centering
@@ -816,10 +816,23 @@ Overzicht van de infrastructuur:
 \end{figure}
 
 \subsubsection{Installatie}
- 
+Het installeren van dit systeem wordt net zoals de andere technologieën duidelijk uitgelegd in de officiële documentatie van Apache.
+Configuratie moet hier niet aangepast worden in ``broker.xml'' om de service toegankelijk te maken voor externe services.
+Artemis kan verschillende broker instanties opstarten binnen dezelfde JVM, in tegenstelling tot bijvoorbeeld ActiveMQ, dat slechts één instantie kan starten.
+
 \subsubsection{Integratie}
+Om de metrics aan te bieden kan je een artemis-prometheus plugin downloaden en toevoegen in de installatie.
+Hiervoor moet de \hyperref[listing:broker_artemis]{``broker.xml''} aangepast worden met het toevoegen van de metrics plugin.
+deze maakt de metrics toegankelijk via een webpagina.
+Hiervoor moet de plugin gecompileerd worden zodat de ``metrics.war'' in de web folder van actieve broker kan geplaatst worden.
+Om de webpagina beschikbaar te maken moet de \hyperref[listing:bootstrap_artemis]{``bootstrap.xml''} aangepast worden.
 
 \subsubsection{Performantie}
+In deze test worden 19 PLC connecties gemaakt met de Java listeners die elk per 0.1 seconde een bericht versturen naar de ``FromPLC'' queue.
+Hierdoor worden meer dan 1680 berichten per minuut verstuurd en wordt er voldaan aan de minimale vereisten op gebied van performantie.
+Het opmeten van deze test wordt verdeeld in twee categorieën, dequeued- en enqueued messages.
+Om correct de throughput te meten moeten we beide categorieën meten omdat dit de volledige transactie representeert. 
+\\\\
 Volgende grafiek geeft weer hoeveel berichten er per minuut verzonden kunnen worden naar de message queue.
 \begin{figure}[h!]
   \centering
@@ -833,10 +846,9 @@ Volgende grafiek geeft weer hoeveel berichten er per minuut verzonden kunnen wor
   \caption{\label{fig:artemis_dequeue_count}Dequeue Artemis}
 \end{figure}
 
-
-
-
-
-
-
-
+\subsubsection{Samenvatting}
+De installatie en integratie kunnen worden uitgevoerd zonder al te complexe aanpassingen, 
+wat het proces gebruiksvriendelijk en eenvoudig maakt.
+Het voorzien van monitoring is evenals eenvoudig en gemakkelijk toegankelijk. 
+De admin console is beschikbaar via ``http://localhost:8161'' en is gebruiksvriendelijk en uitgebreider dan de admin console van ActiveMQ Classic.
+Wat betreft prestaties voldoet dit product aan de verwachtingen omdat het meer dan 1680 PLC berichten binnen één minuut kan verwerken.

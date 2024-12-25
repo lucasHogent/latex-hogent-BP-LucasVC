@@ -125,6 +125,7 @@ Ethernet/IP ondersteunt real-time communicatie, wat essentieel is voor de snelle
 Dit protocol maakt gebruik van standaard Ethernet-hardware, zoals kabels, switches en routers. 
 Dit vereenvoudigd de installatie en het onderhoud in industriële omgevingen en maakt het compatibel met bestaande IT-infrastructuur.
 De PLC die deel uitmaakt van dit onderzoek, wisselt data uit van en naar het WCS via dit protocol.
+\newpage
 
 \section{Warehouse Control System (WCS)} 
 In het magazijn is de typische logistieke software het Warehouse Control System (WCS). 
@@ -265,12 +266,10 @@ Services communiceren zowel \emph{synchroon} als \emph{asynchroon} en spelen dez
 elk met hun eigen voor- en nadelen. \emph{Synchrone microservices} werken volgens een direct 
 afhankelijkheidsmodel, omdat services met elkaar communiceren in een vraag-antwoordpatroon. 
 \\\\
-
 \textbf{Synchrone} communicatie kan leiden tot ingewikkelde onderlinge afhankelijkheden, vertragingen en complexiteiten bij het debuggen 
 van de logica. Bovendien wordt het schalen van synchrone services uitdagend, 
 aangezien de schaalbaarheid van één service sterk afhankelijk is van andere services die het gebruikt \autocite{Bellemare2020}.  
 \\\\
-
 \textbf{Asynchrone} communicatie heeft een reeks voordelen. Deze bieden grotere schaalbaarheid, technologische 
 flexibiliteit en aanpassingsvermogen aan veranderende zakelijke vereisten. 
 In plaats van de synchrone manier van communicatie is de \emph{asynchrone} gemakkelijker te herstructureren en te onderhouden. 

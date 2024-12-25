@@ -3,36 +3,60 @@
 \section{Code PLC}\label{sec:code_plc}
 
 \subsection{Python script PLC} \label{sec:script_plc}
-\inputminted{python3}{../tests/plc/plc-simulator.py}\label{listing:script_plc}
+\inputminted{python3}{../tests/plc/plc-simulator.py}
+\captionof{listing}{\label{listing:script_plc}Python script for PLC simulation.}
+\newpage
 
 \subsection{Dockerfile PLC} \label{sec:docker_plc}
-\inputminted{python3}{../tests/plc/Dockerfile} \label{listing:docker_plc}
-
+\inputminted{python3}{../tests/plc/Dockerfile}
+\captionof{listing}{\label{listing:docker_plc}Dockerfile for PLC container.}
 
 \section{Code WCS}\label{sec:code_wcs}
 
 \subsection{Progress 4GL script WCS} \label{sec:script_wcs}
-\inputminted{python3}{../tests/wcs/wcs.p} \label{listing:script_wcs}
+\inputminted{python3}{../tests/wcs/wcs.p}
+\captionof{listing}{\label{listing:script_wcs}Progress 4GL script for WCS.}
 
 \section{Code Java listener}\label{sec:code_java_listener} 
-\subsection{Java Listener ActiveMQ}\label{sec:listener_activemq}
-\inputminted{python3}{../tests/listener/activemq-listener/demo/src/main/java/com/example/ActiveMQSocketBridge.java}\label{listing:listener_activemq}
-\subsection{Java Listener RabbitMQ}\label{sec:listener_rabbitmq}
-\inputminted{python3}{../tests/listener/rabbitmq-listener/rabbitmq-plc-listener/src/main/java/com/listener/RabbitMQSocketBridge.java}\label{listing:listener_rabbitmq}
-\subsection{Java Listener Artemis}\label{sec:listener_artemis}
-\inputminted{python3}{../tests/listener/artemis-listener/demo/src/main/java/com/example/ArtemisSocketBridge.java}\label{listing:listener_artemis}
 
+\subsection{Java Listener ActiveMQ}\label{sec:listener_activemq}
+\inputminted{java}{../tests/listener/activemq-listener/demo/src/main/java/com/example/ActiveMQSocketBridge.java}
+\captionof{listing}{\label{listing:listener_activemq}Java Listener for ActiveMQ.}
+
+\subsection{Java Listener RabbitMQ}\label{sec:listener_rabbitmq}
+\inputminted{java}{../tests/listener/rabbitmq-listener/rabbitmq-plc-listener/src/main/java/com/listener/RabbitMQSocketBridge.java}
+\captionof{listing}{\label{listing:listener_rabbitmq}Java Listener for RabbitMQ.}
+
+\subsection{Java Listener Artemis}\label{sec:listener_artemis}
+\inputminted{java}{../tests/listener/artemis-listener/demo/src/main/java/com/example/ArtemisSocketBridge.java}
+\captionof{listing}{\label{listing:listener_artemis}Java Listener for Artemis.}
 
 \section{ActiveMQ Classic test}\label{sec:code_amq}
+
 \subsection{Dockerfile}\label{sec:docker_amq}
-\inputminted{python3}{../tests/messaging/activemq-server/Dockerfile}\label{listing:docker_amq}
- 
+\inputminted{python3}{../tests/messaging/activemq-server/Dockerfile}
+\captionof{listing}{\label{listing:docker_amq}Dockerfile for ActiveMQ Classic test.}
 
 \section{RabbitMQ test}\label{sec:code_rabbitmq}
+
 \subsection{Dockerfile}\label{sec:docker_rabbitmq}
-\inputminted{python3}{../tests/messaging/rabbitmq-server/Dockerfile}\label{listing:docker_rabbitmq}
+\inputminted{python3}{../tests/messaging/rabbitmq-server/Dockerfile}
+\captionof{listing}{\label{listing:docker_rabbitmq}Dockerfile for RabbitMQ server.}
 
 \subsection{Configfile}\label{sec:config_rabbitmq}
-\inputminted{python3}{../tests/messaging/rabbitmq-server/rabbitmq.conf}\label{listing:config_rabbitmq}
+\inputminted{python3}{../tests/messaging/rabbitmq-server/rabbitmq.conf}
+\captionof{listing}{\label{listing:config_rabbitmq}Configuration file for RabbitMQ.}
 
 \section{Artemis Classic test}\label{sec:code_artemis}
+
+\subsection{Dockerfile}\label{sec:docker_artemis}
+\inputminted{python3}{../tests/messaging/artemis-server/Dockerfile}
+\captionof{listing}{\label{listing:docker_artemis}Dockerfile for Artemis Classic test.}
+
+\subsection{Broker XML Configuration}\label{sec:broker_artemis}
+\inputminted{xml}{../tests/messaging/artemis-server/broker.xml}
+\captionof{listing}{\label{listing:broker_artemis}Broker XML configuration for Artemis.}
+
+\subsection{Bootstrap XML Configuration}\label{sec:bootstrap_artemis}
+\inputminted{xml}{../tests/messaging/artemis-server/bootstrap.xml}
+\captionof{listing}{\label{listing:bootstrap_artemis}Bootstrap XML configuration for Artemis.}
