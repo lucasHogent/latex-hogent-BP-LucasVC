@@ -27,24 +27,23 @@
 %% en geef het een gepaste titel.
 
 Volgende hoofdstukken verlopen in sequentiële volgorde om dit onderzoek in de juiste richting te sturen.
-De literatuurstudie geeft een basis om verdere vakterminologie en werking van technologieën te kunnen begrijpen.
+De literatuurstudie geeft een basis om verdere vakterminologie en de werking van technologieën te kunnen begrijpen.
 \\
-De setup van het huidige systeem wordt besproken om de requirements te kunnen begrijpen.
+De opzet van het huidige systeem wordt besproken om de requirements te kunnen begrijpen.
 Het bekomen van een shortlist wordt toegelicht waarbij voor elke technologie de voor- en nadelen wordt beschreven.
 
-
 \section{Phase 1: Literatuurstudie}
-Voor dit onderzoek werden de vaktermen opgelijst en onderverdeeld in groepen met behulp van een mindmap.
+Voor dit onderzoek werden de vaktermen opgesomd en onderverdeeld in groepen met behulp van een mindmap.
 Vervolgens werd er gebruik gemaakt van het internet om wetenschappelijke artikelen op te zoeken om de nodige informatie uit te filteren.
 \\
 Het doel van de literatuurstudie is om een basis van bestaande kennis te verkrijgen door de belangrijkste concepten toe te lichten die van toepassing zijn op dit onderzoek. 
-Dit houd in, het begrijpen van warehousing, WCS (Warehouse Control Systems), PLC (Programmable Logic Controllers), en de communicatieprotocollen die tussen deze systemen gebruikt worden.
+Dit houdt in, het begrijpen van warehousing, WCS (Warehouse Control Systems), PLC (Programmable Logic Controllers), en de communicatieprotocollen die tussen deze systemen gebruikt worden.
 \\
 Hierdoor krijg je een overzicht van relevante theorieën, definities, en eerdere studies die inzicht geven in de werking en de gebruikte technologieën.
-Hier werd voornamelijk gebruik gemaakt van wetenschappelijke artikelen, boeken en technische documenten.
+Er werd voornamelijk gebruik gemaakt van wetenschappelijke artikelen, boeken en technische documenten.
 \\
 De literatuurstudie vormt de basis van het onderzoek en is cruciaal voor het begrijpen van de huidige stand van zaken.
-Hierdoor kan de kennis en requirements meegenomen worden doorheen de methodologie.
+Hierdoor kan de kennis en vereisten meegenomen worden doorheen de methodologie.
 
 \section{Phase 2: Long List}
 Dit hoofdstuk vertrekt vanuit een lijst met message brokers die beschikbaar zijn op de markt.
@@ -105,8 +104,8 @@ zodat deze kunnen dienen als basis voor de keuze van een surrogaat voor het huid
 
 \subsection{PLC gebruik binnen TVH}
 Er zijn 7 verschillende PLC's in TVH Waregem die instaan voor verschillende zones van de conveyor.
-Deze werden aangeleverd door Vanderlanden in het jaar 2013 en worden beheerd door het automatisatie team.
-De communicatie tussen een PLC en het WCS is gebaseerd op het TCP/IP protocol en is verbonden via het intern netwerk.
+Deze werden aangeleverd door Vanderlanden in het jaar 2013 en worden beheerd door het automatisatieteam.
+De communicatie tussen een PLC en het WCS is gebaseerd op het TCP/IP-protocol en is verbonden via het intern netwerk.
 Er is een tussenlaag tussen de PLC en het netwerk, RFC1006 van het merk Siemens waarin configuratie kan worden gedaan door het automatisatie team.
 Dit stelt de collega's in staat om bepaalde logica te implementeren of netwerk aanpassingen door te voeren.
 De snelheid van communicatie is essentieel, daarom moet het netwerk snel genoeg zijn zodat berichten aan een snel tempo verstuurd kunnen worden.
@@ -169,31 +168,31 @@ Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd:
 \end{listing}
 
 \subsection{Java listeners}
-De PLC kan alleen maar een TCP/IP socket verbinding initiëren met een server.
-Omdat SonicMQ als middleware hierdoor geen verbinding kan maken zijn er listeners gemaakt in Java door TVH.
-Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP socket verbinding mogelijk te maken per PLC kanaal.
-De Java listeners sturen de PLC-berichten vervolgens door naar SonicMQ of ontvangen berichten van SonicMQ, 
+De PLC kan uitsluitend maar een TCP/IP-socket verbinding initiëren met een server.
+Omdat SonicMQ als middleware hierdoor geen verbinding kan maken zijn er Java-listeners gemaakt door TVH.
+Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP-socket verbinding mogelijk te maken per PLC kanaal.
+De Java-listeners sturen de PLC-berichten vervolgens door naar SonicMQ of ontvangen berichten van SonicMQ, 
 die ze via een socket naar de PLC doorsturen.
 Aan de kant van het WCS zijn er meer mogelijkheden om verbinding te kunnen maken met een server.
-SonicMQ bied geen support meer en is niet populair waardoor er ook geen community is.
+SonicMQ biedt geen support meer en is niet populair waardoor er ook geen community is.
 Dit kan leiden tot extra kosten of langdurige problemen.
 
 \subsection{WCS communicatie} 
 Op het ERP-systeem van TVH draaien acht verschillende batches die verantwoordelijk zijn voor de aansturing van de PLC. 
 Elke batch-instantie communiceert met specifieke PLC-kanalen en bevat daarvoor specifieke logica, geschreven in OpenEdge Progress 4GL.
-Deze batches zijn verbonden via een specifieke poort met een \textbf{Progress JMS Adapter} op de communicatie server omdat ze de ``Broker connect'' methode gebruiken.
+Deze batches zijn verbonden via een specifieke poort met een \textbf{Progress JMS Adapter} op de communicatieserver omdat ze de ``Broker connect'' methode gebruiken.
 Hiermee kunnen de batches de berichten consumeren en versturen van de SonicMQ server.
 Daarnaast is het ook mogelijk om de Client connect methode te gebruiken, wat gemakkelijker is qua integratie.
 
 \subsubsection{Progress OpenEdge JMS Adapter}
 De adapter stelt OpenEdge-applicaties in staat om berichten te verzenden en te ontvangen van JMS (Java Messaging System)
-message brokers zoals Apache ActiveMQ. 
+messagebrokers zoals Apache ActiveMQ. 
 Dit betekent dat OpenEdge-applicaties kunnen integreren met andere systemen die JMS ondersteunen, 
 zonder dat er directe afhankelijkheden nodig zijn.
 Hierdoor is de keuze van message brokers gelimiteerd tot brokers die \textbf{JMS ondersteunen}.
 
 \subsubsection{Integratie met Verschillende Enterprise Systemen}
-Met de JMS Adapter kunnen OpenEdge-applicaties communiceren met andere systemen zoals ERP's, CRM’s, 
+Met de JMS Adapter kunnen OpenEdge-applicaties communiceren met andere systemen zoals ERP en CRM-systemen, 
 wat nuttig is in bedrijfsprocessen waarbij gegevens moeten worden gedeeld tussen verschillende systemen.
 
 \subsubsection{Configuratie en Beheer}
@@ -204,6 +203,7 @@ aan de vereisten van hun omgeving, zoals het instellen van queue-namen, topics, 
 Berichten komen binnen van de PLC via de communicatie server. Ieder bericht wordt getransformeerd naar variabelen die dan verder gebruikt worden in de code.
 Deze berichten bevatten informatie over transportbakken en zijn nodig om deze te kunnen traceren via de ERP.
 Specifieke logica is nodig om bakken tot hun bestemming te krijgen, of om fout afhandeling te voorzien.
+\\\\
 Volgende voorbeelden doen zich voor:
 \begin{enumerate}
 \item Routeren naar een hospitaal punt door: 
@@ -241,7 +241,7 @@ Om vertraging te voorkomen moet de verwerking van de berichten \textbf{asynchroo
 \subsubsection{Betrouwbare Berichtenoverdracht}
 Het systeem moet in staat zijn berichten \textbf{consistent en zonder verlies} over te brengen. 
 Dit is essentieel om de traceerbaarheid van transportbakken te garanderen en fouten in de logistieke processen te voorkomen.
-Hiervoor moet de broker het \textbf{AMQP protocol} ondersteunen.
+Hiervoor moet de broker het \textbf{AMQP-protocol} ondersteunen.
 
 \subsubsection{Support en Community}
 Het is belangrijk dat de gekozen message broker support biedt en dat er een grote community aanwezig is 
@@ -260,7 +260,7 @@ Sommige systemen hangen vast aan een kostenmodel, andere zijn \textbf{open-sourc
 \item Asynchroon verzenden van gegevens  
 \item JMS ondersteuning
 \item Installatie mogelijk op Linux OS 
-\item AMQP protocol ondersteunen 
+\item AMQP-protocol ondersteunen 
 \item Monitoring mogelijkheden
 \item Moet lokaal kunnen geïnstalleerd worden
 \item Commerciële support
@@ -492,8 +492,6 @@ Producten die voldoen aan de ``must-have'' criteria worden als kandidaat gemarke
     \item \textbf{Voldoet aan de vereisten}
 \end{itemize}
 
-
-
 \subsubsection{Amazon SQS}
 \begin{itemize}
     \item \textbf{Hoge performantie:} Amazon SQS biedt betrouwbare en schaalbare berichtverwerking met lage latency en hoge doorvoer, ideaal voor gedistribueerde systemen.
@@ -565,7 +563,7 @@ Producten die voldoen aan de ``must-have'' criteria worden als kandidaat gemarke
 
 \newpage
 \subsection{Should have} 
-Onderstaande tabel oordeelt verder op basis van de kandidaten uit vorige tabel en worden tegen de "should-haves" criteria afgetoetst.
+Onderstaande tabel oordeelt verder op basis van de kandidaten uit vorige tabel en worden tegen de "should-have" criteria afgetoetst.
 Installatiegemak wordt net zoals performantie besproken in de conclusie.
 
 \subsubsection{Artemis}
@@ -594,7 +592,7 @@ Installatiegemak wordt net zoals performantie besproken in de conclusie.
 
 \subsubsection{IBM MQ}
 \begin{itemize}
-    \item \textbf{Open source:} Is geen open-source software; het biedt licentiemodellen.
+    \item \textbf{Open source:} het biedt enkel licentiemodellen.
     \item \textbf{Documentatie:} Heeft uitstekende documentatie en een breed scala aan officiële ondersteuning via IBM.
     \item \textbf{Schaalbaar:} Ondersteunt schaalbaarheid en kan zowel in cloudomgevingen als on-premises worden gebruikt.
     \item \textbf{Geen kandidaat:} Is een krachtige oplossing voor enterprise-level messaging, maar de kosten kunnen een belemmering zijn voor kleinere bedrijven of toepassingen die geen enterprise-grade functionaliteit nodig hebben.
@@ -602,7 +600,7 @@ Installatiegemak wordt net zoals performantie besproken in de conclusie.
 
 \subsubsection{SwiftMQ}
 \begin{itemize}
-    \item \textbf{Open source:} Nee, SwiftMQ is niet open source. Het biedt commerciële licenties.
+    \item \textbf{Open source:} Biedt enkel commerciële licenties.
     \item \textbf{Documentatie:} Er is behoorlijke documentatie beschikbaar, maar de community is kleiner dan bij andere brokers.
     \item \textbf{Schaalbaar:} SwiftMQ is ontworpen voor schaalbare messaging.
     \item \textbf{Geen kandidaat:} SwiftMQ is geschikt voor grotere toepassingen waar specifieke functies vereist zijn, maar het is geen ideale keuze voor projecten die open-source en schaalbare oplossingen nodig hebben.
@@ -652,9 +650,6 @@ Verloop van testen per technologie:
     \item \textbf{CPU:} Intel(R) Xeon(R) Gold 6154 CPU @ 3.00GHz
     \item \textbf{Geheugen:} 8GiB
 \end{itemize}
-Docker containers.
-metrics: 127.0.0.1:9323 in Prometheus beschikbaar
-ook via Grafana
 
 \subsection{Simulatie PLC}
 Om de PLC te simuleren is er een \hyperref[listing:code_plc]{Python script} geschreven omdat dit snel en gemakkelijk te implementeren is.
@@ -675,6 +670,11 @@ Het script wordt gestart op een lokale Windows omgeving en initieert de connecti
 De berichten worden geconsumeerd en onmiddellijk terug geproduceerd richting de message broker.
 Op deze manier wordt de werking van het productie systeem gesimuleerd.
 
+\subsection{Java listeners}
+De Java listeners zijn nodig omdat de PLC geen rechtstreekse connectie kan maken met de message broker via het AMQP protocol.
+Voor iedere test is een \hyperref[sec:code_java_listener]{Java script} geschreven om de verbinding mogelijk te maken tussen beide systemen.
+Iedere test heeft een eigen versie van een Java listener omdat iedere technologie andere library gebruikt.
+
 \subsection{Monitoring}
 Om transparantie te bieden over de prestaties van het systeem, zowel op applicatie- als systeemniveau, 
 wordt gebruikgemaakt van monitoringsoftware zoals beschreven in de requirements analyse.
@@ -686,8 +686,8 @@ De opzet voor het verzamelen en verwerken van deze logging wordt gedetailleerd b
 \newpage
 
 \subsection{Test ActiveMQ}
-In deze test wordt een Docker container gemaakt met een RedHat OS instantie, waarop ActiveMQ Classic 
-geïnstalleerd wordt via een \hyperref[listing:docker_amq]{DockerFile}.
+In deze test werd een Docker container gemaakt met een RedHat OS instantie, waarop ActiveMQ Classic 
+geïnstalleerd is via een \hyperref[listing:docker_amq]{DockerFile}.
 \\\\
 Overzicht van de infrastructuur:
 \begin{figure}[h!]
@@ -741,27 +741,33 @@ Wat betreft prestaties voldoet dit product aan de verwachtingen omdat het meer d
 
 
 \subsection{Test RabbitMQ}
-
-\subsubsection{Installatie}
-Deze software heeft een zeer uitgebreide documentatie op de officiële site waardoor het gemakkelijk te installeren is.
-RabbitMQ vereist officiële repositories, Erlang runtime en GPG-sleutels om de installatie te verifiëren.
-Er is geen configuratie bestand voorzien tijdens de installatie waardoor de originele settings van kracht zijn.
-Om deze settings aan te passen is er in de documentatie een voorbeeld \hyperref[sec:config_rabbitmq]{configuratiebestand} voorzien.
-De basis configuratie kon met minimale aanpassingen een werkende messaging broker tot stand brengen.
-Omdat de configuratie uitgebreid is, kan deze technologie voldoen aan complexe opstellingen.
-
-\subsubsection{Integratie}
-Om de Java listeners en het WCS te laten communiceren met de message broker werd gekozen voor het AMQP protocol via het poort 5672.
-Monitoring voor Prometheus is voorzien in het RabbitMQ management packet en is bereikbaar via ``http://localhost:15672/''.
-Omdat er geen filtering mogelijk is moet er voor ieder kanaal een queue voorzien worden en wijken we af van de opzet van het huidige systeem.
-Hierdoor zijn er 38 queues, 19 voor de FromPLC berichten en 19 voor de ToPLC berichten.
-
+In deze test werd opnieuw een Docker container gemaakt met een RedHat OS instantie, waarop RabbitMQ 
+geïnstalleerd wordt via een \hyperref[listing:docker_rabbitmq]{DockerFile}.
+\\\\
 Overzicht infrastructuur:
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.95\textwidth]{img/test-rabbitmq-dataflow.png}
   \caption{\label{fig:test_rabbitmq_dataflow}Dataflow test RabbitMQ}
 \end{figure}
+
+\subsubsection{Installatie}
+Deze software heeft een zeer uitgebreide documentatie op de officiële site waardoor het gemakkelijk te installeren is.
+RabbitMQ vereist officiële repositories voor uitbreidingen, Erlang runtime en GPG-sleutels om de installatie te verifiëren.
+Er is geen configuratie bestand voorzien tijdens de installatie waardoor de originele settings van kracht zijn.
+Om deze settings aan te passen is er in de documentatie een voorbeeld \hyperref[sec:config_rabbitmq]{configuratiebestand} voorzien.
+De basis configuratie kan met minimale aanpassingen een werkende messaging broker tot stand brengen.
+Omdat de configuratie uitgebreid is, kan deze technologie voldoen aan complexe opstellingen.
+
+\subsubsection{Integratie}
+Om de Java listeners en het WCS te laten communiceren met de message broker werd gekozen voor het AMQP protocol via het poort 5672.
+Monitoring voor Prometheus is voorzien in het RabbitMQ management packet en is bereikbaar via ``http://localhost:15672/''.
+Omdat er geen filtering mogelijk is moet er voor ieder kanaal een queue voorzien worden en wijken we af van de opzet van het huidige systeem.
+Hierdoor zijn er 38 queues nodig, 19 voor de FromPLC berichten en 19 voor de ToPLC berichten.
+\\\\
+Berichten kunnen enkel verstuurd worden als binaire data waardoor de inhoud van een bericht eerst moet omgezet worden naar een binary array door de producer.
+Ook na het consumeren van een bericht moet deze eerst omgezet worden van binaire data naar het string datatype.
+
 
 \subsubsection{Performantie}
 In deze test worden opnieuw 19 socket connecties gemaakt door het plc script met de Java listeners die elk per 0.1 seconde een bericht versturen naar de relevante queue.
@@ -794,26 +800,38 @@ Het verschil met vorige test is dat er hier meerdere queues zijn, 19 voor de Fro
 \end{figure}
 
 \subsubsection{Samenvatting}
-
-
+RabbitMQ lijkt een goede oplossing dat compatibel is met het huidige systeem, 
+maar heeft wel wat aanpassingen nodig omdat filtering niet kan toegepast worden.
+Om dit product te gebruiken moet er voor ieder kanaal een aparte queue voorzien worden.
+Daarnaast moeten berichten ook omgezet worden en verstuurd worden als binaire data.
 
 
 \subsection{Test Artemis}
+In deze test werd ook een 
+Overzicht van de infrastructuur:
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.95\textwidth]{img/test-artemis-dataflow.png}
+  \caption{\label{fig:test_artemis_dataflow}Dataflow test Artemis}
+\end{figure}
 
 \subsubsection{Installatie}
  
 \subsubsection{Integratie}
 
-Overzicht van de infrastructuur:
-\begin{figure}[h!]
-  \centering
-  % \includegraphics[width=.5\textwidth]{img/test_artemis_dataflow.png}
-  \caption{\label{fig:test_artemis_dataflow}Dataflow test Artemis}
-\end{figure}
-
 \subsubsection{Performantie}
 Volgende grafiek geeft weer hoeveel berichten er per minuut verzonden kunnen worden naar de message queue.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.95\textwidth]{img/artemis-enqueue-count.png}
+  \caption{\label{fig:artemis_enqueue_count}Enqueue Artemis}
+\end{figure}
 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.95\textwidth]{img/artemis-dequeue-count.png}
+  \caption{\label{fig:artemis_dequeue_count}Dequeue Artemis}
+\end{figure}
 
 
 

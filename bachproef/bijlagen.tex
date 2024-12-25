@@ -5,7 +5,7 @@
 \subsection{Python script PLC} \label{sec:script_plc}
 \inputminted{python3}{../tests/plc/plc-simulator.py}\label{listing:script_plc}
 
-\subsection{Dockerfile PLC} \label{sec:dockerplc}
+\subsection{Dockerfile PLC} \label{sec:docker_plc}
 \inputminted{python3}{../tests/plc/Dockerfile} \label{listing:docker_plc}
 
 
@@ -13,6 +13,14 @@
 
 \subsection{Progress 4GL script WCS} \label{sec:script_wcs}
 \inputminted{python3}{../tests/wcs/wcs.p} \label{listing:script_wcs}
+
+\section{Code Java listener}\label{sec:code_java_listener} 
+\subsection{Java Listener ActiveMQ}\label{sec:listener_activemq}
+\inputminted{python3}{../tests/listener/activemq-listener/demo/src/main/java/com/example/ActiveMQSocketBridge.java}\label{listing:listener_activemq}
+\subsection{Java Listener RabbitMQ}\label{sec:listener_rabbitmq}
+\inputminted{python3}{../tests/listener/rabbitmq-listener/rabbitmq-plc-listener/src/main/java/com/listener/RabbitMQSocketBridge.java}\label{listing:listener_rabbitmq}
+\subsection{Java Listener Artemis}\label{sec:listener_artemis}
+\inputminted{python3}{../tests/listener/artemis-listener/demo/src/main/java/com/example/ArtemisSocketBridge.java}\label{listing:listener_artemis}
 
 
 \section{ActiveMQ Classic test}\label{sec:code_amq}
@@ -26,3 +34,5 @@
 
 \subsection{Configfile}\label{sec:config_rabbitmq}
 \inputminted{python3}{../tests/messaging/rabbitmq-server/rabbitmq.conf}\label{listing:config_rabbitmq}
+
+\section{Artemis Classic test}\label{sec:code_artemis}
