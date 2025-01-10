@@ -14,21 +14,33 @@
 % Heeft het onderzoek geleid tot nieuwe vragen die uitnodigen tot verder 
 %onderzoek?
 
-Er is geen eenduidig systeem dat als vervanging kan dienen voor het huidige systeem.
-\\\\
 De drie kandidaten die aan de testen werden onderworpen, voldeden allemaal aan de vooraf gestelde eisen.
-\\\\
-Apache ActiveMQ Classic lijkt een snelle en kortetermijnoplossing te zijn, 
+Tussen deze kandidaten zijn duidelijke verschillen te merken waardoor één kandidaat als optimale message broker kan gekozen worden.
+
+\section{Apache ActiveMQ}
+Apache ActiveMQ Classic is een snelle en kortetermijnoplossing, 
 omdat deze met minimale aanpassingen eenvoudig te integreren is in het huidige systeem.
-\\\\
-Voor een langdurige oplossing biedt Apache Artemis een krachtiger en toekomstbestendiger alternatief als messaging broker. 
-Deze technologie is eveneens eenvoudig te integreren, aangezien het een afgeleide is van ActiveMQ Classic.
-\\\\
+
+\section{RabbitMQ}
 RabbitMQ is een modern messaging-systeem dat zowel toekomstbestendig als zeer krachtig is. 
 In tegenstelling tot ActiveMQ en Artemis, biedt RabbitMQ geen ingebouwde filtering, wat het minder geschikt kan maken voor de huidige opstelling.
 RabbitMQ heeft een grote community en wordt het actief ontwikkeld. Het kan een robuuste oplossing zijn, 
 mits de huidige opstelling wordt aangepast.
-\\\\
-Zowel Artemis als RabbitMQ bieden veel mogelijkheden en uitgebreide configuratiemogelijkheden en worden hier uitgelicht als toekomstbestendige kandidaten.
+
+\section{Apache Artemis}
+Apache Artemis komt naar voor als beste van de drie kandidaten:
+\begin{itemize}
+    \item \textbf{Performantie:} Uit de performantie resultaten blijkt dat Artemis duidelijk sneller is dan ActiveMQ
+    \item \textbf{Functionaliteit:} Filtering kan toegepast worden in tegenstelling tot RabbitMQ.
+    \item \textbf{Toekomstbestendig} Als modernere versie van ActiveMQ is Artemis beter geschikt voor langdurig gebruik.
+    \item \textbf{Implementatiegemak:} Vereist minimale aanpassingen om te integreren in tegenstelling tot RabbitMQ.
+    \item \textbf{Schaalbaarheid:} Het systeem ondersteunt meerdere instanties, wat meer schaalbaarheid biedt dan ActiveMQ.
+\end{itemize}  
+
+\section{Conclusie}
+Hoewel alle kandidaten voldoen aan de gestelde eisen, biedt Apache Artemis de beste balans tussen prestaties, 
+functionaliteit, schaalbaarheid en implementatiegemak. 
+Dit maakt het de meest geschikte keuze voor zowel de huidige als toekomstige behoeften.
+
 
 

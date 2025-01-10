@@ -8,7 +8,7 @@ title Test activemq (Dataflow Diagram)
 
 Node(activemqserver, "ActiveMQ Server Docker", "RedHat", "container name: amq") {
      
-    Container(activemqserver_listeners, "Java Bridge", "Java JRE 17", "/opt/jprogram/start_listener.sh")
+    Container(activemqserver_listeners, "Java Bridge [1-19]", "Java JRE 17", "/opt/jprogram/start_listener.sh")
     
     Node(activemqserver_activemqbroker, "ActiveMQ Broker", "ActiveMQ 6.1.4", "console: 8161", MsgContainer) {
         ContainerQueue(activemqserver_activemqbroker_toplc, "ToPLC", "Queue")
@@ -18,23 +18,24 @@ Node(activemqserver, "ActiveMQ Server Docker", "RedHat", "container name: amq") 
 }
 
 Node(plcsimulator, "PLC simulator Docker", "Python", "container name: plc"){
-  Container(plcsimulator_process, "PLC simulator", "Python 3.9", "plc-simulator.py")
+  Container(plcsimulator_process, "PLC simulator channel[1-19]", "Python 3.9", "plc-simulator.py")
 }
 
 Node(prometheusserver, "Prometheus server Docker", "", "container name: prometheus"){
   Container(prometheusserver_process, "Prometheus", "", "console: 9080")
 }
 
-Node(wcsserver, "WCS server Docker", "Redhat", "container name: wcs"){
-  Container(wcsserver_process, "WCS service", "Progress 4gl", "")
+Node(wcsserver, "WCS server [1-7]", "Windows", ""){
+  Container(wcsserver_process, "WCS service", "Progress 4gl", "start_wcs_[1-7].p")
 }
 
-Rel_U(activemqserver_listeners, activemqserver_activemqbroker_fromplc, "sends to", "amqp 5672")
-Rel_U(activemqserver_listeners, activemqserver_activemqbroker_toplc, "receives from", "amqp 5672")
+Rel_U(activemqserver_listeners, activemqserver_activemqbroker_fromplc, "sends to", "openwire 61616")
+Rel_U(activemqserver_activemqbroker_toplc,activemqserver_listeners , "receives from", "openwire 61616")
 
 Rel_U(wcsserver_process, activemqserver_activemqbroker_toplc, "sends to", "amqp 5672") 
-Rel_U(wcsserver_process, activemqserver_activemqbroker_fromplc, "receives from", "amqp 5672") 
+Rel_U(activemqserver_activemqbroker_fromplc, wcsserver_process, "receives from", "amqp 5672") 
+
 Rel_U(activemqserver_activemqbroker_jmxexport, prometheusserver_process, "sends to", "port 8020")
-BiRel(plcsimulator_process, activemqserver_listeners, "sends to\nreceives from", "port 800[1-3]")
+BiRel(plcsimulator_process, activemqserver_listeners, "sends to\nreceives from", "port 80[01-19]")
 
 @enduml

@@ -8,7 +8,7 @@ title Test RabbitMQ (Dataflow Diagram)
 
 Node(rabbitmqserver, "RabbitMQ Server Docker", "RedHat", Docker container) {
      
-    Container(rabbitmqserver_listeners, "Java Bridge PLC [1-7]", "Java JRE 17", "/opt/jprogram/start_listener.sh")
+    Container(rabbitmqserver_listeners, "Java Bridge PLC [1-19]", "Java JRE 17", "/opt/jprogram/start_listener.sh")
     
     Node(rabbitmqserver_rabbitmqbroker, "RabbitMQ Broker", "RabbitMQ 3.0", MsgContainer) {
         ContainerQueue(rabbitmqserver_rabbitmqbroker_toplc, "ToPLC[1-19]", "Queue")
@@ -17,18 +17,22 @@ Node(rabbitmqserver, "RabbitMQ Server Docker", "RedHat", Docker container) {
     }
 }
 
-Container(plcsimulator, "PLC simulator Docker", "Python", "Channel 80[1-19]")
+Node(plcsimulator, "PLC simulator Docker", "Python", "container name: plc"){
+  Container(plcsimulator_process, "PLC simulator channel[1-19]", "Python 3.9", "plc-simulator.py")
+}
+Node(prometheusserver, "Prometheus server Docker", "", "container name: prometheus"){
+  Container(prometheusserver_process, "Prometheus", "", "console: 9080")
+}
+Node(wcsserver, "WCS server [1-7]", "Windows", ""){
+  Container(wcsserver_process, "WCS service", "Progress 4gl", "start_wcs_[1-7].p")
+}
 
-Container(prometheusserver, "Prometheus server Docker", "Redhat", "Prometheus")
+Rel_U(rabbitmqserver_listeners, rabbitmqserver_rabbitmqbroker_fromplc, "sends to", "amqp 5672")
+Rel_U(rabbitmqserver_rabbitmqbroker_toplc, rabbitmqserver_listeners, "receives from", "amqp 5672")
 
-Container(wcsserver, "WCS server Docker", "PLC [1-7]", "Progress 4gl")
-
-Rel_U(rabbitmqserver_listeners, rabbitmqserver_rabbitmqbroker_fromplc, "sends to")
-Rel_U(rabbitmqserver_listeners, rabbitmqserver_rabbitmqbroker_toplc, "receives from")
-
-Rel_U(wcsserver, rabbitmqserver_rabbitmqbroker_toplc, "sends to") 
-Rel_U(wcsserver, rabbitmqserver_rabbitmqbroker_fromplc, "receives from") 
-Rel_U(rabbitmqserver_rabbitmqbroker_monitor, prometheusserver, "sends to")
-BiRel(plcsimulator, rabbitmqserver_listeners, "sends to", "receives from")
+Rel_U(wcsserver_process, rabbitmqserver_rabbitmqbroker_toplc, "sends to", "amqp 5672") 
+Rel_U(rabbitmqserver_rabbitmqbroker_fromplc, wcsserver_process, "receives from", "amqp 5672") 
+Rel_U(rabbitmqserver_rabbitmqbroker_monitor, prometheusserver_process, "sends to", "port 15692")
+BiRel(plcsimulator_process, rabbitmqserver_listeners,  "sends to\nreceives from", "port 80[01-19]")
 
 @enduml
