@@ -115,8 +115,8 @@ public class RabbitMQSocketBridge {
             Connection rabbitMQConnection = connectToRabbitMQ();
             Channel channel = rabbitMQConnection.createChannel();
 
-            channel.queueDeclare(SEND_QUEUE + port, true, false, false, null);
-            channel.queueDeclare(RECV_QUEUE + port, true, false, false, null);
+            channel.queueDeclare(SEND_QUEUE + port, false, false, false, null);
+            channel.queueDeclare(RECV_QUEUE + port, false, false, false, null);
 
             Socket clientSocket = serverSocket.accept();
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
@@ -79,12 +80,18 @@ public class ArtemisSocketBridge {
         Files.createDirectories(Paths.get(path));
     }
 
-    public static String bytesToHex(byte[] bytes, int length) {
+    // Method to convert a byte array to a hex string
+    private static String bytesToHex(byte[] bytes) {
         StringBuilder hexString = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            hexString.append(String.format("%02X ", bytes[i])); // Convert each byte to a two-character hex value
+        for (byte b : bytes) {
+            String hex = Integer.toHexString(0xFF & b);
+
+            if (hex.length() == 1) {
+                hexString.append('0'); // Add leading zero for single-digit hex values
+            }
+            hexString.append(hex).append(" ");
         }
-        return hexString.toString().trim();
+        return hexString.toString().trim(); // Trim any trailing spaces
     }
 
     // Log messages
@@ -130,11 +137,9 @@ public class ArtemisSocketBridge {
                         logMessage("WCS->PLC from queue ", port, body);
                         System.out.println("Received message from Artemis: " + body);
                         try {
-                            byte[] bytesMessage = new byte[1024];
-                            bytesMessage = body.getBytes();
-                            clientSocket.getOutputStream().write(bytesMessage);
-                            System.out.println("Forwarded AMQ message to client: " + body);
-                            logMessage("AMQ->SOCKET ", port, body);
+                            PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+                            writer.println(body);
+                            logMessage("WCS->PLC ", port, body);
                         } catch (IOException e) {
                             System.err.println("Error sending message to client: " + e.getMessage());
                         }
@@ -160,7 +165,7 @@ public class ArtemisSocketBridge {
 
                         String data = new String(buffer, 0, bytesRead, "UTF-8");
 
-                        data = bytesToHex(data.getBytes(), bytesRead);
+                        data = bytesToHex(data.getBytes());
 
                         System.out.println("Received data on port " + port + ": " + data);
                         logMessage("Incoming SOCKET PLC->WCS ", port, data);
