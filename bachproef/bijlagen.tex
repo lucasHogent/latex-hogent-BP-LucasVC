@@ -23,7 +23,21 @@
 \inputminted{java}{../tests/listener/activemq-listener/demo/src/main/java/com/example/ActiveMQSocketBridge.java}
 \captionof{listing}{\label{listing:listener_activemq}Java Listener for ActiveMQ.}
 
-\section{ActiveMQ}
+
+\subsection{Java Listener RabbitMQ}\label{sec:listener_rabbitmq}
+\inputminted{java}{../tests/listener/rabbitmq-listener/rabbitmq-plc-listener/src/main/java/com/listener/RabbitMQSocketBridge.java}
+\captionof{listing}{\label{listing:listener_rabbitmq}Java Listener for RabbitMQ.}
+
+
+
+\subsection{Java Listener Artemis}\label{sec:listener_artemis}
+\inputminted{java}{../tests/listener/artemis-listener/demo/src/main/java/com/example/ArtemisSocketBridge.java}
+\captionof{listing}{\label{listing:listener_artemis}Java Listener for Artemis.}
+
+
+
+\section{ActiveMQ Classic}\label{sec:code_amq}
+
 \subsection{Configuratie}\label{sec:config_activemq}
 \inputminted{java}{../tests/messaging/activemq-server/activemq.xml}
 \captionof{listing}{\label{listing:configxml_activemq}config.xml for ActiveMQ.}
@@ -31,25 +45,13 @@
 \inputminted{java}{../tests/messaging/activemq-server/setenv}
 \captionof{listing}{\label{listing:setenv_activemq}setenv config for ActiveMQ.}
 
-\section{RabbitMQ}
-\subsection{Java Listener RabbitMQ}\label{sec:listener_rabbitmq}
-\inputminted{java}{../tests/listener/rabbitmq-listener/rabbitmq-plc-listener/src/main/java/com/listener/RabbitMQSocketBridge.java}
-\captionof{listing}{\label{listing:listener_rabbitmq}Java Listener for RabbitMQ.}
-
-\subsection{Configuratie}\label{sec:config_rabbitmq}
-\inputminted{python3}{../tests/messaging/rabbitmq-server/rabbitmq.conf}
-\captionof{listing}{\label{listing:config_rabbitmq}Configuration file for RabbitMQ.}
-
-
-\subsection{Java Listener Artemis}\label{sec:listener_artemis}
-\inputminted{java}{../tests/listener/artemis-listener/demo/src/main/java/com/example/ArtemisSocketBridge.java}
-\captionof{listing}{\label{listing:listener_artemis}Java Listener for Artemis.}
-
-\section{ActiveMQ Classic test}\label{sec:code_amq}
-
 \subsection{Dockerfile}\label{sec:docker_amq}
 \inputminted{python3}{../tests/messaging/activemq-server/Dockerfile}
 \captionof{listing}{\label{listing:docker_amq}Dockerfile for ActiveMQ Classic test.}
+
+% \subsection{Plot ActiveMQ}\label{sec:plot_amq}
+% \inputminted{python3}{../plot/amq/amq_messages_received_plot.ipynb}
+% \captionof{listing}{\label{listing:plot_amq}Plot for ActiveMQ Classic test.}
 
 \section{RabbitMQ test}\label{sec:code_rabbitmq}
 
@@ -57,6 +59,13 @@
 \inputminted{python3}{../tests/messaging/rabbitmq-server/Dockerfile}
 \captionof{listing}{\label{listing:docker_rabbitmq}Dockerfile for RabbitMQ server.}
 
+\subsection{Configuratie}\label{sec:config_rabbitmq}
+\inputminted{python3}{../tests/messaging/rabbitmq-server/rabbitmq.conf}
+\captionof{listing}{\label{listing:config_rabbitmq}Configuration file for RabbitMQ.}
+
+% \subsection{Plot RabbitMQ}\label{sec:plot_rabbitmq}
+% \inputminted{json}{../plot/rabbitmq/rabbitmq_messages_received_plot.ipynb}
+% \captionof{listing}{\label{listing:plot_rabbitmq}Plot for RabbitMQ test.}
 
 \section{Artemis Classic test}\label{sec:code_artemis}
 
@@ -71,3 +80,7 @@
 \subsection{Bootstrap XML Configuration}\label{sec:bootstrap_artemis}
 \inputminted{xml}{../tests/messaging/artemis-server/bootstrap.xml}
 \captionof{listing}{\label{listing:bootstrap_artemis}Bootstrap XML configuration for Artemis.}
+
+% \subsection{Plot Artemis}\label{sec:plot_artemis}
+% \inputminted{python3}{../plot/artemis/artemis_messages_received_plot.ipynb}
+% \captionof{listing}{\label{listing:plot_artemis}Plot for Artemis test.}

@@ -153,11 +153,10 @@ De inhoud van een bericht is gebaseerd op het hexadecimale stelsel en wordt in d
 \end{tabular}
 \caption[Message content]{\label{tab:message-content}Inhoud bericht}
 \end{table}
+\newpage
 
-Bepaalde controles worden uitgevoerd om de validiteit van een bericht af te toetsen. 
-\\\\
 Er worden ongeveer 80 berichten per minuut verstuurd per PLC, per kanaal.
-Het totale aantal verstuurde berichten per minuut komt uit op ongeveer 1680/min.
+Het totale aantal verstuurde berichten per minuut komt uit op ongeveer 1680.
 
 Voorbeeld van een bericht dat van PLC naar WCS wordt verstuurd: 
 \begin{listing}[h!]
@@ -173,11 +172,12 @@ Omdat SonicMQ als middleware hierdoor geen verbinding kan maken zijn er Java-lis
 Deze listeners fungeren als server en zijn specifiek opgesteld om een TCP/IP-socket verbinding mogelijk te maken per PLC kanaal.
 De Java-listeners sturen de PLC-berichten vervolgens door naar SonicMQ of ontvangen berichten van SonicMQ, 
 die ze via een socket naar de PLC doorsturen.
+
+\subsection{WCS communicatie} 
 Aan de kant van het WCS zijn er meer mogelijkheden om verbinding te kunnen maken met een server.
 SonicMQ biedt geen support meer en is niet populair waardoor er ook geen community is.
 Dit kan leiden tot extra kosten of langdurige problemen.
-
-\subsection{WCS communicatie} 
+\\\\
 Op het ERP-systeem van TVH draaien acht verschillende batches die verantwoordelijk zijn voor de aansturing van de PLC. 
 Elke batch-instantie communiceert met specifieke PLC-kanalen en bevat daarvoor specifieke logica, geschreven in OpenEdge Progress 4GL.
 Deze batches zijn verbonden via een specifieke poort met een \textbf{Progress JMS Adapter} op de communicatieserver omdat ze de ``Broker connect'' methode gebruiken.
@@ -215,7 +215,6 @@ Volgende voorbeelden doen zich voor:
 \item Bestemming wordt gevraagd door de PLC
 \item Bestemming wordt doorgegeven aan de PLC 
 \item Specifieke logica moet uitgevoerd worden bij het passeren van een bepaald punt
-\item \dots
 \end{enumerate}
 
 \subsection{Monitoring}
@@ -282,7 +281,7 @@ Sommige systemen hangen vast aan een kostenmodel, andere zijn \textbf{open-sourc
 \end{itemize}
 
 \newpage
-\section{Phase 5: ShortList}
+\section{Phase 4: ShortList}
 In deze sectie worden de message brokers uit de longlist opgelijst en stapsgewijs gefilterd op basis van het MoSCoW principe.
 Het doel is om een top 3 te bekomen waarbij uitvoerige testen kunnen uitgevoerd worden.
 
@@ -625,7 +624,7 @@ maar het is niet open-source en kan afhankelijk van het gekozen plan kostelijk z
 \label{tab:vergelijking_message_brokers_should_have}
 \end{table}
     
-\section{Phase 4: Proof of concept}
+\section{Phase 5: Proof of concept}
 Volgende kandidaten worden getest door deze te integreren in een gesimuleerde omgeving:
 \begin{itemize}
   \item ActiveMQ
@@ -636,7 +635,8 @@ Volgende kandidaten worden getest door deze te integreren in een gesimuleerde om
 Testen werden opgezet in een afgeschermde omgeving en maken gebruik van Docker containers.
 Op deze manier is het gemakkelijk de testen uit te voeren en te monitoren.
 Dit hoofdstuk zal de kandidaten uit de shortlist testen door het opzetten in een gesimuleerde omgeving.
-\\\\
+\newpage
+
 Verloop van testen per technologie:
 \begin{itemize}
   \item \textbf{Installeren:} Hoe verloopt het installeren
@@ -651,7 +651,7 @@ Verloop van testen per technologie:
 \end{itemize}
 
 \subsection{Simulatie PLC}
-Om de PLC te simuleren is er een Python script (\hyperref[listing:code_plc]{zie bijlage: code PLC}) geschreven omdat dit snel en gemakkelijk te implementeren is.
+Om de PLC te simuleren is er een Python script (\hyperref[sec:code_plc]{zie bijlage: code PLC}) geschreven omdat dit snel en gemakkelijk te implementeren is.
 De code zal gebruikt worden voor iedere test omdat de manier van integratie voor iedere test hetzelfde zal zijn.
 Configuratie kan aangepast worden via een .ini bestand om zo de hostname, poorten, interval en logbestand te kunnen aanpassen.
 \\\\
@@ -661,7 +661,7 @@ zoals in sectie \hyperref[listing:message_example]{PLC berichten}.
 De logica is voorzien van een logbestand om de berichten in beide richtingen te kunnen monitoren.
 
 \subsection{Simulatie WCS}
-Het WCS wordt gesimuleerd aan de hand van een script (\hyperref[listing:code_wcs]{zie bijlage: code WCS}) geschreven in OpenEdge 4GL.
+Het WCS wordt gesimuleerd aan de hand van een script (\hyperref[sec:code_wcs]{zie bijlage: code WCS}) geschreven in OpenEdge 4GL.
 Per PLC is een .p bestand voorzien dat via een parameter de connectie in het script regelt.
 \\\\
 Het script wordt gestart op een lokale Windows omgeving en initieert de connectie met de message broker.
@@ -677,20 +677,20 @@ Iedere test heeft een eigen versie van een Java listener omdat iedere technologi
 Om transparantie te bieden over de prestaties van het systeem, zowel op applicatie- als systeemniveau, 
 wordt gebruikgemaakt van monitoringsoftware zoals beschreven in de requirements analyse.
 Bij elke testopstelling wordt een Docker-container met een Prometheus-instantie ingezet om de logging te verzamelen en te beheren.
-Daarnaast biedt software zoals Grafana de mogelijkheid om specifieke grafieken te genereren, 
+Daarnaast biedt software zoals Grafana de mogelijkheid om specifieke grafieken en dashboards te genereren, 
 waarmee het gedrag van het systeem dat getest wordt, inzichtelijk kan worden gemaakt.
 Ieder te testen kandidaat-systeem moet tijdens de testfase in staat zijn om de benodigde logging te leveren. 
 De opzet voor het verzamelen en verwerken van deze logging wordt beschreven in de documentatie van elke test.
 \newpage
 
 \subsection{Test ActiveMQ}
-In deze test werd een Docker container gemaakt met een RedHat OS instantie, waarop ActiveMQ Classic 
-geïnstalleerd is via een \hyperref[listing:docker_amq]{DockerFile}.
+In deze test is een Docker container voorzien met een RedHat OS instantie, waarop ActiveMQ Classic 
+geïnstalleerd wordt het uitvoeren van een Dockerfile (\hyperref[listing:docker_amq]{zie bijlage: Dockerfile ActiveMQ}).
 \\\\
-Overzicht van de infrastructuur:
-\begin{figure}[h!]
+Overzicht van de infrastructuur van deze test:
+\begin{figure}[!h]
   \centering
-  \includegraphics[width=.95\textwidth]{img/test_amq_dataflow.png}
+  \includegraphics[width=.80\textwidth]{img/test_amq_dataflow.png}
   \caption{\label{fig:test_amq_dataflow}Dataflow test AMQ}
 \end{figure}
 
@@ -718,26 +718,33 @@ Hierdoor worden meer dan 1680 berichten per minuut gesimuleerd en wordt er volda
 Het opmeten van deze test wordt verdeeld in twee categorieën, enqueued- en dequeued messages.
 Om correct de throughput te meten moeten we beide categorieën meten omdat dit de volledige transactie representeert. 
 \\\\
-Volgende grafiek bevestigd dat er per minuut meer dan 1680 berichten kan geplaatst worden op de twee queues:
+Onderstaande grafiek toont aan dat er per minuut meer dan 1680 berichten op zowel de FromPLC als ToPLC queue kunnen worden geplaatst.
+Ter verduidelijking tonen de rode verticale lijnen de afbakening van één minuut.
+Hier is te zien dat het minimum van 1680 berichten (aangegeven met de rode horizontale lijn) werd bereikt in ongeveer 43 seconden voor zowel de FromPLC- als de ToPLC-queues.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.95\textwidth]{img/amq-enqueue-count.png}
+  \includegraphics[width=.80\textwidth]{img/amq-enqueue-count.png}
   \caption{\label{fig:amq_enqueue_count}Enqueue ActiveMQ}
 \end{figure}
 \newpage
-Zoals de grafiek laat zien kan de message broker meer dan 1680 berichten naar de consumer versturen van iedere queue binnen één minuut.
+
+Deze grafiek laat zien dat de message broker meer dan 1680 berichten binnen één minuut kan versturen naar de consumer van de FromPLC en ToPLC queue.
+De verticale lijnen bakenen de minuut af, de horizontale toont het minimum van 1680.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.95\textwidth]{img/amq-dequeue-count.png}
+  \includegraphics[width=.80\textwidth]{img/amq-dequeue-count.png}
   \caption{\label{fig:amq_dequeue_count}Dequeue ActiveMQ}
 \end{figure}
+\newpage
 
-De volgende grafiek toont het aantal berichten dat binnen één minuut is ontvangen. 
+Hieronder wordt weergegeven hoeveel berichten door het WCS kunnen worden verwerkt.
+Voor deze visualisatie is gebruikgemaakt van logging, waarna de gegevens zijn geplot met Pyplot.
+y1 staat voor het minimum aantal berichten en y2 staat voor het maximum aantal berichten binnen de minuut.
 Dit resultaat is, net als bij de vorige test, afhankelijk van het systeem waarop wordt getest. 
 Productieomgevingen leveren doorgaans betere prestaties dan de testomgeving.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.95\textwidth]{img/amq_received_wcs.png}
+  \includegraphics[width=.80\textwidth]{img/amq_received_wcs.png}
   \caption{\label{fig:amq_received_wcs}ActiveMQ berichten ontvangen door WCS}
 \end{figure}
 
@@ -746,7 +753,8 @@ De installatie en integratie kunnen worden uitgevoerd zonder al te complexe aanp
 wat het proces gebruiksvriendelijk en eenvoudig maakt.
 Monitoring is eenvoudig en gemakkelijk toegankelijk. 
 Een mooie extra is de admin console die beschikbaar is via ``http://localhost:8161/admin'', waar de metrics kunnen worden geraadpleegd.
-Wat betreft prestaties voldoet dit product aan de verwachtingen omdat het meer dan 1680 berichten binnen één minuut kan verwerken via twee queues.
+Wat betreft prestaties voldoet dit product aan de verwachtingen, 
+omdat het enqueuen en dequeuen binnen dezelfde tijd plaatsvinden en er minstens 1680 berichten per minuut worden afgeleverd.
 
 \newpage
 \subsection{Test RabbitMQ}
@@ -756,7 +764,7 @@ werd geïnstalleerd via een \hyperref[listing:docker_rabbitmq]{DockerFile}.
 Overzicht infrastructuur:
 \begin{figure}[!h]
   \centering
-  \includegraphics[width=.95\textwidth]{img/test-rabbitmq-dataflow.png}
+  \includegraphics[width=.80\textwidth]{img/test-rabbitmq-dataflow.png}
   \caption{\label{fig:test_rabbitmq_dataflow}Dataflow test RabbitMQ}
 \end{figure}
 
@@ -770,7 +778,7 @@ Omdat de configuratie uitgebreid is, kan deze technologie voldoen aan complexe o
 
 \subsubsection{Integratie}
 Om de Java listeners en het WCS te laten communiceren met de message broker, is er gekozen voor het AMQP protocol via poort 5672.
-Monitoring voor Prometheus is voorzien in het RabbitMQ management pakket en is bereikbaar via ``http://localhost:15672/''.
+Monitoring voor Prometheus is voorzien in het RabbitMQ management pakket en is bereikbaar via ``http://localhost:15692/''.
 Omdat er geen filtering mogelijk is moet er voor ieder kanaal een queue voorzien worden en wijken we af van de opzet van het huidige systeem.
 Hierdoor zijn er 38 queues nodig, 19 voor de FromPLC berichten en 19 voor de ToPLC berichten.
 \\\\
@@ -782,6 +790,12 @@ In deze test worden opnieuw 19 socket connecties gemaakt door het plc script met
 Hierdoor worden meer dan 1680 berichten per minuut verstuurd om te kunnen voldoen aan de minimale vereisten op gebied van performantie.
 Het opmeten van deze test wordt verdeeld in twee categorieën, enqueued- en dequeued messages.
 Het verschil met vorige test is dat er hier meerdere queues zijn, 19 voor de FromPLC en 19 voor de ToPLC. 
+\newpage
+De volgende grafieken zijn opgesplitst en tonen de queues onder elkaar, aangezien het totale aantal te verwerken berichten van belang is.
+De horizontale rode lijn geeft het vooropgestelde minimum weer, terwijl de bovenste lijn in de grafiek het totale aantal berichten toont.
+\\\\
+De eerstvolgende grafiek toont het aantal enqueued berichten in de FromPLC-queues.
+Ook hier markeren de rode verticale lijnen de grenzen van een minuut. 
 
 \begin{figure}[h!]
   \centering
@@ -789,33 +803,47 @@ Het verschil met vorige test is dat er hier meerdere queues zijn, 19 voor de Fro
   \caption{\label{fig:rabbitmq_enqueue_fromplc_count}RabbitMQ enqueue FromPLC}
 \end{figure}
 
+Het meten van de dequeued berichten begint vanaf een bepaald aantal berichten in de queue's.
+Berichten die worden dequeued verminderen het totale aantal berichten, zoals te zien is in de onderstaande grafiek.
+Het is duidelijk te zien dat er meer dan 1680 berichten verwerkt worden binnen één minuut.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.95\textwidth]{img/rabbitmq-dequeue-count-FromPLC.png}
   \caption{\label{fig:rabbitmq_dequeue_fromplc_count}RabbitMQ dequeue FromPLC}
 \end{figure}
+\newpage
 
+% Onderstaande twee grafieken zijn op dezelfde manier opgesteld, maar dan voor de ToPLC queue's.
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=.95\textwidth]{img/rabbitmq-enqueue-count-ToPLC.png}
+%   \caption{\label{fig:rabbitmq_enqueue_toplc_count}RabbitMQ enqueue ToPLC}
+% \end{figure}
+
+% \begin{figure}[h!]
+%   \centering
+%   \includegraphics[width=.95\textwidth]{img/rabbitmq-dequeue-count-ToPLC.png}
+%   \caption{\label{fig:rabbitmq_dequeue_toplc_count}RabbitMQ dequeue ToPLC}
+% \end{figure}
+
+Hieronder wordt weergegeven hoeveel berichten door het WCS verwerkt kunnen worden.
+Voor deze visualisatie is gebruikgemaakt van logging, waarna de gegevens zijn geplot met Pyplot.
+Zoals eerder aangegeven, staat y1 voor het minimum aantal berichten en y2 voor het maximum aantal berichten binnen één minuut.
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=.95\textwidth]{img/rabbitmq-enqueue-count-ToPLC.png}
-  \caption{\label{fig:rabbitmq_enqueue_toplc_count}RabbitMQ enqueue ToPLC}
-\end{figure}
-
-\begin{figure}[h!]
-  \centering
-  \includegraphics[width=.95\textwidth]{img/rabbitmq-dequeue-count-ToPLC.png}
-  \caption{\label{fig:fig:rabbitmq_dequeue_fromplc_count}RabbitMQ dequeue ToPLC}
+  \includegraphics[width=.80\textwidth]{img/rabbitmq_received_wcs.png}
+  \caption{\label{fig:rabbitmq_received_wcs}RabbitMQ berichten ontvangen door WCS}
 \end{figure}
 
 \subsubsection{Samenvatting}
-RabbitMQ lijkt een goede oplossing dat compatibel is met het huidige systeem, 
+RabbitMQ lijkt een goede oplossing dat snel en compatibel is met het huidige systeem, 
 maar heeft wel wat aanpassingen nodig omdat filtering niet kan toegepast worden.
 Om dit product te gebruiken moet er voor ieder kanaal een aparte queue voorzien worden.
 Daarnaast moeten berichten ook omgezet worden en verstuurd worden als binaire data.
 \newpage
 
 \subsection{Test Artemis}
-In deze test wordt ook een \hyperref[listing:docker_artemis]{Dockerfile} gebruikt voor de installatie.
+In deze test wordt ook een Dockerfile (\hyperref[listing:docker_artemis]{zie bijlage: Artemis Dockerfile}) gebruikt voor de installatie.
 Overzicht van de infrastructuur:
 \begin{figure}[h!]
   \centering
@@ -841,7 +869,13 @@ Hierdoor worden meer dan 1680 berichten per minuut verstuurd en wordt er voldaan
 Het opmeten van deze test wordt verdeeld in twee categorieën, enqueued- en dequeued messages.
 Om correct de throughput te meten moeten we beide categorieën meten omdat dit de volledige transactie representeert. 
 \\\\
-Volgende grafiek geeft weer hoeveel berichten er per minuut verzonden kunnen worden naar de message queue.
+De grafieken tonen de prestaties van het systeem door het aantal verwerkte berichten in de tijd te meten.
+De ``ToPLC''-berichten (gele lijn) en de ``FromPLC'' (groene lijn) laten een constante toename zien, wat aangeeft dat het systeem stabiel werkt. 
+Merk op dat de berichten van de ``FromPLC'' niet snel genoeg kunnen verwerkt worden door het WCS. Dit komt doordat de PLC meer berichten op de ``FromPLC'' queue kan plaatsen dan dat het WCS kan verwerken.
+De horizontale rode lijn vertegenwoordigt het minimale prestatieniveau, dat na enkele seconden wordt overschreden. 
+De verticale rode lijnen markeren intervallen van één minuut, waardoor duidelijk wordt dat het systeem voldoet 
+aan de prestatiedoelen binnen deze tijdsvensters.
+\newpage
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.95\textwidth]{img/artemis-enqueue-count.png}
@@ -851,6 +885,15 @@ Volgende grafiek geeft weer hoeveel berichten er per minuut verzonden kunnen wor
 \begin{figure}[h!]
   \centering
   \includegraphics[width=.95\textwidth]{img/artemis-dequeue-count.png}
+  \caption{\label{fig:artemis_dequeue_count}Dequeue Artemis}
+\end{figure}
+\newpage
+Hieronder wordt weergegeven hoeveel berichten door het WCS kunnen worden verwerkt.
+Voor deze visualisatie is gebruikgemaakt van logging, waarna de gegevens zijn geplot met Pyplot.
+Opnieuw staat y1 voor het minimum aantal berichten en y2 voor het maximum aantal berichten binnen één minuut.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=.95\textwidth]{img/artemis_received_wcs.png}
   \caption{\label{fig:artemis_dequeue_count}Dequeue Artemis}
 \end{figure}
 

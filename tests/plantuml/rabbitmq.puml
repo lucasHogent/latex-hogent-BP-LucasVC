@@ -27,12 +27,12 @@ Node(wcsserver, "WCS server [1-7]", "Windows", ""){
   Container(wcsserver_process, "WCS service", "Progress 4gl", "start_wcs_[1-7].p")
 }
 
-Rel_U(rabbitmqserver_listeners, rabbitmqserver_rabbitmqbroker_fromplc, "sends to", "amqp 5672")
-Rel_U(rabbitmqserver_rabbitmqbroker_toplc, rabbitmqserver_listeners, "receives from", "amqp 5672")
+Rel_U(rabbitmqserver_listeners, rabbitmqserver_rabbitmqbroker_fromplc, "", "amqp 5672")
+Rel_U(rabbitmqserver_rabbitmqbroker_toplc, rabbitmqserver_listeners, "", "amqp 5672")
 
-Rel_U(wcsserver_process, rabbitmqserver_rabbitmqbroker_toplc, "sends to", "amqp 5672") 
-Rel_U(rabbitmqserver_rabbitmqbroker_fromplc, wcsserver_process, "receives from", "amqp 5672") 
-Rel_U(rabbitmqserver_rabbitmqbroker_monitor, prometheusserver_process, "sends to", "port 15692")
+Rel_U(wcsserver_process, rabbitmqserver_rabbitmqbroker_toplc, "", "amqp 5672") 
+Rel_U(rabbitmqserver_rabbitmqbroker_fromplc, wcsserver_process, "", "amqp 5672") 
+Rel_U(rabbitmqserver_rabbitmqbroker_monitor, prometheusserver_process, "", "port 15692")
 BiRel(plcsimulator_process, rabbitmqserver_listeners,  "sends to\nreceives from", "port 80[01-19]")
 
 @enduml
